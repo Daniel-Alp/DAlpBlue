@@ -30,42 +30,42 @@ extern std::array<uint64_t, 64> king_attacks;
 
 void precompute_rays();
 void print_bitboard(uint64_t& bitboard);
-constexpr inline uint64_t shift_nort(uint64_t bitboard) {
+constexpr uint64_t shift_nort(uint64_t bitboard) {
 	return bitboard << 8;
 }
-constexpr inline uint64_t shift_noea(uint64_t bitboard) {
+constexpr uint64_t shift_noea(uint64_t bitboard) {
 	return (bitboard << 9) & 0xfefefefefefefefe;
 }
-constexpr inline uint64_t shift_east(uint64_t bitboard) {
+constexpr uint64_t shift_east(uint64_t bitboard) {
 	return (bitboard << 1) & 0xfefefefefefefefe;
 }
-constexpr inline uint64_t shift_soea(uint64_t bitboard) {
+constexpr uint64_t shift_soea(uint64_t bitboard) {
 	return (bitboard >> 7) & 0xfefefefefefefefe;
 }
-constexpr inline uint64_t shift_sout(uint64_t bitboard) {
+constexpr uint64_t shift_sout(uint64_t bitboard) {
 	return bitboard >> 8;
 }
-constexpr inline uint64_t shift_sowe(uint64_t bitboard) {
+constexpr uint64_t shift_sowe(uint64_t bitboard) {
 	return (bitboard >> 9) & 0x7f7f7f7f7f7f7f7f;
 }
-constexpr inline uint64_t shift_west(uint64_t bitboard) {
+constexpr uint64_t shift_west(uint64_t bitboard) {
 	return (bitboard >> 1) & 0x7f7f7f7f7f7f7f7f;
 }
-constexpr inline uint64_t shift_nowe(uint64_t bitboard) {
+constexpr uint64_t shift_nowe(uint64_t bitboard) {
 	return (bitboard << 7) & 0x7f7f7f7f7f7f7f7f;
 }
-constexpr inline uint64_t get_sq_bitboard(uint32_t sq) {
+constexpr uint64_t get_sq_bitboard(uint32_t sq) {
 	return UINT64_C(1) << sq;
 }
-constexpr inline bool has_sq(uint64_t bitboard, uint64_t sq) {
+constexpr bool has_sq(uint64_t bitboard, uint64_t sq) {
 	return bitboard & sq;
 }
-constexpr inline uint64_t set_sq(uint64_t bitboard, uint64_t sq) {
+constexpr uint64_t set_sq(uint64_t bitboard, uint64_t sq) {
 	return bitboard | sq;
 }
-constexpr inline uint64_t clr_sq(uint64_t bitboard, uint64_t sq) {
+constexpr uint64_t clr_sq(uint64_t bitboard, uint64_t sq) {
 	return bitboard ^ sq;
 }
-constexpr inline uint64_t move_sq(uint64_t bitboard, uint64_t from_sq, uint64_t to_sq) {
+constexpr uint64_t move_sq(uint64_t bitboard, uint64_t from_sq, uint64_t to_sq) {
 	return bitboard ^ from_sq ^ to_sq;
 }

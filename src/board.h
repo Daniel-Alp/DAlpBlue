@@ -44,15 +44,15 @@ struct Position {
 
 void load_from_fen(Position& pos, const std::string& fen);
 void print_board(Position& pos);
-constexpr inline uint32_t get_rank(uint32_t sq) {
+constexpr uint32_t get_rank(uint32_t sq) {
 	return sq >> 3;
 }
-constexpr inline uint32_t get_file(uint32_t sq) {
+constexpr uint32_t get_file(uint32_t sq) {
 	return sq & 7;
 }
-constexpr inline uint32_t get_sq(uint32_t rank, uint32_t file) {
+constexpr uint32_t get_sq(uint32_t rank, uint32_t file) {
 	return (rank << 3) + file;
 }
-constexpr inline uint32_t mirror_sq(uint32_t sq) {
+constexpr uint32_t mirror_sq(uint32_t sq) {
 	return sq ^ 56;
 }

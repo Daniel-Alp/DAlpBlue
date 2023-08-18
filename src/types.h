@@ -42,12 +42,12 @@ enum class CastlingRights : uint32_t {
 
 Piece symbol_to_pce(char symbol);
 char pce_to_symbol(Piece piece);
-constexpr inline Color get_col(Piece piece) {
+constexpr Color get_col(Piece piece) {
 	return static_cast<Color>(static_cast<uint32_t>(piece) >> 3);
 }
-constexpr inline PieceType get_pce_type(Piece piece, Color col) {
+constexpr PieceType get_pce_type(Piece piece, Color col) {
 	return static_cast<PieceType>(static_cast<uint32_t>(piece) & 7);
 }
-constexpr inline Piece build_pce(PieceType pce_type, Color col) {
+constexpr Piece build_pce(PieceType pce_type, Color col) {
 	return static_cast<Piece>(static_cast<uint32_t>(pce_type) + (static_cast<uint32_t>(col) << 3));
 }

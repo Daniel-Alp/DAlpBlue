@@ -19,9 +19,9 @@ std::string get_move_str(uint32_t move) {
 
 	std::string move_str;
 	move_str.push_back('a' + from_file);
-	move_str.push_back(from_rank + 1);
+	move_str.push_back('0' + from_rank + 1);
 	move_str.push_back('a' + to_file);
-	move_str.push_back(to_rank + 1);
+	move_str.push_back('0' + to_rank + 1);
 
 	Piece promo_pce = move_promo_pce(move);
 

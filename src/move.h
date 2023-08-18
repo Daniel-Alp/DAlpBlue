@@ -2,12 +2,14 @@
 
 #include "types.h"
 #include <cstdint>
+#include <string>
 
 extern uint32_t flag_none;
 extern uint32_t flag_pawn_start;
 extern uint32_t flag_castle;
 extern uint32_t flag_en_passant;
 
+std::string get_move_str(uint32_t move);
 constexpr inline uint32_t build_move(uint32_t from_sq, uint32_t to_sq, Piece capture_pce, Piece promo_pce, uint32_t flags) {
 	return from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | flags;
 }

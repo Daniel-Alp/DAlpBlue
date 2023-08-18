@@ -119,7 +119,6 @@ void precompute_rays() {
 		ray_bishop[sq] = ray_noea[sq] ^ ray_soea[sq] ^ ray_sowe[sq] ^ ray_nowe[sq];
 		ray_rook[sq] = ray_nort[sq] ^ ray_east[sq] ^ ray_sout[sq] ^ ray_west[sq];
 		ray_queen[sq] = ray_bishop[sq] ^ ray_rook[sq];
-		print_bitboard(ray_queen[sq]);
 	}
 }
 

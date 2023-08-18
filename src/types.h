@@ -18,19 +18,19 @@ enum class PieceType : uint32_t {
 };
 
 enum class Piece : uint32_t {
-	NONE,
-	WHITE_PAWN,
-	WHITE_KNIGHT,
-	WHITE_BISHOP,
-	WHITE_ROOK,
-	WHITE_QUEEN,
-	WHITE_KING,
-	BLACK_PAWN,
-	BLACK_KNIGHT,
-	BLACK_BISHOP,
-	BLACK_ROOK,
-	BLACK_QUEEN,
-	BLACK_KING
+	NONE = 0,
+	WHITE_PAWN = 1,
+	WHITE_KNIGHT = 2,
+	WHITE_BISHOP = 3,
+	WHITE_ROOK = 4,
+	WHITE_QUEEN = 5,
+	WHITE_KING = 6,
+	BLACK_PAWN = 9,
+	BLACK_KNIGHT = 10,
+	BLACK_BISHOP = 11,
+	BLACK_ROOK = 12,
+	BLACK_QUEEN = 13,
+	BLACK_KING = 14
 };
 
 enum class CastlingRights : uint32_t {
@@ -46,7 +46,7 @@ constexpr inline Color get_col(Piece piece) {
 	return static_cast<Color>(static_cast<uint32_t>(piece) >> 3);
 }
 constexpr inline PieceType get_pce_type(Piece piece, Color col) {
-	return static_cast<PieceType>(static_cast<uint32_t>(piece) - static_cast<uint32_t>(col) * 6);
+	return static_cast<PieceType>(static_cast<uint32_t>(piece) & 7);
 }
 constexpr inline Piece build_pce(PieceType pce_type, Color col) {
 	return static_cast<Piece>(static_cast<uint32_t>(pce_type) + (static_cast<uint32_t>(col) << 3));

@@ -37,15 +37,19 @@ void load_from_fen(Position& pos, const std::string& fen_string) {
 		}
 		else {
 			const int sq = get_sq(rank, file);
-			const uint64_t sqBB = get_sq_bitboard(sq);
+			const uint64_t sq_bb = get_sq_bitboard(sq);
 			const Piece pce = symbol_to_pce(symbol);
+			const Color col = get_col(pce);
 
-			pos.pce_bitboards[static_cast<uint32_t>(pce)] = set_sq(pos.pce_bitboards[static_cast<uint32_t>(pce)], sqBB);
+			pos.all_bitboard = set_sq(pos.all_bitboard, sq_bb);
+			pos.col_bitboards[static_cast<uint32_t>(col)] = set_sq(pos.col_bitboards[static_cast<uint32_t>(col)], sq_bb);
+			pos.pce_bitboards[static_cast<uint32_t>(pce)] = set_sq(pos.pce_bitboards[static_cast<uint32_t>(pce)], sq_bb);
 			pos.pces[sq] = pce;
 
 			file++;
 		}
 	}
+
 
 	if (side_to_move_section == "w") {
 		pos.side_to_move = Color::WHITE;

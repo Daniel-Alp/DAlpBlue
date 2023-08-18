@@ -27,7 +27,7 @@ struct Position {
 	Color side_to_move;
 
 	std::array<Piece, 64> pces;
-	std::array<uint64_t, 13> pce_bitboards;
+	std::array<uint64_t, 15> pce_bitboards;
 	std::array<uint64_t, 2> col_bitboards;
 	uint64_t all_bitboard;
 

@@ -1,11 +1,12 @@
 #include "board.h"
 #include "types.h"
+#include <cassert>  
 #include <iostream>
 #include <string>
 #include <sstream>
 #include <vector>
 
-void load_from_fen(Position& pos, std::string fen_string) {
+void load_from_fen(Position& pos, const std::string& fen_string) {
 	std::vector<std::string> fen_sections;
 	std::istringstream iss(fen_string);
 	std::string section;
@@ -14,26 +15,61 @@ void load_from_fen(Position& pos, std::string fen_string) {
 		fen_sections.push_back(section);
 	}
 
+	const std::string piece_placement_section = fen_sections[0];
+	const std::string side_to_move_section    = fen_sections[1];
+	const std::string castling_rights_section = fen_sections[2];
+	const std::string en_passant_sq_section   = fen_sections[3];
+	const std::string fifty_move_rule_section = fen_sections[4];
+
 	int rank = 7;
 	int file = 0;
-	for (char symbol : fen_sections[0]) {
+	for (const char symbol : piece_placement_section) {
 		if (symbol == '/') {
 			rank--;
 			file = 0;
 		}
 		else if (isdigit(symbol)) {
 			for (int i = 0; i < symbol - '0'; i++) {
-				int sq = rank * 8 + file + i;
-				pos.pces[sq] = Piece::NONE;
+				pos.pces[get_sq(rank, file + i)] = Piece::NONE;
 			}
 			file += symbol - '0';
 		}
 		else {
-			int sq = rank * 8 + file;
-			pos.pces[sq] = symbol_to_pce(symbol);
+			pos.pces[get_sq(rank, file)] = symbol_to_pce(symbol);
 			file++;
 		}
 	}
+
+	if (side_to_move_section == "w") {
+		pos.side_to_move = Color::WHITE;
+	}
+	else {
+		pos.side_to_move = Color::BLACK;
+	}
+
+	if (castling_rights_section.find('K') != std::string::npos) {
+		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::WHITE_SHORT);
+	}
+	if (castling_rights_section.find('Q') != std::string::npos) {
+		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::WHITE_LONG);
+	}
+	if (castling_rights_section.find('k') != std::string::npos) {
+		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::BLACK_SHORT);
+	}
+	if (castling_rights_section.find('q') != std::string::npos) {
+		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::BLACK_LONG);
+	}
+
+	if (en_passant_sq_section == "-") {
+		pos.en_passant_sq = static_cast<uint32_t>(Square::NO_SQ);
+	}
+	else {
+		const int rank = en_passant_sq_section[1] - '1';
+		const int file = en_passant_sq_section[0] - 'a';
+		pos.en_passant_sq = get_sq(rank, file);
+	}
+
+	pos.fifty_move_rule = std::stoi(fifty_move_rule_section);
 }
 
 void print_board(Position& pos) {
@@ -42,14 +78,19 @@ void print_board(Position& pos) {
 			if (file == 0) {
 				std::cout << rank + 1 << "   ";
 			}
-			if (pos.pces[rank * 8 + file] == Piece::NONE) {
+			if (pos.pces[get_sq(rank, file)] == Piece::NONE) {
 				std::cout << ". ";
 			}
 			else {
-				std::cout << pce_to_symbol(pos.pces[rank * 8 + file]) << " ";
+				std::cout << pce_to_symbol(pos.pces[get_sq(rank, file)]) << " ";
 			}
 		}
 		std::cout << std::endl;
 	}
 	std::cout << std::endl << "    a b c d e f g h" << std::endl;
+
+	std::cout << static_cast<uint32_t>(pos.side_to_move) << std::endl;
+	std::cout << pos.castling_rights << std::endl;
+	std::cout << pos.en_passant_sq << std::endl;
+	std::cout << pos.fifty_move_rule << std::endl;
 }

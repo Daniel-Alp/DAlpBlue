@@ -32,7 +32,7 @@ struct Position {
 	uint64_t all_bitboard;
 
 	uint32_t castling_rights;
-	Square en_passant_sq;
+	uint32_t en_passant_sq;
 	uint32_t fifty_move_rule;
 	uint64_t zobrist_key;
 
@@ -42,14 +42,20 @@ struct Position {
 	std::array<uint64_t, 256> history_stack;
 };
 
-void load_from_fen(Position& pos, std::string fen);
+void load_from_fen(Position& pos, const std::string& fen);
 void print_board(Position& pos);
-constexpr inline uint32_t get_rank(Square sq) {
-	return static_cast<uint32_t>(sq) >> 3;
+constexpr inline uint32_t get_rank(uint32_t sq) {
+	return sq >> 3;
 }
-constexpr inline uint32_t get_file(Square sq) {
-	return static_cast<uint32_t>(sq) & 7;
+constexpr inline uint32_t get_file(uint32_t sq) {
+	return sq & 7;
 }
-constexpr inline uint32_t mirror_sq(Square sq) {
-	return static_cast<uint32_t>(sq) ^ 56;
+constexpr inline uint32_t get_sq(uint32_t rank, uint32_t file) {
+	return (rank << 3) + file;
+}
+constexpr inline uint32_t mirror_sq(uint32_t sq) {
+	return sq ^ 56;
+}
+constexpr inline bool valid_sq(uint32_t rank, uint32_t file) {
+	return rank >= 0 && rank < 8 && file >= 0 && file < 8;
 }

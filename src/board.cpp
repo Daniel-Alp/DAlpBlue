@@ -1,6 +1,7 @@
+#include "bitboard.h"
 #include "board.h"
 #include "types.h"
-#include <cassert>  
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -29,13 +30,19 @@ void load_from_fen(Position& pos, const std::string& fen_string) {
 			file = 0;
 		}
 		else if (isdigit(symbol)) {
-			for (int i = 0; i < symbol - '0'; i++) {
+			for (uint32_t i = 0; i < symbol - '0'; i++) {
 				pos.pces[get_sq(rank, file + i)] = Piece::NONE;
 			}
 			file += symbol - '0';
 		}
 		else {
-			pos.pces[get_sq(rank, file)] = symbol_to_pce(symbol);
+			const int sq = get_sq(rank, file);
+			const uint64_t sqBB = get_sq_bitboard(sq);
+			const Piece pce = symbol_to_pce(symbol);
+
+			pos.pce_bitboards[static_cast<uint32_t>(pce)] = set_sq(pos.pce_bitboards[static_cast<uint32_t>(pce)], sqBB);
+			pos.pces[sq] = pce;
+
 			file++;
 		}
 	}
@@ -64,8 +71,8 @@ void load_from_fen(Position& pos, const std::string& fen_string) {
 		pos.en_passant_sq = static_cast<uint32_t>(Square::NO_SQ);
 	}
 	else {
-		const int rank = en_passant_sq_section[1] - '1';
-		const int file = en_passant_sq_section[0] - 'a';
+		const uint32_t rank = en_passant_sq_section[1] - '1';
+		const uint32_t file = en_passant_sq_section[0] - 'a';
 		pos.en_passant_sq = get_sq(rank, file);
 	}
 
@@ -87,10 +94,5 @@ void print_board(Position& pos) {
 		}
 		std::cout << std::endl;
 	}
-	std::cout << std::endl << "    a b c d e f g h" << std::endl;
-
-	std::cout << static_cast<uint32_t>(pos.side_to_move) << std::endl;
-	std::cout << pos.castling_rights << std::endl;
-	std::cout << pos.en_passant_sq << std::endl;
-	std::cout << pos.fifty_move_rule << std::endl;
+	std::cout << std::endl << "    a b c d e f g h" << std::endl << std::endl;
 }

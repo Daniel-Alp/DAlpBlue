@@ -27,7 +27,7 @@ struct Position {
 	Color side_to_move;
 
 	std::array<Piece, 64> pces;
-	std::array<uint64_t, 15> pce_bitboards;
+	std::array<uint64_t, 13> pce_bitboards;
 	std::array<uint64_t, 2> col_bitboards;
 	uint64_t all_bitboard;
 
@@ -55,7 +55,4 @@ constexpr inline uint32_t get_sq(uint32_t rank, uint32_t file) {
 }
 constexpr inline uint32_t mirror_sq(uint32_t sq) {
 	return sq ^ 56;
-}
-constexpr inline bool valid_sq(uint32_t rank, uint32_t file) {
-	return rank >= 0 && rank < 8 && file >= 0 && file < 8;
 }

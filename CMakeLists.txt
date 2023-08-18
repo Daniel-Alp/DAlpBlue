@@ -14,6 +14,6 @@ endif()
 project ("DAlpBlue")
 
 # Add source to this project's executable.
-add_executable (DAlpBlue "src/main.cpp" "src/board.cpp" "src/board.h" "src/types.h"  "src/types.cpp" )
+add_executable (DAlpBlue "src/main.cpp" "src/board.cpp" "src/board.h" "src/types.h"  "src/types.cpp"  "src/bitboard.h" "src/bitboard.cpp")
 
 # TODO: Add tests and install targets if needed.

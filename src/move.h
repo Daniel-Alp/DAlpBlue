@@ -1,7 +1,6 @@
 #pragma once
 
 #include "types.h"
-#include "movegen.h"
 #include <cstdint>
 #include <string>
 
@@ -13,8 +12,7 @@ enum class MoveFlag : uint32_t {
 };
 
 std::string get_move_str(uint32_t move);
-void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves);
-constexpr uint32_t build_move(uint32_t from_sq, uint32_t to_sq, Piece capture_pce, Piece promo_pce, MoveFlag flag) {
+constexpr uint32_t build_move(int from_sq, int to_sq, Piece capture_pce, Piece promo_pce, MoveFlag flag) {
 	return from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | (static_cast<uint32_t>(flag));
 }
 constexpr uint32_t move_from_sq(uint32_t move) {

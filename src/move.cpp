@@ -27,9 +27,3 @@ std::string get_move_str(uint32_t move) {
 
 	return move_str;
 }
-
-void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves) {
-	for (int i = 0; i < num_moves; i++) {
-		std::cout << get_move_str(moves[i]) << std::endl;
-	}
-}

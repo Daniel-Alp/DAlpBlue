@@ -24,9 +24,10 @@ std::array<uint64_t, 64> ray_bishop;
 std::array<uint64_t, 64> ray_rook;
 std::array<uint64_t, 64> ray_queen;
 
-
-std::array<uint64_t, 64> king_attacks{};
-std::array<uint64_t, 64> knight_attacks{};
+std::array<uint64_t, 64> white_pawn_attacks;
+std::array<uint64_t, 64> black_pawn_attacks;
+std::array<uint64_t, 64> king_attacks;
+std::array<uint64_t, 64> knight_attacks;
 
 void precompute_rays() {
 	uint64_t nort = 0x0101010101010100;
@@ -144,6 +145,13 @@ void precompute_non_slider_attacks() {
 		knight_attacks[sq] = attacks;
 		knight <<= 1;
 	}
+
+	uint64_t pawn = 1;
+	for (int sq = 0; sq < 64; sq++) {
+		white_pawn_attacks[sq] = shift_noea(pawn) | shift_nowe(pawn);
+		black_pawn_attacks[sq] = shift_soea(pawn) | shift_sowe(pawn);
+		pawn <<= 1;
+	}
 }
 
 void print_bitboard(uint64_t& bitboard) {
@@ -156,7 +164,7 @@ void print_bitboard(uint64_t& bitboard) {
 				std::cout << "X ";
 			} 
 			else {
-				std::cout << "- ";
+				std::cout << ". ";
 			}
 		}
 		std::cout << std::endl;

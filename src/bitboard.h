@@ -26,8 +26,15 @@ extern std::array<uint64_t, 64> ray_bishop;
 extern std::array<uint64_t, 64> ray_rook;
 extern std::array<uint64_t, 64> ray_queen;
 
+extern std::array<uint64_t, 64> white_pawn_attacks;
+extern std::array<uint64_t, 64> black_pawn_attacks;
 extern std::array<uint64_t, 64> knight_attacks;
 extern std::array<uint64_t, 64> king_attacks;
+
+constexpr inline uint64_t rank_1 = 0x00000000000000FF;
+constexpr inline uint64_t rank_4 = 0x00000000FF000000;
+constexpr inline uint64_t rank_5 = 0x000000FF00000000;
+constexpr inline uint64_t rank_8 = 0xFF00000000000000;
 
 void precompute_rays();
 void precompute_non_slider_attacks();

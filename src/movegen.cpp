@@ -105,7 +105,7 @@ void gen_pawn_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& 
 		serialize_pawn_promo(pos, moves, num_moves, capture_sowe & rank_1, -9);
 		serialize_pawn_non_promo(pos, moves, num_moves, capture_sowe & (~rank_1), -9, MoveFlag::NONE);
 
-		const uint64_t capture_soea = shift_nowe(pawns) & enemy;
+		const uint64_t capture_soea = shift_soea(pawns) & enemy;
 		serialize_pawn_promo(pos, moves, num_moves, capture_soea & rank_1, -7);
 		serialize_pawn_non_promo(pos, moves, num_moves, capture_soea & (~rank_1), -7, MoveFlag::NONE);
 
@@ -166,4 +166,5 @@ void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves) {
 	for (int i = 0; i < num_moves; i++) {
 		std::cout << get_move_str(moves[i]) << std::endl;
 	}
+	std::cout << "TOTAL = " << num_moves << std::endl;
 }

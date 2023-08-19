@@ -166,7 +166,36 @@ void gen_queen_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int&
 };
 
 void gen_castling_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves) {
-
+	if (pos.side_to_move == Color::WHITE) {
+		if (sq_attacked(pos, static_cast<uint32_t>(Square::E1), Color::BLACK)) {
+			return;
+		}
+		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::WHITE_SHORT)) &&
+			!(pos.all_bitboard & sq_between_e1_h1) &&
+			!sq_attacked(pos, static_cast<uint32_t>(Square::F1), Color::BLACK)) {
+			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E1), static_cast<uint32_t>(Square::G1), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+		}
+		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::WHITE_LONG)) &&
+			!(pos.all_bitboard & sq_between_e1_a1) &&
+			!sq_attacked(pos, static_cast<uint32_t>(Square::D1), Color::BLACK)) {
+			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E1), static_cast<uint32_t>(Square::C1), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+		}
+	}
+	else {
+		if (sq_attacked(pos, static_cast<uint32_t>(Square::E8), Color::WHITE)) {
+			return;
+		}
+		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::BLACK_SHORT)) &&
+			!(pos.all_bitboard & sq_between_e8_h8) &&
+			!sq_attacked(pos, static_cast<uint32_t>(Square::F8), Color::WHITE)) {
+			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E8), static_cast<uint32_t>(Square::G8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+		}
+		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::BLACK_LONG)) &&
+			!(pos.all_bitboard & sq_between_e8_a8) &&
+			!sq_attacked(pos, static_cast<uint32_t>(Square::D8), Color::WHITE)) {
+			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E8), static_cast<uint32_t>(Square::C8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+		}
+	}
 }
 
 void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves) {

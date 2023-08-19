@@ -29,13 +29,6 @@ std::array<uint64_t, 64> black_pawn_attacks;
 std::array<uint64_t, 64> king_attacks;
 std::array<uint64_t, 64> knight_attacks;
 
-std::array<uint64_t, 4> casling_between_sqs = {
-	0x0000000000000060,
-	0x6000000000000000,
-	0x000000000000000E,
-	0x0E00000000000000
-};
-
 void precompute_rays() {
 	uint64_t nort = 0x0101010101010100;
 	for (int sq = 0; sq < 64; sq++) {

@@ -9,11 +9,11 @@ bool sq_attacked(Position& pos, int sq, Color side_attacking) {
 	uint64_t bishop_attacks = gen_bishop_attacks(sq, occluded);
 	uint64_t rook_attacks = gen_rook_attacks(sq, occluded);
 	
-	Piece knight = build_pce(PieceType::KNIGHT, pos.side_to_move);
-	Piece king = build_pce(PieceType::KING, pos.side_to_move);
-	Piece bishop = build_pce(PieceType::BISHOP, pos.side_to_move);
-	Piece rook = build_pce(PieceType::ROOK, pos.side_to_move);
-	Piece queen = build_pce(PieceType::QUEEN, pos.side_to_move);
+	Piece knight = build_pce(PieceType::KNIGHT, side_attacking);
+	Piece king = build_pce(PieceType::KING, side_attacking);
+	Piece bishop = build_pce(PieceType::BISHOP, side_attacking);
+	Piece rook = build_pce(PieceType::ROOK, side_attacking);
+	Piece queen = build_pce(PieceType::QUEEN, side_attacking);
 
 	if (knight_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(knight)]) {
 		return 1;

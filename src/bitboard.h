@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstdint>
+#include <intrin.h>
 
 extern std::array<uint64_t, 64> ray_nort;
 extern std::array<uint64_t, 64> ray_noea;
@@ -68,4 +69,17 @@ constexpr uint64_t clr_sq(uint64_t bitboard, uint64_t sq) {
 }
 constexpr uint64_t move_sq(uint64_t bitboard, uint64_t from_sq, uint64_t to_sq) {
 	return bitboard ^ from_sq ^ to_sq;
+}
+inline int get_lsb(uint64_t bitboard) {
+	unsigned long i = 0;
+	_BitScanForward64(&i, bitboard);
+	return i;
+}
+inline int get_msb(uint64_t bitboard) {
+	unsigned long i = 0;
+	_BitScanReverse64(&i, bitboard);
+	return i;
+}
+constexpr uint64_t clr_lsb(uint64_t bitboard) {
+	return bitboard & (bitboard - 1);
 }

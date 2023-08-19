@@ -1,19 +1,21 @@
 #pragma once
 
 #include "types.h"
+#include "movegen.h"
 #include <cstdint>
 #include <string>
 
-constexpr int max_moves = 218;
-extern uint32_t flag_none;
-extern uint32_t flag_pawn_start;
-extern uint32_t flag_castle;
-extern uint32_t flag_en_passant;
+enum class MoveFlag : uint32_t {
+	NONE	   = 0b00000000000000000000000,
+	PAWN_START = 0b00100000000000000000000,
+	CASTLE	   = 0b01000000000000000000000,
+	EN_PASSANT = 0b10000000000000000000000
+};
 
 std::string get_move_str(uint32_t move);
-void print_moves(std::array<uint32_t, 218>& moves, int num_moves);
-constexpr uint32_t build_move(uint32_t from_sq, uint32_t to_sq, Piece capture_pce, Piece promo_pce, uint32_t flags) {
-	return from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | flags;
+void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves);
+constexpr uint32_t build_move(uint32_t from_sq, uint32_t to_sq, Piece capture_pce, Piece promo_pce, MoveFlag flag) {
+	return from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | (static_cast<uint32_t>(flag));
 }
 constexpr uint32_t move_from_sq(uint32_t move) {
 	return move & 0b111111;

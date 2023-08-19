@@ -5,11 +5,6 @@
 #include <iostream>
 #include <string>
 
-uint32_t flag_none		 = 0b00000000000000000000000;
-uint32_t flag_pawn_start = 0b00100000000000000000000;
-uint32_t flag_castle	 = 0b01000000000000000000000;
-uint32_t flag_en_passant = 0b10000000000000000000000;
-
 std::string get_move_str(uint32_t move) {
 	uint32_t from_sq = move_from_sq(move);
 	int from_rank = get_rank(from_sq);
@@ -33,7 +28,7 @@ std::string get_move_str(uint32_t move) {
 	return move_str;
 }
 
-void print_moves(std::array<uint32_t, 218>& moves, int num_moves) {
+void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves) {
 	for (int i = 0; i < num_moves; i++) {
 		std::cout << get_move_str(moves[i]) << std::endl;
 	}

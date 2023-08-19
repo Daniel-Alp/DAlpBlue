@@ -7,12 +7,13 @@
 #include <iostream>
 
 int main(int argc) {
+	precompute_rays();
+	precompute_non_slider_attacks();
+
 	const std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-	precompute_rays();
-
 	Position pos{};
-	load_from_fen(pos, "8/8/8/8/3b1R2/8/5B2/8 w - - 0 1");
+	load_from_fen(pos, start_fen);
 	print_board(pos);
 
 	std::array<uint32_t, max_moves> moves;

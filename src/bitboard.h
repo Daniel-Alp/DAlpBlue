@@ -30,7 +30,9 @@ extern std::array<uint64_t, 64> knight_attacks;
 extern std::array<uint64_t, 64> king_attacks;
 
 void precompute_rays();
+void precompute_non_slider_attacks();
 void print_bitboard(uint64_t& bitboard);
+
 constexpr uint64_t shift_nort(uint64_t bitboard) {
 	return bitboard << 8;
 }

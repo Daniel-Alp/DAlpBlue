@@ -122,6 +122,30 @@ void precompute_rays() {
 	}
 }
 
+void precompute_non_slider_attacks() {
+	uint64_t king = 1;
+	for (int sq = 0; sq < 64; sq++) {
+		uint64_t attacks = shift_east(king) | shift_west(king) | king;
+		attacks = (attacks | shift_nort(attacks) | shift_sout(attacks)) ^ king;
+		king_attacks[sq] = attacks;
+		king <<= 1;
+	}
+
+	uint64_t knight = 1;
+	for (int sq = 0; sq < 64; sq++) {
+		uint64_t east = shift_east(knight);
+		uint64_t west = shift_west(knight);
+		uint64_t attacks = shift_nort(shift_nort(east | west));
+		attacks |= shift_sout(shift_sout(east | west));
+		east = shift_east(east);
+		west = shift_west(west);
+		attacks |= shift_nort(east | west);
+		attacks |= shift_sout(east | west);
+		knight_attacks[sq] = attacks;
+		knight <<= 1;
+	}
+}
+
 void print_bitboard(uint64_t& bitboard) {
 	for (int rank = 7; rank >= 0; rank--) {
 		for (int file = 0; file < 8; file++) {

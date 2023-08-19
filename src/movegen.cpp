@@ -20,13 +20,16 @@ void gen_pseudo_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int
 	if (exclude_quiet) {
 		targets = pos.all_bitboard;
 	}
+	else {
+		gen_castling_moves(pos, moves, num_moves);
+	}
 
 	gen_pawn_moves(pos, moves, num_moves, targets, pos.side_to_move);
-	/*gen_knight_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(knight)]);
+	gen_knight_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(knight)]);
 	gen_king_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(king)]);
 	gen_bishop_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(bishop)]);
 	gen_rook_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(rook)]);
-	gen_queen_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(queen)]);*/
+	gen_queen_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(queen)]);
 };
 
 void serialize_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t targets, uint64_t attacks, int from_sq) {
@@ -90,7 +93,7 @@ void gen_pawn_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& 
 			}
 		}
 	}
-	else { //FINISH IMPLEMENTING
+	else {
 		const uint64_t pawns = pos.pce_bitboards[static_cast<uint32_t>(Piece::BLACK_PAWN)];
 		const uint64_t enemy = pos.col_bitboards[static_cast<uint32_t>(Color::WHITE)];
 
@@ -161,6 +164,10 @@ void gen_queen_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int&
 		queens = clr_lsb(queens);
 	}
 };
+
+void gen_castling_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves) {
+
+}
 
 void print_moves(std::array<uint32_t, max_moves>& moves, int num_moves) {
 	for (int i = 0; i < num_moves; i++) {

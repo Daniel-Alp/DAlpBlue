@@ -6,10 +6,10 @@
 #include <string>
 
 std::string get_move_str(uint32_t move) {
-	uint32_t from_sq = move_from_sq(move);
+	uint32_t from_sq = get_move_from_sq(move);
 	int from_rank = get_rank(from_sq);
 	int from_file = get_file(from_sq);
-	uint32_t to_sq = move_to_sq(move);
+	uint32_t to_sq = get_move_to_sq(move);
 	int to_rank = get_rank(to_sq);
 	int to_file = get_file(to_sq);
 
@@ -19,7 +19,7 @@ std::string get_move_str(uint32_t move) {
 	move_str.push_back('a' + to_file);
 	move_str.push_back('1' + to_rank);
 
-	Piece promo_pce = move_promo_pce(move);
+	Piece promo_pce = get_move_promo_pce(move);
 
 	if (static_cast<uint32_t>(promo_pce)) {
 		move_str.push_back(pce_to_symbol(promo_pce));

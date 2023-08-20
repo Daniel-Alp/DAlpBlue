@@ -56,3 +56,6 @@ constexpr uint32_t get_sq(uint32_t rank, uint32_t file) {
 constexpr uint32_t mirror_sq(uint32_t sq) {
 	return sq ^ 56;
 }
+constexpr Color flip_col(Color col) {
+	return static_cast<Color>(static_cast<uint32_t>(col) ^ 1);
+}

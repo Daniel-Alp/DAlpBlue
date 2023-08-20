@@ -45,7 +45,7 @@ char pce_to_symbol(Piece piece);
 constexpr Color get_col(Piece piece) {
 	return static_cast<Color>(static_cast<uint32_t>(piece) >> 3);
 }
-constexpr PieceType get_pce_type(Piece piece, Color col) {
+constexpr PieceType get_pce_type(Piece piece) {
 	return static_cast<PieceType>(static_cast<uint32_t>(piece) & 7);
 }
 constexpr Piece build_pce(PieceType pce_type, Color col) {

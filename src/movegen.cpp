@@ -2,7 +2,6 @@
 #include "bitboard.h"
 #include "movegen.h"
 #include "types.h"
-
 #include <array>
 #include <cstdint>
 #include <iostream>
@@ -55,7 +54,7 @@ void serialize_pawn_promo(Position& pos, std::array<uint32_t, max_moves>& moves,
 	}
 }
 
-void serialize_pawn_non_promo(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t to_sqs, int dir, MoveFlag flag) { //ADD TO .H FILE
+void serialize_pawn_non_promo(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t to_sqs, int dir, MoveFlag flag) {
 	while (to_sqs != 0) {
 		int to_sq = get_lsb(to_sqs);
 		moves[num_moves++] = build_move(to_sq - dir, to_sq, pos.pces[to_sq], Piece::NONE, flag);

@@ -1,6 +1,8 @@
 #include "bitboard.h"
 #include "board.h"
+#include "movegen.h"
 #include "perft.h"
+
 #include <iostream>
 
 int main(int argc) {

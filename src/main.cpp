@@ -1,8 +1,7 @@
+#include "bitboard.h"
 #include "board.h"
-#include "movegen.h"
-#include "makemove.h"
-#include <array>
-#include <iostream>S
+#include "perft.h"
+#include <iostream>
 
 int main(int argc) {
 	precompute_rays();
@@ -13,5 +12,9 @@ int main(int argc) {
 
 	Position pos{};
 	load_from_fen(pos, start_fen);
+
+	uint64_t nodes = run_perft(pos, 6, 0);
+
+	std::cout << nodes << std::endl;
 	return 0;
 }

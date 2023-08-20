@@ -16,7 +16,7 @@ void clr_pce(Position& pos, int sq) {
 	pos.all_bitboard = clr_sq(pos.all_bitboard, sq_bb);
 }
 
-void add_pce(Position& pos, Piece pce, int sq) {
+void add_pce(Position& pos, Piece& pce, int sq) {
 	pos.pces[sq] = pce;
 	Color col = get_col(pce);
 	uint64_t sq_bb = get_sq_bitboard(sq);
@@ -37,6 +37,7 @@ void move_pce(Position& pos, int from_sq, int to_sq) {
 	pos.pces[to_sq] = pce;
 	pos.pce_bitboards[static_cast<uint32_t>(pce)] = move_sq(pos.pce_bitboards[static_cast<uint32_t>(pce)], from_sq_bb, to_sq_bb);
 	pos.col_bitboards[static_cast<uint32_t>(col)] = move_sq(pos.col_bitboards[static_cast<uint32_t>(col)], from_sq_bb, to_sq_bb);
+	pos.all_bitboard = move_sq(pos.all_bitboard, from_sq_bb, to_sq_bb);
 }
 
 bool make_move(Position& pos, uint32_t move) {
@@ -142,7 +143,8 @@ void undo_move(Position& pos, uint32_t move) {
 		Piece promo_pce = get_move_promo_pce(move);
 		if (static_cast<uint32_t>(promo_pce)) {
 			clr_pce(pos, to_sq);
-			add_pce(pos, build_pce(PieceType::PAWN, pos.side_to_move), to_sq);
+			Piece undo_promo_pce = build_pce(PieceType::PAWN, pos.side_to_move);
+			add_pce(pos, undo_promo_pce, to_sq);
 		}
 
 		move_pce(pos, to_sq, from_sq);
@@ -158,4 +160,9 @@ void undo_move(Position& pos, uint32_t move) {
 			}
 		}
 	}
+
+	pos.en_passant_sq = pos.undo_stack[pos.ply].en_passant_sq;
+	pos.castling_rights = pos.undo_stack[pos.ply].castling_rights;
+	pos.fifty_move_rule = pos.undo_stack[pos.ply].fifty_move_rule;
+	pos.zobrist_key = pos.undo_stack[pos.ply].zobrist_key;
 }

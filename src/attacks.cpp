@@ -15,6 +15,16 @@ bool sq_attacked(Position& pos, int sq, Color side_attacking) {
 	Piece rook = build_pce(PieceType::ROOK, side_attacking);
 	Piece queen = build_pce(PieceType::QUEEN, side_attacking);
 
+	if (side_attacking == Color::WHITE) {
+		if (black_pawn_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(Piece::WHITE_PAWN)]) {
+			return 1;
+		}
+	}
+	else {
+		if (white_pawn_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(Piece::BLACK_PAWN)]) {
+			return 1;
+		}
+	}
 	if (knight_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(knight)]) {
 		return 1;
 	}
@@ -27,12 +37,7 @@ bool sq_attacked(Position& pos, int sq, Color side_attacking) {
 	if (rook_attacks & (pos.pce_bitboards[static_cast<uint32_t>(rook)] | pos.pce_bitboards[static_cast<uint32_t>(queen)])) {
 		return 1;
 	}
-	if (side_attacking == Color::WHITE) {
-		return black_pawn_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(Piece::WHITE_PAWN)];
-	}
-	else {
-		return white_pawn_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(Piece::BLACK_PAWN)];
-	}
+	return 0;
 }
 
 void print_attacks(Position& pos, Color side_attacking) {

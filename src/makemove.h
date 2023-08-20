@@ -15,7 +15,7 @@ constexpr std::array<uint32_t, 64> castling = {
 };
 
 void clr_pce(Position& pos, int sq);
-void add_pce(Position& pos, Piece pce, int sq);
+void add_pce(Position& pos, Piece& pce, int sq);
 void move_pce(Position& pos, int from_sq, int to_sq);
 bool make_move(Position& pos, uint32_t move);
 void undo_move(Position& pos, uint32_t move);

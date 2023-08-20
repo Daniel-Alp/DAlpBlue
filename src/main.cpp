@@ -2,7 +2,7 @@
 #include "board.h"
 #include "movegen.h"
 #include "perft.h"
-
+#include <chrono>
 #include <iostream>
 
 int main(int argc) {
@@ -15,8 +15,11 @@ int main(int argc) {
 	Position pos{};
 	load_from_fen(pos, start_fen);
 
+	const auto time_1 = std::chrono::high_resolution_clock::now();
 	uint64_t nodes = run_perft(pos, 6, 0);
+	const auto time_2 = std::chrono::high_resolution_clock::now();
+	auto elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_2 - time_1);
 
-	std::cout << nodes << std::endl;
+	std::cout << "nodes: " << nodes << " time: " << elapsed_time_ms.count() << std::endl;
 	return 0;
 }

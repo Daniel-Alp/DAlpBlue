@@ -7,6 +7,8 @@
 #include <sstream>
 #include <vector>
 
+const std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+
 void load_from_fen(Position& pos, const std::string& fen_string) {
 	std::vector<std::string> fen_sections;
 	std::istringstream iss(fen_string);

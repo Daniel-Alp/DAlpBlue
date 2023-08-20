@@ -2,7 +2,15 @@
 #include "movegen.h"
 #include "makemove.h"
 #include <array>
+#include <chrono>
 #include <cstdint>
+#include <fstream>
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <sstream>
+#include <vector>
+
 
 uint64_t run_perft(Position& pos, int depth, int ply) {
 	if (depth == 0) {
@@ -22,4 +30,40 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 		}
 	}
 	return nodes;
+}
+
+void run_perft_suite() {
+	std::ifstream perft_test_suite;
+	perft_test_suite.open("perftsuite.txt");
+	std::string test;
+	while (std::getline(perft_test_suite, test)) {
+		std::vector<std::string> test_sections;
+		std::istringstream iss(test);
+		std::string section;
+		while (!iss.eof()) {
+			std::getline(iss, section, ';');
+			test_sections.push_back(section);
+		}
+
+		std::string fen = test_sections[0];
+		Position pos{};
+		load_from_fen(pos, fen);
+
+		std::cout << fen << std::endl;
+
+		int depth = test_sections.size() - 1;
+
+		uint64_t expect = std::stol(test_sections[depth].substr(3));
+
+		auto time_1 = std::chrono::high_resolution_clock::now();
+		uint64_t result = run_perft(pos, depth, 0);
+		auto time_2 = std::chrono::high_resolution_clock::now();
+		auto elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_2 - time_1);
+
+		std::cout << "D" << std::setw(5) << std::left << depth
+			<< "EXP: " << std::setw(15) << std::left << expect
+			<< "RES: " << std::setw(15) << std::left << result
+			<< "MS:  " << std::setw(15) << std::left << elapsed_time_ms.count()
+			<< (expect == result ? "PASS" : "FAIL") << std::endl << std::endl;
+	}
 }

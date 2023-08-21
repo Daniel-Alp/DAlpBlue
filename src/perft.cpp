@@ -1,6 +1,7 @@
-#include "perft.h"
 #include "movegen.h"
 #include "makemove.h"
+#include "parser.h"
+#include "perft.h"
 #include <array>
 #include <chrono>
 #include <cstdint>
@@ -8,8 +9,6 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
-#include <sstream>
-#include <vector>
 
 
 uint64_t run_perft(Position& pos, int depth, int ply) {
@@ -38,12 +37,7 @@ void run_perft_suite() {
 	std::string test;
 	while (std::getline(perft_test_suite, test)) {
 		std::vector<std::string> test_sections;
-		std::istringstream iss(test);
-		std::string section;
-		while (!iss.eof()) {
-			std::getline(iss, section, ';');
-			test_sections.push_back(section);
-		}
+		test_sections = split_string(test, ';');
 
 		std::string fen = test_sections[0];
 		Position pos{};

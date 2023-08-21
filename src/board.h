@@ -44,7 +44,7 @@ struct Position {
 	std::array<uint64_t, 256> history_stack;
 };
 
-void load_from_fen(Position& pos, const std::string& fen);
+void load_from_fen(Position& pos, std::string& fen);
 void print_board(Position& pos);
 constexpr uint32_t get_rank(uint32_t sq) {
 	return sq >> 3;

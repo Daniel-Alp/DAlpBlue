@@ -5,7 +5,6 @@
 #include <cstdint>
 #include <iostream>
 #include <string>
-#include <sstream>
 #include <vector>
 
 const std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";

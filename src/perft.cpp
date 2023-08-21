@@ -17,7 +17,7 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 	}
 
 	uint64_t nodes = 0;
-	std::array<uint32_t, 218> moves;
+	std::array<uint32_t, max_moves> moves;
 	int num_moves;
 	gen_pseudo_moves(pos, moves, num_moves, false);
 

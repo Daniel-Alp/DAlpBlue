@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <string>
 
+constexpr uint32_t null_move = 0;
+
 enum class MoveFlag : uint32_t {
 	NONE	   = 0b00000000000000000000000,
 	PAWN_START = 0b00100000000000000000000,

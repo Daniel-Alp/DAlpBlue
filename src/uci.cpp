@@ -82,16 +82,15 @@ void uci_position_command(std::vector<std::string>& cmd_sections, Position& pos)
 		load_from_fen(pos, fen);
 		move_token = 9;
 	}
-
+	std::array<uint32_t, max_moves> pseudo_moves;
+	int num_pseudo_moves;	
 	while (move_token < cmd_sections.size()) {
-		std::array<uint32_t, max_moves> pseudo_moves;
-		int num_pseudo_moves;
 		gen_pseudo_moves(pos, pseudo_moves, num_pseudo_moves, false);
-
 		for (int i = 0; i < num_pseudo_moves; i++) {
 			uint32_t move = pseudo_moves[i];
 			if (get_move_str(move) == cmd_sections[move_token]) {
 				make_move(pos, move);
+				pos.ply = 0;
 			}
 		}
 		move_token++;

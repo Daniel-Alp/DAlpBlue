@@ -10,6 +10,13 @@
 std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 void load_from_fen(Position& pos, std::string& fen_string) {
+	pos.all_bitboard = 0;
+	std::fill(pos.col_bitboards.begin(), pos.col_bitboards.end(), 0);
+	std::fill(pos.pce_bitboards.begin(), pos.pce_bitboards.end(), 0);
+	for (int sq = 0; sq < 64; sq++) {
+		pos.pces[sq] = Piece::NONE;
+	}
+
 	std::vector<std::string> fen_sections;
 	fen_sections = split_string(fen_string, ' ');
 
@@ -27,9 +34,6 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 			file = 0;
 		}
 		else if (isdigit(symbol)) {
-			for (int i = 0; i < symbol - '0'; i++) {
-				pos.pces[get_sq(rank, file + i)] = Piece::NONE;
-			}
 			file += symbol - '0';
 		}
 		else {

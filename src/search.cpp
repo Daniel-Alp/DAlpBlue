@@ -11,6 +11,7 @@ bool searching;
 
 void get_best_move(Position& pos) {
 	searching = true;
+	pos.ply = 0;
 	uint32_t best_move = null_move;
 
 	//Returns random legal move in position

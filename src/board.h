@@ -46,16 +46,16 @@ struct Position {
 
 void load_from_fen(Position& pos, std::string& fen);
 void print_board(Position& pos);
-constexpr uint32_t get_rank(uint32_t sq) {
+constexpr int get_rank(int sq) {
 	return sq >> 3;
 }
-constexpr uint32_t get_file(uint32_t sq) {
+constexpr int get_file(int sq) {
 	return sq & 7;
 }
-constexpr uint32_t get_sq(uint32_t rank, uint32_t file) {
+constexpr int get_sq(int rank, int file) {
 	return (rank << 3) + file;
 }
-constexpr uint32_t mirror_sq(uint32_t sq) {
+constexpr int mirror_sq(int sq) {
 	return sq ^ 56;
 }
 constexpr Color flip_col(Color& col) {

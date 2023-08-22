@@ -8,6 +8,10 @@
 #include <vector>
 
 void uci_loop() {
+
+}
+
+/*void uci_loop() {
 	bool position_loaded = false;
 
 	Position pos{};
@@ -92,4 +96,4 @@ bool uci_position_command(std::vector<std::string>& command_sections, Position& 
 		return false;
 	}
 	return true;
-}
+}*/

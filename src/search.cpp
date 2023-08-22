@@ -3,16 +3,20 @@
 
 #include <iostream>
 
-bool searching = true;
+bool searching;
 
-uint32_t get_best_move(Position& pos) {
+void get_best_move(Position& pos) {
+	searching = true;
 	uint32_t best_move = null_move;
-	
+
 	uint64_t i = 0;
 	while (searching) {
 		i++;
+		if (i > 10000000000) {
+			break;
+		}
 	}
 	std::cout << "Counted to: " << i << std::endl;
-
-	return best_move;
+	searching = false;
+	std::cout << "bestmove " << get_move_str(best_move) << std::endl;
 }

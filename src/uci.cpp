@@ -38,8 +38,13 @@ void uci_loop() {
 			uci_go_command(command_sections, search_thread, pos);
 		}
 		else if (command_type == "stop") {
-			searching = false;
-			search_thread.join();
+			if (searching) {
+				searching = false;
+				search_thread.join();
+			}
+			else {
+				std::cout << "Ignoring command: stop" << std::endl;
+			}
 		}
 		else {
 			std::cout << "Unknown command: " << command << std::endl;
@@ -48,7 +53,13 @@ void uci_loop() {
 }
 
 void uci_go_command(std::vector<std::string>& command_sections, std::thread& search_thread, Position& pos) {
-	searching = true;
+	if (searching) {
+		std::cout << "Ignoring command: go" << std::endl;
+		return;
+	}
+	if (search_thread.joinable()) {
+		search_thread.join();
+	}
 	search_thread = std::thread(get_best_move, std::ref(pos));
 }
 

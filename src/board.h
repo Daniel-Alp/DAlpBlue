@@ -5,7 +5,7 @@
 #include <array>
 #include <string>
 
-extern const std::string start_fen;
+extern std::string start_fen;
 
 enum Square : uint32_t {
 	A1, B1, C1, D1, E1, F1, G1, H1,

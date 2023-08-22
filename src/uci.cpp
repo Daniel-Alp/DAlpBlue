@@ -8,7 +8,9 @@
 #include <vector>
 
 void uci_loop() {
-	Position pos;
+	bool position_loaded = false;
+
+	Position pos{};
 	std::thread search_thread;
 
 	std::string command;
@@ -16,6 +18,9 @@ void uci_loop() {
 	std::vector<std::string> command_sections;
 	while (std::getline(std::cin, command)) {
 		if (command == "quit") {
+			if (search_thread.joinable()) {
+				search_thread.join();
+			}
 			break;
 		}
 		command_sections = split_string(command, ' ');
@@ -30,20 +35,31 @@ void uci_loop() {
 		} 
 		else if (command_type == "ucinewgame") {
 			pos = {};
+			position_loaded = false;
 		}
 		else if (command_type == "position") {
-			uci_position_command(command_sections);
-		}
-		else if (command_type == "go") {
-			uci_go_command(command_sections, search_thread, pos);
-		}
-		else if (command_type == "stop") {
 			if (searching) {
-				searching = false;
-				search_thread.join();
+				std::cout << "Ignoring command: position" << std::endl;
 			}
 			else {
+				position_loaded = uci_position_command(command_sections, pos);
+			}
+		}
+		else if (command_type == "go") {
+			if (searching || !position_loaded) {
+				std::cout << "Ignoring command: go" << std::endl;
+			}
+			else {
+				uci_go_command(command_sections, search_thread, pos);
+			}
+		}
+		else if (command_type == "stop") {
+			if (!searching) {
 				std::cout << "Ignoring command: stop" << std::endl;
+			}
+			else {
+				searching = false;
+				search_thread.join();
 			}
 		}
 		else {
@@ -53,16 +69,27 @@ void uci_loop() {
 }
 
 void uci_go_command(std::vector<std::string>& command_sections, std::thread& search_thread, Position& pos) {
-	if (searching) {
-		std::cout << "Ignoring command: go" << std::endl;
-		return;
-	}
 	if (search_thread.joinable()) {
 		search_thread.join();
 	}
 	search_thread = std::thread(get_best_move, std::ref(pos));
 }
 
-void uci_position_command(std::vector<std::string>& command_sections) {
-
+bool uci_position_command(std::vector<std::string>& command_sections, Position& pos) {
+	if (command_sections[1] == "startpos") {
+		load_from_fen(pos, start_fen);
+	}
+	else if (command_sections[1] == "fen") {
+		std::string fen = "";
+		for (int token = 2; token < 8; token++) {
+			fen += command_sections[token];
+			fen += " ";
+		}
+		load_from_fen(pos, fen);
+	}
+	else {
+		std::cout << "Invalid command format for: position" << std::endl;
+		return false;
+	}
+	return true;
 }

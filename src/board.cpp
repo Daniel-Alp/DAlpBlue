@@ -7,16 +7,16 @@
 #include <string>
 #include <vector>
 
-const std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
+std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
 void load_from_fen(Position& pos, std::string& fen_string) {
 	std::vector<std::string> fen_sections;
 	fen_sections = split_string(fen_string, ' ');
 
 	std::string piece_placement_section = fen_sections[0];
-	std::string side_to_move_section    = fen_sections[1];
+	std::string side_to_move_section = fen_sections[1];
 	std::string castling_rights_section = fen_sections[2];
-	std::string en_passant_sq_section   = fen_sections[3];
+	std::string en_passant_sq_section = fen_sections[3];
 	std::string fifty_move_rule_section = fen_sections[4];
 
 	int rank = 7;

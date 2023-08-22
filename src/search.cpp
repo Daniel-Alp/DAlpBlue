@@ -1,5 +1,9 @@
 #include "search.h"
 #include "move.h"
+#include "movegen.h"
+#include "makemove.h"
+
+#include "cstdlib"
 
 #include <iostream>
 
@@ -9,14 +13,22 @@ void get_best_move(Position& pos) {
 	searching = true;
 	uint32_t best_move = null_move;
 
-	uint64_t i = 0;
-	while (searching) {
-		i++;
-		if (i > 10000000000) {
-			break;
+	std::array<uint32_t, max_moves> pseudo_moves;
+	int num_pseudo_moves;
+
+	gen_pseudo_moves(pos, pseudo_moves, num_pseudo_moves, false);
+
+	std::array<uint32_t, max_moves> legal_moves;
+	int num_legal_moves = 0;
+	for (int i = 0; i < num_pseudo_moves; i++) {
+		if (make_move(pos, pseudo_moves[i])) {
+			undo_move(pos, pseudo_moves[i]);
+			legal_moves[num_legal_moves++] = pseudo_moves[i];
 		}
 	}
-	std::cout << "Counted to: " << i << std::endl;
+
+	srand(time(NULL));
+
 	searching = false;
-	std::cout << "bestmove " << get_move_str(best_move) << std::endl;
+	std::cout << "bestmove " << get_move_str(legal_moves[rand() % num_legal_moves]) << std::endl;
 }

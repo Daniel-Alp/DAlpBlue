@@ -14,14 +14,12 @@ void get_best_move(Position& pos) {
 	searching = true;
 	pos.ply = 0;
 	uint32_t best_move_root = null_move;
-	negamax(pos, best_move_root, -mate_score, mate_score, 4, 0);
+	negamax(pos, best_move_root, -mate_score, mate_score, 6, 0);
 	searching = false;
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
 }
 
 int32_t negamax(Position& pos, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
-	int32_t best_score = alpha;
-
 	if (depth <= 0) {
 		return evaluate(pos);
 	}
@@ -30,6 +28,9 @@ int32_t negamax(Position& pos, uint32_t& best_move_root, int32_t alpha, int32_t 
 	int num_moves = 0;
 	int num_legal_moves = 0;
 	gen_pseudo_moves(pos, moves, num_moves, false);
+
+	int32_t best_score = -mate_score;
+
 	for (int i = 0; i < num_moves; i++) {
 		int32_t move = moves[i];
 		if (make_move(pos, move)) {
@@ -39,12 +40,18 @@ int32_t negamax(Position& pos, uint32_t& best_move_root, int32_t alpha, int32_t 
 
 			if (score > best_score) {
 				best_score = score;
-				if (ply == 0) {
-					best_move_root = move;
+
+				if (score > alpha) {
+					if (ply == 0) {
+						best_move_root = move;
+					}
+
+					alpha = score;
+
+					if (score >= beta) {
+						break;
+					}
 				}
-			}
-			if (score >= beta) {
-				break;
 			}
 		}
 	}

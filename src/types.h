@@ -51,3 +51,6 @@ constexpr PieceType get_pce_type(Piece piece) {
 constexpr Piece build_pce(PieceType pce_type, Color col) {
 	return static_cast<Piece>(static_cast<uint32_t>(pce_type) + (static_cast<uint32_t>(col) << 3));
 }
+constexpr int build_pce(int pce_type, int col) {
+	return pce_type + (col << 3);
+}

@@ -12,7 +12,7 @@ extern std::array<std::array<uint64_t, 64>, 15> keys_pce;
 extern std::array<uint64_t, 16> keys_castling_rights;
 
 void precompute_zobrist();
-void get_zobrist_key(Position& pos);
+uint64_t get_zobrist_key(Position& pos);
 
 //From Stockfish
 constexpr uint64_t random_uint64_t() {

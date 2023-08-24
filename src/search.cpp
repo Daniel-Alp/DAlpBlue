@@ -41,11 +41,11 @@ int32_t negamax(Position& pos, uint32_t& best_move_root, int32_t alpha, int32_t 
 			if (score > best_score) {
 				best_score = score;
 
-				if (score > alpha) {
-					if (ply == 0) {
-						best_move_root = move;
-					}
+				if (ply == 0) {
+					best_move_root = move;
+				}
 
+				if (score > alpha) {
 					alpha = score;
 
 					if (score >= beta) {

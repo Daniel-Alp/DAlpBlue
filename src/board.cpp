@@ -2,6 +2,7 @@
 #include "board.h"
 #include "parser.h"
 #include "types.h"
+#include "zobrist.h"
 #include <cstdint>
 #include <iostream>
 #include <string>
@@ -81,6 +82,8 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	}
 
 	pos.fifty_move_rule = std::stoi(fifty_move_rule_section);
+
+	pos.zobrist_key = get_zobrist_key(pos);
 }
 
 void print_board(Position& pos) {

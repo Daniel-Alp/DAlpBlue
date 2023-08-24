@@ -26,7 +26,7 @@ void precompute_zobrist() {
 	key_side_to_move = random_uint64_t();
 }
 
-void get_zobrist_key(Position& pos) {
+uint64_t get_zobrist_key(Position& pos) {
 	uint64_t zobrist_key = 0;
 	for (int sq = 0; sq < 64; sq++) {
 		Piece pce = pos.pces[sq];
@@ -44,4 +44,6 @@ void get_zobrist_key(Position& pos) {
 	if (pos.side_to_move == Color::BLACK) {
 		zobrist_key ^= key_side_to_move;
 	}
+
+	return zobrist_key;
 }

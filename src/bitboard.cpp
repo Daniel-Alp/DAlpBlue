@@ -1,5 +1,6 @@
 #include "bitboard.h"
 #include "board.h"
+#include <array>
 #include <iostream>
 
 std::array<uint64_t, 64> ray_nort;

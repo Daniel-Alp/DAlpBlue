@@ -2,6 +2,7 @@
 #include "makemove.h"
 #include "parser.h"
 #include "perft.h"
+#include "transposition.h"
 #include <array>
 #include <chrono>
 #include <cstdint>
@@ -28,6 +29,36 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 			undo_move(pos, move);
 		}
 	}
+
+	record_hash_entry(pos.zobrist_key, nodes);
+
+	return nodes;
+}
+
+uint64_t run_perft_with_hash_table(Position& pos, int depth, int ply){
+	if (depth == 0) {
+		return 1;
+	}
+
+	if (hash_table[pos.zobrist_key % num_hash_entries].zobrist_key == pos.zobrist_key) {
+		return hash_table[pos.zobrist_key % num_hash_entries].perft_nodes;
+	}
+
+	uint64_t nodes = 0;
+	std::array<uint32_t, max_moves> moves;
+	int num_moves;
+	gen_pseudo_moves(pos, moves, num_moves, false);
+
+	for (int i = 0; i < num_moves; i++) {
+		uint32_t move = moves[i];
+		if (make_move(pos, move)) {
+			nodes += run_perft(pos, depth - 1, ply + 1);
+			undo_move(pos, move);
+		}
+	}
+
+	record_hash_entry(pos.zobrist_key, nodes);
+
 	return nodes;
 }
 

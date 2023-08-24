@@ -72,10 +72,7 @@ bool make_move(Position& pos, uint32_t move) {
 
 	Color move_col = pos.side_to_move;
 	pos.side_to_move = flip_col(pos.side_to_move);
-	if (pos.side_to_move == Color::BLACK) {
-		pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
-	}
-
+	pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
 	pos.history_ply++;
 	pos.ply++;
 

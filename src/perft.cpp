@@ -30,8 +30,6 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 		}
 	}
 
-	record_hash_entry(pos.zobrist_key, nodes);
-
 	return nodes;
 }
 
@@ -52,7 +50,11 @@ uint64_t run_perft_with_hash_table(Position& pos, int depth, int ply){
 	for (int i = 0; i < num_moves; i++) {
 		uint32_t move = moves[i];
 		if (make_move(pos, move)) {
-			nodes += run_perft(pos, depth - 1, ply + 1);
+			uint64_t nodes_added = run_perft_with_hash_table(pos, depth - 1, ply + 1);
+			if (ply == 0) {
+				std::cout << get_move_str(move) << " - " << nodes_added << std::endl;
+			}
+			nodes += nodes_added;
 			undo_move(pos, move);
 		}
 	}

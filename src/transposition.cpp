@@ -2,6 +2,8 @@
 #include <array>
 #include <cstdint>
 
+#include <iostream>
+
 std::array<HashEntry, num_hash_entries> hash_table;
 
 void clr_hash_table() {

@@ -31,6 +31,6 @@ constexpr uint64_t hash_castling_rights(uint64_t zobrist_key, int castling_right
 constexpr uint64_t hash_side_to_move(uint64_t zobrist_key) {
 	return zobrist_key ^ key_side_to_move;
 }
-constexpr uint64_t hash_en_passant_sq(uint64_t zobrist_key, int sq) {
+inline uint64_t hash_en_passant_sq(uint64_t zobrist_key, int sq) {
 	return zobrist_key ^ keys_pce[static_cast<int>(Piece::NONE)][sq];
 }

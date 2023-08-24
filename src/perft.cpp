@@ -38,8 +38,10 @@ uint64_t run_perft_with_hash_table(Position& pos, int depth, int ply){
 		return 1;
 	}
 
-	if (hash_table[pos.zobrist_key % num_hash_entries].zobrist_key == pos.zobrist_key) {
-		return hash_table[pos.zobrist_key % num_hash_entries].perft_nodes;
+	HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
+
+	if (hash_entry.zobrist_key == pos.zobrist_key && hash_entry.depth >= depth) {
+		return hash_entry.perft_nodes;
 	}
 
 	uint64_t nodes = 0;
@@ -59,7 +61,7 @@ uint64_t run_perft_with_hash_table(Position& pos, int depth, int ply){
 		}
 	}
 
-	record_hash_entry(pos.zobrist_key, nodes);
+	record_hash_entry(pos.zobrist_key, depth, nodes);
 
 	return nodes;
 }

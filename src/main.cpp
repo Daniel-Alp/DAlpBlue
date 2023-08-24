@@ -13,13 +13,12 @@ int main(int argc) {
 	precompute_non_slider_attacks();
 	precompute_zobrist();
 
+
+	//SUSPECTED BUG, LACK OF DEPTH CHECK MEANS THAT A TRANSPOSITION CAN REFERENCE A SHALLOWER VERSION OF ITSELF LEADING TO WILD RESULTS
 	Position pos{};
-	load_from_fen(pos, start_fen);//std::string("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"));
+	load_from_fen(pos, start_fen);// std::string("r3k2r/p1ppqpb1/bn2pnp1/3PN3/1p2P3/2N2Q1p/PPPBBPPP/R3K2R w KQkq - 0 1"));
 
-	//PASSES UP TO DEPTH 5, FAILS AT DEPTH 6
-	//UPDATE: WEIRD BUG, IT ALWAYS MANAGES TO LOOK 4 MOVES AHEAD, BUT FAILS AT 5
-
-	//Knight moves seem to be completely fucked
+	//PASSES UP TO DEPTH 5, FAILS AT DEPTH 6 (for kiwipete fails at depth 5)
 	clr_hash_table();
 	uint64_t nodes = run_perft_with_hash_table(pos, 4, 0);
 	std::cout << nodes << std::endl;

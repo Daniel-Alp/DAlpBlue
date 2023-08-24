@@ -3,6 +3,7 @@
 #include "board.h"
 #include "move.h"
 #include "makemove.h"
+#include "zobrist.h"
 #include <array>
 
 bool make_move(Position& pos, uint32_t move) {
@@ -15,10 +16,13 @@ bool make_move(Position& pos, uint32_t move) {
 	uint32_t to_sq = get_move_to_sq(move);
 	
 	if (pos.en_passant_sq != static_cast<uint32_t>(Square::NO_SQ)) {
+		pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
 		pos.en_passant_sq = static_cast<uint32_t>(Square::NO_SQ);
 	}
+ 	pos.zobrist_key = hash_castling_rights(pos.zobrist_key, pos.castling_rights);
 	pos.castling_rights &= castling[from_sq];
 	pos.castling_rights &= castling[to_sq];
+	pos.zobrist_key = hash_castling_rights(pos.zobrist_key, pos.castling_rights);
 
 	pos.fifty_move_rule++;
 
@@ -61,12 +65,16 @@ bool make_move(Position& pos, uint32_t move) {
 			}
 			else if (move & static_cast<uint32_t>(MoveFlag::PAWN_START)) {
 				pos.en_passant_sq = to_sq ^ 8;
+				pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
 			}
 		}
 	}
 
 	Color move_col = pos.side_to_move;
 	pos.side_to_move = flip_col(pos.side_to_move);
+	if (pos.side_to_move == Color::BLACK) {
+		pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
+	}
 
 	pos.history_ply++;
 	pos.ply++;

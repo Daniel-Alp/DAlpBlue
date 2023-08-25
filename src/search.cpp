@@ -4,19 +4,23 @@
 #include "move.h"
 #include "movegen.h"
 #include "makemove.h"
+#include "timemanagement.h"
 #include "transposition.h"
 #include <cstdint>
 #include "cstdlib"
 #include <iostream>
 
-bool searching;
-
-void get_best_move(Position& pos) {
-	searching = true;
+void get_best_move(Position& pos, SearchData& search_data) {
 	pos.ply = 0;
 	uint32_t best_move_root = null_move;
-	negamax(pos, best_move_root, -mate_score, mate_score, 7, 0);
-	searching = false;
+	for (int depth = 1; depth < 255; depth++) {
+		negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
+		if (!search_data.searching) {
+			std::cout << "depth " << depth << std::endl;
+			break;
+		}
+	}
+	search_data.searching = false;
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
 }
 
@@ -31,7 +35,7 @@ void score_moves(std::array<uint32_t, max_moves>& moves, int num_moves, HashEntr
 
 void order_moves(std::array<uint32_t, max_moves>& moves, int num_moves, std::array<int32_t, max_moves>& scores, int cur_move_index) {
 	int best_move_index = cur_move_index;
-	for (int i = cur_move_index; i < num_moves; i++) {
+	for (int i = cur_move_index + 1; i < num_moves; i++) {
 		if (scores[i] > scores[best_move_index]) {
 			best_move_index = i;
 		}
@@ -40,7 +44,13 @@ void order_moves(std::array<uint32_t, max_moves>& moves, int num_moves, std::arr
 	std::swap(moves[cur_move_index], moves[best_move_index]);
 }
 
-int32_t negamax(Position& pos, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
+int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
+	search_data.nodes++;
+	if ((search_data.nodes & 2047) == 0 && get_current_time() - search_data.start_time > search_data.time_allotted) {
+		search_data.searching = false;
+		return 0;
+	}
+	
 	HashEntry hash_entry = hash_table[pos.zobrist_key & (num_hash_entries - 1)];
 	bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
 
@@ -76,7 +86,10 @@ int32_t negamax(Position& pos, uint32_t& best_move_root, int32_t alpha, int32_t 
 		int32_t move = moves[i];
 		if (make_move(pos, move)) {
 			num_legal_moves++;
-			int32_t score = -negamax(pos, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+			int32_t score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+			if (!search_data.searching) {
+				return 0;
+			}
 			undo_move(pos, move);
 
 			if (score > best_score) {

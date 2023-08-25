@@ -4,9 +4,11 @@
 #include "movegen.h"
 #include "parser.h"
 #include "search.h"
-#include "types.h"
+#include "timemanagement.h"
 #include "transposition.h"
+#include "types.h"
 #include "uci.h"
+#include <cstdint>
 #include <iostream>
 #include <string>
 #include <thread>
@@ -16,6 +18,7 @@
 //The UCI is "blind" and does not validate commands. That is the responsibility of the GUI.
 void uci_loop() {
 	Position pos{};
+	SearchData search_data{};
 	std::thread search_thread;
 
 	std::string cmd;
@@ -51,10 +54,10 @@ void uci_loop() {
 			if (search_thread.joinable()) {
 				search_thread.join();
 			}
-			uci_go_command(cmd_sections, search_thread, pos);
+			uci_go_command(cmd_sections, search_thread, search_data, pos);
 		}
 		else if (cmd_type == "stop") {
-			searching = false;
+			search_data.searching = false;
 			search_thread.join();
 		}
 		else {
@@ -63,8 +66,56 @@ void uci_loop() {
 	}
 }
 
-void uci_go_command(std::vector<std::string>& cmd_sections, std::thread& search_thread, Position& pos) {
-	search_thread = std::thread(get_best_move, std::ref(pos));
+void uci_go_command(std::vector<std::string>& cmd_sections, std::thread& search_thread, SearchData& search_data, Position& pos) {
+	int32_t wtime = 0;
+	int32_t btime = 0;
+	int32_t winc = 0;
+	int32_t binc = 0;
+	int32_t moves_to_go = 0;
+
+	std::string token_type;
+	
+	for (int token = 1; token < cmd_sections.size() - 1; token += 2) {
+		token_type = cmd_sections[token];
+		if (token_type == "wtime") {
+			wtime = std::stoi(cmd_sections[token + 1]);
+		}
+		else if (token_type == "btime") {
+			btime = std::stoi(cmd_sections[token + 1]);
+		}
+		else if (token_type == "winc") {
+			winc = std::stoi(cmd_sections[token + 1]);
+		}
+		else if (token_type == "binc") {
+			binc = std::stoi(cmd_sections[token + 1]);
+		}
+		else if (token_type == "movestogo") {
+			moves_to_go = std::stoi(cmd_sections[token + 1]);
+		}
+	}
+
+	int32_t player_time = 0;
+	int32_t opp_time = 0;
+	int32_t player_inc = 0;
+	int32_t opp_inc = 0;
+
+	if (pos.side_to_move == Color::WHITE) {
+		player_time = wtime;
+		opp_time = btime;
+		player_inc = winc;
+		opp_inc = binc;
+	}
+	else {
+		player_time = btime;
+		opp_time = wtime;
+		player_inc = binc;
+		opp_inc = winc;
+	}
+	search_data.searching = true;
+	search_data.start_time = get_current_time();
+	search_data.time_allotted = get_time_allotted(player_time, opp_time, player_inc, opp_inc, moves_to_go);
+	search_data.nodes = 0;
+	search_thread = std::thread(get_best_move, std::ref(pos), std::ref(search_data));
 }
 
 void uci_position_command(std::vector<std::string>& cmd_sections, Position& pos) {

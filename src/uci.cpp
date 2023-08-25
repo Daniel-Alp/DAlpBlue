@@ -5,6 +5,7 @@
 #include "parser.h"
 #include "search.h"
 #include "types.h"
+#include "transposition.h"
 #include "uci.h"
 #include <iostream>
 #include <string>
@@ -41,7 +42,7 @@ void uci_loop() {
 		}
 		else if (cmd_type == "ucinewgame") {
 			load_from_fen(pos, start_fen);
-			//TODO: CLEAR TTable
+			clr_hash_table();
 		}
 		else if (cmd_type == "position") {
 			uci_position_command(cmd_sections, pos);

@@ -3,6 +3,7 @@
 #include "parser.h"
 #include "types.h"
 #include "zobrist.h"
+#include <array>
 #include <cstdint>
 #include <iostream>
 #include <string>

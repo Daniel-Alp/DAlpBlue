@@ -5,6 +5,7 @@
 #include "makemove.h"
 #include "zobrist.h"
 #include <array>
+#include <cstdint>
 
 bool make_move(Position& pos, uint32_t move) {
 	pos.undo_stack[pos.ply].en_passant_sq = pos.en_passant_sq;
@@ -73,9 +74,6 @@ bool make_move(Position& pos, uint32_t move) {
 	Color move_col = pos.side_to_move;
 	pos.side_to_move = flip_col(pos.side_to_move);
 	pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
-
-	//Use this line to debug
-	//pos.zobrist_key = get_zobrist_key(pos);
 
 	pos.history_ply++;
 	pos.ply++;

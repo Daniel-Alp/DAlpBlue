@@ -2,6 +2,7 @@
 #include "bitboard.h"
 #include "evaluation.h"
 #include "types.h"
+#include <array>
 #include <cstdint>
 
 #include <iostream>

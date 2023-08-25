@@ -3,6 +3,7 @@
 #include "bitboard.h"
 #include "board.h"
 #include "zobrist.h"
+#include <array>
 #include <cstdint>
 
 constexpr std::array<int, 64> castling = {

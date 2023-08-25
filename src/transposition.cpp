@@ -12,9 +12,8 @@ void clr_hash_table() {
 	}
 }
 
-void record_hash_entry(uint64_t zobrist_key, int depth, uint64_t perft_nodes) {
+void record_hash_entry(uint64_t zobrist_key, int depth) {
 	int entry_index = zobrist_key % num_hash_entries;
 	hash_table[entry_index].zobrist_key = zobrist_key;
 	hash_table[entry_index].depth = depth;
-	hash_table[entry_index].perft_nodes = perft_nodes;
 }

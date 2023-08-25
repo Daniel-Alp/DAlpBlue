@@ -73,6 +73,10 @@ bool make_move(Position& pos, uint32_t move) {
 	Color move_col = pos.side_to_move;
 	pos.side_to_move = flip_col(pos.side_to_move);
 	pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
+
+	//Use this line to debug
+	//pos.zobrist_key = get_zobrist_key(pos);
+
 	pos.history_ply++;
 	pos.ply++;
 

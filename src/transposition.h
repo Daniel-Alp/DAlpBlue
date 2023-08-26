@@ -17,7 +17,7 @@ struct HashEntry {
 	uint32_t best_move;
 };
 
-constexpr uint64_t num_hash_entries = 8388608;
+constexpr uint64_t num_hash_entries = 2097152;
 
 extern std::array<HashEntry, num_hash_entries> hash_table;
 

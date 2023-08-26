@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 
 enum class Color : uint32_t {
 	WHITE,
@@ -38,6 +39,11 @@ enum class CastlingRights : uint32_t {
 	WHITE_LONG	= 2,
 	BLACK_SHORT = 4,
 	BLACK_LONG	= 8
+};
+
+enum class PiecePhaseValue : uint32_t {
+	PAWN = 1,
+    KNIGHT = 1,
 };
 
 Piece symbol_to_pce(char symbol);

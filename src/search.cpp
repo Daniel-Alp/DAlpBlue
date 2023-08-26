@@ -13,8 +13,9 @@
 void get_best_move(Position& pos, SearchData& search_data) {
 	pos.ply = 0;
 	uint32_t best_move_root = null_move;
-	for (int depth = 1; depth < 255; depth++) {
+	for (int depth = 1; depth < 9; depth++) {
 		negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
+		std::cout << "I think the best move is " << get_move_str(best_move_root) << std::endl;
 		if (!search_data.searching) {
 			std::cout << "depth " << depth << std::endl;
 			break;
@@ -24,6 +25,15 @@ void get_best_move(Position& pos, SearchData& search_data) {
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
 }
 
+//Add this back in later
+//bool is_repetition(Position& pos) { 
+//	for (int i = pos.history_ply - 2; i >= pos.history_ply - pos.fifty_move_rule; i -= 2) {
+//		if (pos.history_stack[i] == pos.zobrist_key) {
+//			return true;
+//		}
+//	}
+//	return false;
+//}
 
 void score_moves(std::array<uint32_t, max_moves>& moves, int num_moves, HashEntry& hash_entry, bool matching_hash_key, std::array<int32_t, max_moves>& scores) {
 	for (int i = 0; i < num_moves; i++) {
@@ -48,13 +58,14 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	search_data.nodes++;
 	if ((search_data.nodes & 2047) == 0 && get_current_time() - search_data.start_time > search_data.time_allotted) {
 		search_data.searching = false;
-		return 0;
 	}
+
+	bool root_node = (ply == 0);
 	
 	HashEntry hash_entry = hash_table[pos.zobrist_key & (num_hash_entries - 1)];
 	bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
 
-	if (matching_hash_key && hash_entry.depth >= depth) {
+	if (!root_node && matching_hash_key && hash_entry.depth >= depth) {
 		if (hash_entry.hash_flag == HashFlag::EXACT
 			|| (hash_entry.hash_flag == HashFlag::BETA && hash_entry.score >= beta)
 			|| (hash_entry.hash_flag == HashFlag::ALPHA && hash_entry.score <= alpha)) {
@@ -87,16 +98,16 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 		if (make_move(pos, move)) {
 			num_legal_moves++;
 			int32_t score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+			undo_move(pos, move);
 			if (!search_data.searching) {
 				return 0;
 			}
-			undo_move(pos, move);
 
 			if (score > best_score) {
 				best_score = score;
 				best_move = move;
 
-				if (ply == 0) {
+				if (root_node) {
 					best_move_root = move;
 				}
 
@@ -111,7 +122,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 		}
 	}
 	if (num_legal_moves == 0) {
-		int king_sq = get_lsb(pos.pce_bitboards[static_cast<uint32_t>(build_pce(PieceType::KING, pos.side_to_move))]);
+		int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
 		if (sq_attacked(pos, king_sq, flip_col(pos.side_to_move))) {
 			return -mate_score + ply;
 		}

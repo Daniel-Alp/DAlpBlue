@@ -58,7 +58,9 @@ void uci_loop() {
 		}
 		else if (cmd_type == "stop") {
 			search_data.searching = false;
-			search_thread.join();
+			if (search_thread.joinable()) {
+				search_thread.join();
+			}
 		}
 		else {
 			std::cout << "Unknown command: " << cmd << std::endl;

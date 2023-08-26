@@ -42,6 +42,12 @@ struct Position {
 	uint64_t history_ply;
 	std::array<Undo, 256> undo_stack;
 	std::array<uint64_t, 256> history_stack;
+
+	int32_t phase_val;
+	int32_t material_midgame_val;
+	int32_t material_endgame_val;
+	int32_t psqt_midgame_val;
+	int32_t psqt_endgame_val;
 };
 
 void load_from_fen(Position& pos, std::string& fen);
@@ -59,5 +65,5 @@ constexpr int mirror_sq(int sq) {
 	return sq ^ 56;
 }
 constexpr Color flip_col(Color& col) {
-	return static_cast<Color>(static_cast<uint32_t>(col) ^ 1);
+	return static_cast<Color>(static_cast<int>(col) ^ 1);
 }

@@ -13,11 +13,9 @@
 void get_best_move(Position& pos, SearchData& search_data) {
 	uint32_t best_move_root = null_move;
 
-	int32_t best_score_root = -mate_score;
-
 	for (int depth = 1; depth < 256; depth++) {
 		pos.ply = 0;
-		negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0, best_score_root);
+		negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
 		if (!search_data.searching) {
 			break;
 		}
@@ -46,7 +44,7 @@ void order_moves(std::array<uint32_t, max_moves>& moves, int num_moves, std::arr
 	std::swap(moves[cur_move_index], moves[best_move_index]);
 }
 
-int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply, int32_t& best_score_root) {
+int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
 	search_data.nodes++;
 	if ((search_data.nodes % 2048) == 0 && get_current_time() - search_data.start_time > search_data.time_allotted) {
 		search_data.searching = false;
@@ -67,7 +65,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	}
 
 	if (depth <= 0) {
-		return evaluate(pos);
+		return quiescence(pos, search_data, alpha, beta);
 	}
 
 	std::array<uint32_t, max_moves> moves;
@@ -89,7 +87,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 
 		if (make_move(pos, move)) {
 			num_legal_moves++;
-			int32_t curr_score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, best_score_root);
+			int32_t curr_score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
 			undo_move(pos, move);
 			if (!search_data.searching) {
 				return 0;	
@@ -101,7 +99,6 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 
 				if (root_node) {
 					best_move_root = move;
-					best_score_root = curr_score;
 				}
 
 				if (curr_score > alpha) {
@@ -136,5 +133,49 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	}
 	record_hash_entry(pos.zobrist_key, depth, best_score, hash_flag, best_move);
 
+	return best_score;
+}
+
+int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta) {
+	if ((search_data.nodes % 2048) == 0 && get_current_time() - search_data.start_time > search_data.time_allotted) {
+		search_data.searching = false;
+		return 0;
+	}
+	
+	int32_t best_score = evaluate(pos);
+	if (best_score > alpha) {
+		alpha = best_score;
+	}
+	if (alpha >= beta) {
+		return best_score;
+	}
+
+	std::array<uint32_t, max_moves> moves;
+	int num_moves = 0;
+	gen_pseudo_moves(pos, moves, num_moves, true);
+
+	for (int i = 0; i < num_moves; i++) {
+		uint32_t move = moves[i];
+
+		if (make_move(pos, move)) {
+			int32_t curr_score = -quiescence(pos, search_data, -beta, -alpha);
+			undo_move(pos, move);
+			if (!search_data.searching) {
+				return 0;
+			}
+
+			if (curr_score > best_score) {
+				best_score = curr_score;
+
+				if (curr_score > alpha) {
+					alpha = curr_score;
+
+					if (curr_score >= beta) {
+						break;
+					}
+				}
+			}
+		}
+	}
 	return best_score;
 }

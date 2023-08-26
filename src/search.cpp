@@ -10,7 +10,7 @@ void get_best_move(Position& pos, SearchData& search_data) {
 	search_data.searching = true;
 	search_data.nodes = 0;
 
-	for (int depth = 0; depth < 255; depth++) {
+	for (int depth = 1; depth < 255; depth++) {
 		pos.ply = 0;
 		negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
 		if (!search_data.searching) {
@@ -22,32 +22,9 @@ void get_best_move(Position& pos, SearchData& search_data) {
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
 }
 
-void score_moves(std::array<uint32_t, max_moves>& moves, int num_moves, std::array<int32_t, max_moves>& scores, HashEntry& hash_entry, bool matching_hash_key) {
-	for (int i = 0; i < num_moves; i++) {
-		if (matching_hash_key && moves[i] == hash_entry.best_move) {
-			scores[i] = 60000;
-		}
-		else {
-			scores[i] = 0;
-		}
-	}
-}
-
-void sort_moves(std::array<uint32_t, max_moves>& moves, int num_moves, std::array<int32_t, max_moves>& scores, int cur_move_index) {
-	int best_move_index = cur_move_index;
-	for (int i = cur_move_index + 1; i < num_moves; i++) {
-		if (scores[i] > scores[best_move_index]) {
-			best_move_index = i;
-		}
-	}
-	std::swap(moves[cur_move_index], moves[best_move_index]);
-	std::swap(scores[cur_move_index], scores[best_move_index]);
-}
-
 int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
 	if (time_up(search_data)) {
 		search_data.searching = false;
-		return 0;
 	}
 
 	bool root_node = (ply == 0);
@@ -72,13 +49,20 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	int num_legal_moves = 0;
 	gen_pseudo_moves(pos, moves, num_moves, false);
 
-	std::array<int32_t, max_moves> scores;
-	score_moves(moves, num_moves, scores, hash_entry, matching_hash_key);
+	std::array<int32_t, max_moves> scores{};
+	uint32_t hash_entry_best_move = null_move;
+	if (matching_hash_key) {
+		hash_entry_best_move = hash_entry.best_move;
+	}
+	for (int i = 0; i < num_moves; i++) {
+		scores[i] = score_move(moves[i], hash_entry_best_move);
+	}
 
 	int32_t best_score = -mate_score;
 	uint32_t best_move = null_move;
 
 	int32_t orig_alpha = alpha;
+	int32_t score;
 
 	for (int i = 0; i < num_moves; i++) {
 		sort_moves(moves, num_moves, scores, i);
@@ -86,7 +70,9 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 
 		if (make_move(pos, move)) {
 			num_legal_moves++;
-			int32_t score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+
+			score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+
 			undo_move(pos, move);
 			if (!search_data.searching) {
 				return 0;

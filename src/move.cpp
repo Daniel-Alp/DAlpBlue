@@ -18,11 +18,11 @@ std::string get_move_str(uint32_t move) {
 	move_str.push_back('1' + from_rank);
 	move_str.push_back('a' + to_file);
 	move_str.push_back('1' + to_rank);
-
+		
 	Piece promo_pce = get_move_promo_pce(move);
 
 	if (static_cast<uint32_t>(promo_pce)) {
-		move_str.push_back(pce_to_symbol(promo_pce));
+		move_str.push_back(tolower(pce_to_symbol(promo_pce)));
 	}
 
 	return move_str;

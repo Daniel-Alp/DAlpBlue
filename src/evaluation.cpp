@@ -27,11 +27,45 @@ void precompute_pce_psqt(Piece piece, std::array<int32_t, 64> pcetype_psqt_midga
 }
 
 int32_t evaluate(Position& pos) {
-	int32_t midgame_eval = pos.material_midgame_val + pos.psqt_midgame_val;
-	int32_t endgame_eval = pos.material_endgame_val + pos.psqt_endgame_val;
-	int phase = std::min(24, pos.phase_val);
+	//int32_t midgame_eval = pos.material_midgame_val + pos.psqt_midgame_val;
+	//int32_t endgame_eval = pos.material_endgame_val + pos.psqt_endgame_val;
+	//int phase = std::min(24, pos.phase_val);
 
-	int32_t eval = (midgame_eval * phase + endgame_eval * (24 - phase)) / 24;
+	//int32_t eval = (midgame_eval * phase + endgame_eval * (24 - phase)) / 24;
+
+
+	int32_t eval = 0;
+	int32_t midgame_eval = 0;
+	int32_t endgame_eval = 0;
+	int32_t phase = 0;
+
+	for (int pce = 1; pce <= 6; pce++) {
+		uint64_t bitboard = pos.pce_bitboards[pce];
+		while (bitboard != 0) {
+			int sq = get_lsb(bitboard);
+			phase += phase_vals[pce];
+			midgame_eval += pce_psqts_midgame[pce][sq] + material_midgame_vals[pce];
+			endgame_eval += pce_psqts_endgame[pce][sq] + material_endgame_vals[pce];
+			bitboard = clr_lsb(bitboard);
+		}
+	}
+
+	for (int pce = 9; pce <= 14; pce++) {
+		uint64_t bitboard = pos.pce_bitboards[pce];
+		while (bitboard != 0) {
+			int sq = get_lsb(bitboard);
+			phase += phase_vals[pce];
+			midgame_eval += pce_psqts_midgame[pce][sq] + material_midgame_vals[pce];
+			endgame_eval += pce_psqts_endgame[pce][sq] + material_endgame_vals[pce];
+			bitboard = clr_lsb(bitboard);
+		}
+	}
+
+	if (phase > 24) {
+		phase = 24;
+	}
+
+	eval = (midgame_eval * phase + endgame_eval * (24 - phase)) / 24;
 
 	if (pos.side_to_move == Color::BLACK) {
 		eval *= -1;

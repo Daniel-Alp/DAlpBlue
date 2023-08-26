@@ -19,6 +19,7 @@
 void uci_loop() {
 	Position pos{};
 	SearchData search_data{};
+	search_data.nodes = 0;
 	std::thread search_thread;
 
 	std::string cmd;

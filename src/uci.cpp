@@ -114,10 +114,8 @@ void uci_go_command(std::vector<std::string>& cmd_sections, std::thread& search_
 		player_inc = binc;
 		opp_inc = winc;
 	}
-	search_data.searching = true;
 	search_data.start_time = get_current_time();
 	search_data.time_allotted = get_time_allotted(player_time, opp_time, player_inc, opp_inc, moves_to_go);
-	search_data.nodes = 0;
 	search_thread = std::thread(get_best_move, std::ref(pos), std::ref(search_data));
 }
 

@@ -55,7 +55,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 		hash_entry_best_move = hash_entry.best_move;
 	}
 	for (int i = 0; i < num_moves; i++) {
-		scores[i] = score_move(moves[i], hash_entry_best_move);
+		scores[i] = score_move(moves[i], hash_entry_best_move, pos.pces);
 	}
 
 	int32_t best_score = -mate_score;
@@ -65,7 +65,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	int32_t score;
 
 	for (int i = 0; i < num_moves; i++) {
-		sort_moves(moves, num_moves, scores, i);
+		get_next_move(moves, num_moves, scores, i);
 		uint32_t move = moves[i];
 
 		if (make_move(pos, move)) {
@@ -82,7 +82,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 				best_score = score;
 				best_move = move;
 
-				if (ply == 0) {
+				if (root_node) {
 					best_move_root = move;
 				}
 

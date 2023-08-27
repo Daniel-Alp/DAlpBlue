@@ -2,6 +2,7 @@
 
 #include "board.h"
 #include "movegen.h"
+#include "move.h"
 #include "transposition.h"
 #include "timemanagement.h"
 
@@ -17,16 +18,20 @@ struct SearchData {
 void get_best_move(Position& pos, SearchData& search_data);
 int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply);
 
-constexpr int32_t score_move(uint32_t move, uint32_t hash_entry_best_move) {
+constexpr int32_t score_move(uint32_t move, uint32_t hash_entry_best_move, std::array<Piece, 64>& pces) {
 	if (move == hash_entry_best_move) {
 		return 15000;
 	}
 	else {
-		return 0;
+		Piece cap_pce = get_move_cap_pce(move);
+		if (cap_pce != Piece::NONE) {
+			return static_cast<int>(get_pce_type(cap_pce)) * 64 - static_cast<int>(get_pce_type(pces[get_move_from_sq(move)]));
+		}
 	}
+	return 0;
 }
 
-inline void sort_moves(std::array<uint32_t, max_moves>& moves, int num_moves, std::array<int32_t, max_moves>& scores, int cur_move_index) {
+inline void get_next_move(std::array<uint32_t, max_moves>& moves, int num_moves, std::array<int32_t, max_moves>& scores, int cur_move_index) {
 	int best_move_index = cur_move_index;
 	for (int i = cur_move_index + 1; i < num_moves; i++) {
 		if (scores[i] > scores[best_move_index]) {

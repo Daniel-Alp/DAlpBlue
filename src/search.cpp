@@ -11,8 +11,7 @@
 void get_best_move(Position& pos, SearchData& search_data) {
 	uint32_t best_move_root = null_move;
 	search_data.searching = true;
-	search_data.nodes = 0;
-	
+	search_data.nodes = 0;	
 	for (int depth = 1; depth < 255; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
@@ -23,7 +22,6 @@ void get_best_move(Position& pos, SearchData& search_data) {
 			std::cout << "info move " << get_move_str(best_move_root) << " score " << score << std::endl;
 		}
 	}
-
 
 	search_data.searching = false;
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;

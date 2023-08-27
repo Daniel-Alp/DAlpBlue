@@ -5,8 +5,6 @@
 #include "move.h"
 #include "transposition.h"
 #include "timemanagement.h"
-#include <iostream>
-
 
 constexpr int32_t mate_score = 30000;
 

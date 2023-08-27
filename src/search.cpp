@@ -30,10 +30,10 @@ void get_best_move(Position& pos, SearchData& search_data) {
 }
 
 int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
-	//if (time_up(search_data)) {
-	//	search_data.searching = false;
-	//	return 0;
-	//}
+	if (time_up(search_data)) {
+		search_data.searching = false;
+		return 0;
+	}
 
 	bool root_node = (ply == 0);
 
@@ -77,7 +77,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	int32_t score;
 
 	for (int i = 0; i < num_moves; i++) {
-		get_next_move(moves, num_moves, scores, i);
+		get_next_move(moves, num_moves, scores, i); //DA!!!This line of code is bugged and makes the engine play illegal moves sometimes
 		uint32_t move = moves[i];
 
 		if (make_move(pos, move)) {

@@ -1,5 +1,8 @@
+#include "attacks.h"
 #include "board.h"
+#include "evaluation.h"
 #include "makemove.h"
+#include "move.h"
 #include "movegen.h"
 #include "search.h"
 #include <cstdint>

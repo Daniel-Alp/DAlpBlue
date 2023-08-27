@@ -49,14 +49,13 @@ enum class PiecePhaseValue : uint32_t {
 Piece symbol_to_pce(char symbol);
 char pce_to_symbol(Piece piece);
 constexpr Color get_col(Piece piece) {
-	return static_cast<Color>(static_cast<uint32_t>(piece) >> 3);
+	return static_cast<Color>(static_cast<int>(piece) >> 3);
 }
 constexpr PieceType get_pce_type(Piece piece) {
-	return static_cast<PieceType>(static_cast<uint32_t>(piece) & 7);
+	return static_cast<PieceType>(static_cast<int>(piece) & 7);
 }
 constexpr Piece build_pce(PieceType pce_type, Color col) {
-	return static_cast<Piece>(static_cast<uint32_t>(pce_type) + (static_cast<uint32_t>(col) << 3));
+	return static_cast<Piece>(static_cast<int>(pce_type) + (static_cast<int>(col) << 3));
 }
 constexpr int build_pce(int pce_type, int col) {
 	return pce_type + (col << 3);
-}

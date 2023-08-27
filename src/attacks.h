@@ -3,6 +3,8 @@
 #include "board.h"
 #include "bitboard.h"
 #include "types.h"
+#include <array>
+#include <cstdint>
 
 bool sq_attacked(Position& pos, int sq, Color side_attacking);
 void print_attacks(Position& pos, Color side_attacking);

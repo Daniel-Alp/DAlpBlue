@@ -2,6 +2,8 @@
 #include "board.h"
 #include "bitboard.h"
 #include "types.h"
+#include <array>
+#include <cstdint>
 #include <iostream>
 
 bool sq_attacked(Position& pos, int sq, Color side_attacking) {
@@ -16,28 +18,28 @@ bool sq_attacked(Position& pos, int sq, Color side_attacking) {
 	Piece queen = build_pce(PieceType::QUEEN, side_attacking);
 
 	if (side_attacking == Color::WHITE) {
-		if (black_pawn_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(Piece::WHITE_PAWN)]) {
-			return 1;
+		if (black_pawn_attacks[sq] & pos.pce_bitboards[static_cast<int>(Piece::WHITE_PAWN)]) {
+			return true;
 		}
 	}
 	else {
-		if (white_pawn_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(Piece::BLACK_PAWN)]) {
-			return 1;
+		if (white_pawn_attacks[sq] & pos.pce_bitboards[static_cast<int>(Piece::BLACK_PAWN)]) {
+			return true;
 		}
 	}
-	if (knight_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(knight)]) {
-		return 1;
+	if (knight_attacks[sq] & pos.pce_bitboards[static_cast<int>(knight)]) {
+		return true;
 	}
-	if (king_attacks[sq] & pos.pce_bitboards[static_cast<uint32_t>(king)]) {
-		return 1;
+	if (king_attacks[sq] & pos.pce_bitboards[static_cast<int>(king)]) {
+		return true;
 	}
-	if (bishop_attacks & (pos.pce_bitboards[static_cast<uint32_t>(bishop)] | pos.pce_bitboards[static_cast<uint32_t>(queen)])) {
-		return 1;
+	if (bishop_attacks & (pos.pce_bitboards[static_cast<int>(bishop)] | pos.pce_bitboards[static_cast<int>(queen)])) {
+		return true;
 	}
-	if (rook_attacks & (pos.pce_bitboards[static_cast<uint32_t>(rook)] | pos.pce_bitboards[static_cast<uint32_t>(queen)])) {
-		return 1;
+	if (rook_attacks & (pos.pce_bitboards[static_cast<int>(rook)] | pos.pce_bitboards[static_cast<int>(queen)])) {
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 void print_attacks(Position& pos, Color side_attacking) {

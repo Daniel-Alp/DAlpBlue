@@ -24,15 +24,15 @@ void gen_pseudo_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int
 	}
 
 	gen_pawn_moves(pos, moves, num_moves, targets, pos.side_to_move);
-	gen_knight_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(knight)]);
-	gen_king_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(king)]);
-	gen_bishop_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(bishop)]);
-	gen_rook_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(rook)]);
-	gen_queen_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<uint32_t>(queen)]);
+	gen_knight_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<int>(knight)]);
+	gen_king_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<int>(king)]);
+	gen_bishop_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<int>(bishop)]);
+	gen_rook_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<int>(rook)]);
+	gen_queen_moves(pos, moves, num_moves, targets, pos.pce_bitboards[static_cast<int>(queen)]);
 };
 
 void serialize_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t targets, uint64_t attacks, int from_sq) {
-	attacks &= ~pos.col_bitboards[static_cast<uint32_t>(pos.side_to_move)];
+	attacks &= ~pos.col_bitboards[static_cast<int>(pos.side_to_move)];
 	attacks &= targets;
 	while (attacks != 0) {
 		int to_sq = get_lsb(attacks);
@@ -65,8 +65,8 @@ void serialize_pawn_non_promo(Position& pos, std::array<uint32_t, max_moves>& mo
 void gen_pawn_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t targets, Color col) {
 	const uint64_t empty = ~pos.all_bitboard;
 	if (col == Color::WHITE) {
-		const uint64_t pawns = pos.pce_bitboards[static_cast<uint32_t>(Piece::WHITE_PAWN)];
-		const uint64_t enemy = pos.col_bitboards[static_cast<uint32_t>(Color::BLACK)];
+		const uint64_t pawns = pos.pce_bitboards[static_cast<int>(Piece::WHITE_PAWN)];
+		const uint64_t enemy = pos.col_bitboards[static_cast<int>(Color::BLACK)];
 
 		const uint64_t single_push = shift_nort(pawns) & empty;
 		serialize_pawn_promo(pos, moves, num_moves, single_push & rank_8, 8);
@@ -83,7 +83,7 @@ void gen_pawn_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& 
 		serialize_pawn_promo(pos, moves, num_moves, capture_nowe & rank_8, 7);
 		serialize_pawn_non_promo(pos, moves, num_moves, capture_nowe & (~rank_8), 7, MoveFlag::NONE);
 
-		if (pos.en_passant_sq != static_cast<uint32_t>(Square::NO_SQ)) {
+		if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
 			uint64_t capture_en_passant = black_pawn_attacks[pos.en_passant_sq] & pawns;
 			while (capture_en_passant != 0) {
 				int from_sq = get_lsb(capture_en_passant);
@@ -93,8 +93,8 @@ void gen_pawn_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& 
 		}
 	}
 	else {
-		const uint64_t pawns = pos.pce_bitboards[static_cast<uint32_t>(Piece::BLACK_PAWN)];
-		const uint64_t enemy = pos.col_bitboards[static_cast<uint32_t>(Color::WHITE)];
+		const uint64_t pawns = pos.pce_bitboards[static_cast<int>(Piece::BLACK_PAWN)];
+		const uint64_t enemy = pos.col_bitboards[static_cast<int>(Color::WHITE)];
 
 		const uint64_t single_push = shift_sout(pawns) & empty;
 		serialize_pawn_promo(pos, moves, num_moves, single_push & rank_1, -8);
@@ -111,7 +111,7 @@ void gen_pawn_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& 
 		serialize_pawn_promo(pos, moves, num_moves, capture_soea & rank_1, -7);
 		serialize_pawn_non_promo(pos, moves, num_moves, capture_soea & (~rank_1), -7, MoveFlag::NONE);
 
-		if (pos.en_passant_sq != static_cast<uint32_t>(Square::NO_SQ)) {
+		if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
 			uint64_t capture_en_passant = white_pawn_attacks[pos.en_passant_sq] & pawns;
 			while (capture_en_passant != 0) {
 				int from_sq = get_lsb(capture_en_passant);
@@ -166,33 +166,33 @@ void gen_queen_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int&
 
 void gen_castling_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves) {
 	if (pos.side_to_move == Color::WHITE) {
-		if (sq_attacked(pos, static_cast<uint32_t>(Square::E1), Color::BLACK)) {
+		if (sq_attacked(pos, static_cast<int>(Square::E1), Color::BLACK)) {
 			return;
 		}
-		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::WHITE_SHORT)) &&
+		if ((pos.castling_rights & static_cast<int>(CastlingRights::WHITE_SHORT)) &&
 			!(pos.all_bitboard & sq_between_e1_h1) &&
-			!sq_attacked(pos, static_cast<uint32_t>(Square::F1), Color::BLACK)) {
-			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E1), static_cast<uint32_t>(Square::G1), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+			!sq_attacked(pos, static_cast<int>(Square::F1), Color::BLACK)) {
+			moves[num_moves++] = build_move(static_cast<int>(Square::E1), static_cast<int>(Square::G1), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
 		}
-		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::WHITE_LONG)) &&
+		if ((pos.castling_rights & static_cast<int>(CastlingRights::WHITE_LONG)) &&
 			!(pos.all_bitboard & sq_between_e1_a1) &&
-			!sq_attacked(pos, static_cast<uint32_t>(Square::D1), Color::BLACK)) {
-			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E1), static_cast<uint32_t>(Square::C1), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+			!sq_attacked(pos, static_cast<int>(Square::D1), Color::BLACK)) {
+			moves[num_moves++] = build_move(static_cast<int>(Square::E1), static_cast<int>(Square::C1), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
 		}
 	}
 	else {
-		if (sq_attacked(pos, static_cast<uint32_t>(Square::E8), Color::WHITE)) {
+		if (sq_attacked(pos, static_cast<int>(Square::E8), Color::WHITE)) {
 			return;
 		}
-		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::BLACK_SHORT)) &&
+		if ((pos.castling_rights & static_cast<int>(CastlingRights::BLACK_SHORT)) &&
 			!(pos.all_bitboard & sq_between_e8_h8) &&
-			!sq_attacked(pos, static_cast<uint32_t>(Square::F8), Color::WHITE)) {
-			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E8), static_cast<uint32_t>(Square::G8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+			!sq_attacked(pos, static_cast<int>(Square::F8), Color::WHITE)) {
+			moves[num_moves++] = build_move(static_cast<int>(Square::E8), static_cast<int>(Square::G8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
 		}
-		if ((pos.castling_rights & static_cast<uint32_t>(CastlingRights::BLACK_LONG)) &&
+		if ((pos.castling_rights & static_cast<int>(CastlingRights::BLACK_LONG)) &&
 			!(pos.all_bitboard & sq_between_e8_a8) &&
-			!sq_attacked(pos, static_cast<uint32_t>(Square::D8), Color::WHITE)) {
-			moves[num_moves++] = build_move(static_cast<uint32_t>(Square::E8), static_cast<uint32_t>(Square::C8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
+			!sq_attacked(pos, static_cast<int>(Square::D8), Color::WHITE)) {
+			moves[num_moves++] = build_move(static_cast<int>(Square::E8), static_cast<int>(Square::C8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
 		}
 	}
 }

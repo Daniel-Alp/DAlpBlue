@@ -1,7 +1,10 @@
 #include "bitboard.h"
 #include "board.h"
+#include "evaluation.h"
 #include "parser.h"
 #include "types.h"
+#include "zobrist.h"
+#include <array>
 #include <cstdint>
 #include <iostream>
 #include <string>
@@ -16,6 +19,12 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	for (int sq = 0; sq < 64; sq++) {
 		pos.pces[sq] = Piece::NONE;
 	}
+	
+	pos.material_midgame_val = 0;
+	pos.material_endgame_val = 0;
+	pos.phase_val = 0;
+	pos.psqt_midgame_val = 0;
+	pos.psqt_endgame_val = 0;
 
 	std::vector<std::string> fen_sections;
 	fen_sections = split_string(fen_string, ' ');
@@ -43,9 +52,16 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 			Color col = get_col(pce);
 
 			pos.all_bitboard = set_sq(pos.all_bitboard, sq_bb);
-			pos.col_bitboards[static_cast<uint32_t>(col)] = set_sq(pos.col_bitboards[static_cast<uint32_t>(col)], sq_bb);
-			pos.pce_bitboards[static_cast<uint32_t>(pce)] = set_sq(pos.pce_bitboards[static_cast<uint32_t>(pce)], sq_bb);
+			pos.col_bitboards[static_cast<int>(col)] = set_sq(pos.col_bitboards[static_cast<int>(col)], sq_bb);
+			pos.pce_bitboards[static_cast<int>(pce)] = set_sq(pos.pce_bitboards[static_cast<int>(pce)], sq_bb);
 			pos.pces[sq] = pce;
+
+			pos.material_midgame_val += material_midgame_vals[static_cast<int>(pce)];
+			pos.material_endgame_val += material_endgame_vals[static_cast<int>(pce)];
+			pos.phase_val += phase_vals[static_cast<int>(pce)];
+			pos.phase_val = std::min(pos.phase_val, 24);
+			pos.psqt_midgame_val += pce_psqts_midgame[static_cast<int>(pce)][sq];
+			pos.psqt_endgame_val += pce_psqts_endgame[static_cast<int>(pce)][sq];
 
 			file++;
 		}
@@ -59,20 +75,20 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	}
 
 	if (castling_rights_section.find('K') != std::string::npos) {
-		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::WHITE_SHORT);
+		pos.castling_rights |= static_cast<int>(CastlingRights::WHITE_SHORT);
 	}
 	if (castling_rights_section.find('Q') != std::string::npos) {
-		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::WHITE_LONG);
+		pos.castling_rights |= static_cast<int>(CastlingRights::WHITE_LONG);
 	}
 	if (castling_rights_section.find('k') != std::string::npos) {
-		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::BLACK_SHORT);
+		pos.castling_rights |= static_cast<int>(CastlingRights::BLACK_SHORT);
 	}
 	if (castling_rights_section.find('q') != std::string::npos) {
-		pos.castling_rights |= static_cast<uint32_t>(CastlingRights::BLACK_LONG);
+		pos.castling_rights |= static_cast<int>(CastlingRights::BLACK_LONG);
 	}
 
 	if (en_passant_sq_section == "-") {
-		pos.en_passant_sq = static_cast<uint32_t>(Square::NO_SQ);
+		pos.en_passant_sq = static_cast<int>(Square::NO_SQ);
 	}
 	else {
 		uint32_t rank = en_passant_sq_section[1] - '1';
@@ -81,6 +97,8 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	}
 
 	pos.fifty_move_rule = std::stoi(fifty_move_rule_section);
+
+	pos.zobrist_key = get_zobrist_key(pos);
 }
 
 void print_board(Position& pos) {

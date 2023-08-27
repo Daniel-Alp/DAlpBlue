@@ -2,6 +2,7 @@
 #include "makemove.h"
 #include "parser.h"
 #include "perft.h"
+#include "transposition.h"
 #include <array>
 #include <chrono>
 #include <cstdint>
@@ -28,6 +29,7 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 			undo_move(pos, move);
 		}
 	}
+
 	return nodes;
 }
 
@@ -42,11 +44,10 @@ void run_perft_suite() {
 		std::string fen = test_sections[0];
 		Position pos{};
 		load_from_fen(pos, fen);
+		clr_hash_table();
 
 		std::cout << fen << std::endl;
-
 		int depth = test_sections.size() - 1;
-
 		uint64_t expect = std::stol(test_sections[depth].substr(3));
 
 		auto time_1 = std::chrono::high_resolution_clock::now();

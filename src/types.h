@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <array>
 
 enum class Color : uint32_t {
 	WHITE,
@@ -40,6 +41,11 @@ enum class CastlingRights : uint32_t {
 	BLACK_LONG	= 8
 };
 
+enum class PiecePhaseValue : uint32_t {
+	PAWN = 1,
+    KNIGHT = 1,
+};
+
 Piece symbol_to_pce(char symbol);
 char pce_to_symbol(Piece piece);
 constexpr Color get_col(Piece piece) {
@@ -53,4 +59,3 @@ constexpr Piece build_pce(PieceType pce_type, Color col) {
 }
 constexpr int build_pce(int pce_type, int col) {
 	return pce_type + (col << 3);
-}

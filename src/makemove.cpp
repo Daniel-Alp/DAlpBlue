@@ -61,7 +61,7 @@ bool make_move(Position& pos, uint32_t move) {
 		if (get_pce_type(pos.pces[to_sq]) == PieceType::PAWN) {
 			pos.fifty_move_rule = 0;
 			Piece promo_pce = get_move_promo_pce(move);
-			if (static_cast<int>(promo_pce)) {
+			if (promo_pce != Piece::NONE) {
 				clr_pce(pos, to_sq);
 				add_pce(pos, promo_pce, to_sq);
 			}
@@ -81,10 +81,10 @@ bool make_move(Position& pos, uint32_t move) {
 
 	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, move_col))]), pos.side_to_move)) {
 		undo_move(pos, move);
-		return 0;
+		return false;
 	}
 
-	return 1;
+	return true;
 }
 
 void undo_move(Position& pos, uint32_t move) {
@@ -114,7 +114,7 @@ void undo_move(Position& pos, uint32_t move) {
 	}
 	else {
 		Piece promo_pce = get_move_promo_pce(move);
-		if (static_cast<int>(promo_pce)) {
+		if (promo_pce != Piece::NONE) {
 			clr_pce(pos, to_sq);
 			Piece undo_promo_pce = build_pce(PieceType::PAWN, pos.side_to_move);
 			add_pce(pos, undo_promo_pce, to_sq);
@@ -124,7 +124,7 @@ void undo_move(Position& pos, uint32_t move) {
 
 		Piece capture_pce = get_move_cap_pce(move);
 
-		if (static_cast<int>(capture_pce)) {
+		if (capture_pce != Piece::NONE) {
 			if (move & static_cast<uint32_t>(MoveFlag::EN_PASSANT)) {
 				add_pce(pos, capture_pce, to_sq ^ 8);
 			}

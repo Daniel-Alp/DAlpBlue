@@ -143,9 +143,9 @@ void uci_position_command(std::vector<std::string>& cmd_sections, Position& pos)
 			uint32_t move = pseudo_moves[i];
 			if (get_move_str(move) == cmd_sections[move_token]) {
 				make_move(pos, move);
-				pos.ply = 0;
 			}
 		}
 		move_token++;
 	}
+	print_board(pos);
 }

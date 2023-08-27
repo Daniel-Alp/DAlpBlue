@@ -5,6 +5,8 @@
 #include "move.h"
 #include "transposition.h"
 #include "timemanagement.h"
+#include <iostream>
+
 
 constexpr int32_t mate_score = 30000;
 
@@ -30,7 +32,6 @@ constexpr int32_t score_move(uint32_t move, uint32_t hash_entry_best_move, std::
 	}
 	return 0;
 }
-
 inline void get_next_move(std::array<uint32_t, max_moves>& moves, int num_moves, std::array<int32_t, max_moves>& scores, int cur_move_index) {
 	int best_move_index = cur_move_index;
 	for (int i = cur_move_index + 1; i < num_moves; i++) {
@@ -44,4 +45,13 @@ inline void get_next_move(std::array<uint32_t, max_moves>& moves, int num_moves,
 inline bool time_up(SearchData& search_data) {
 	search_data.nodes++;
 	return (search_data.nodes & 2047) == 0 && get_current_time() - search_data.start_time > search_data.time_allotted;
+}
+inline bool repeated_pos(Position& pos) {
+	int min_ply = std::max(pos.history_ply - pos.fifty_move_rule, INT32_C(0));
+	for (int ply = pos.history_ply - 2; ply >= min_ply; ply -= 2) {
+		if (pos.zobrist_key == pos.history_stack[ply]) {
+			return true;
+		}
+	}
+	return false;
 }

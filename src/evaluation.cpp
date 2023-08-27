@@ -5,8 +5,6 @@
 #include <array>
 #include <cstdint>
 
-#include <iostream>
-
 std::array<std::array<int32_t, 64>, 15> pce_psqts_midgame;
 std::array<std::array<int32_t, 64>, 15> pce_psqts_endgame;
 

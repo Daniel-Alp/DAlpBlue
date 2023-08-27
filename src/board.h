@@ -35,11 +35,11 @@ struct Position {
 
 	uint32_t castling_rights;
 	uint32_t en_passant_sq;
-	uint32_t fifty_move_rule;
+	int32_t fifty_move_rule;
 	uint64_t zobrist_key;
 
-	uint32_t ply;
-	uint64_t history_ply;
+	int32_t ply;
+	int32_t history_ply;
 	std::array<Undo, 256> undo_stack;
 	std::array<uint64_t, 256> history_stack;
 

@@ -19,6 +19,7 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	for (int sq = 0; sq < 64; sq++) {
 		pos.pces[sq] = Piece::NONE;
 	}
+	pos.history_ply = 0;
 	
 	pos.material_midgame_val = 0;
 	pos.material_endgame_val = 0;

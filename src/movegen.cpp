@@ -8,6 +8,7 @@
 
 void gen_pseudo_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, bool exclude_quiet) {
 	num_moves = 0;
+	moves;
 	Piece knight = build_pce(PieceType::KNIGHT, pos.side_to_move);
 	Piece king = build_pce(PieceType::KING, pos.side_to_move);
 	Piece bishop = build_pce(PieceType::BISHOP, pos.side_to_move);
@@ -41,15 +42,15 @@ void serialize_moves(Position& pos, std::array<uint32_t, max_moves>& moves, int&
 	}
 }
 
-void serialize_pawn_promo(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t to_sqs, int dir) { //ADD TO .H FILE
+void serialize_pawn_promo(Position& pos, std::array<uint32_t, max_moves>& moves, int& num_moves, uint64_t to_sqs, int dir) {
 	while (to_sqs != 0) {
 		int to_sq = get_lsb(to_sqs);
 		int from_sq = to_sq - dir;
 		Piece capture_pce = pos.pces[to_sq];
-		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::KNIGHT, pos.side_to_move), MoveFlag::NONE);
-		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::BISHOP, pos.side_to_move), MoveFlag::NONE);
-		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::ROOK, pos.side_to_move), MoveFlag::NONE);
 		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::QUEEN, pos.side_to_move), MoveFlag::NONE);
+		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::ROOK, pos.side_to_move), MoveFlag::NONE);
+		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::BISHOP, pos.side_to_move), MoveFlag::NONE);
+		moves[num_moves++] = build_move(from_sq, to_sq, capture_pce, build_pce(PieceType::KNIGHT, pos.side_to_move), MoveFlag::NONE);
 		to_sqs = clr_lsb(to_sqs);
 	}
 }

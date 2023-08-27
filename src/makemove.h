@@ -14,7 +14,7 @@ constexpr std::array<int, 64> castling = {
 	15, 15, 15, 15, 15, 15, 15, 15,
 	15, 15, 15, 15, 15, 15, 15, 15,
 	15, 15, 15, 15, 15, 15, 15, 15,
-	15, 15, 15, 15, 15, 15, 15, 15,
+	15, 15, 15, 15, 15, 15, 15, 15,	
 	7,  15, 15, 15,  3, 15, 15, 11
 };
 
@@ -37,7 +37,7 @@ constexpr void clr_pce(Position& pos, int sq) {
 	pos.all_bitboard = clr_sq(pos.all_bitboard, sq_bb);
 }
 
-constexpr void add_pce(Position& pos, Piece& pce, int sq) {
+constexpr void add_pce(Position& pos, Piece pce, int sq) {
 	pos.pces[sq] = pce;
 	Color col = get_col(pce);
 	uint64_t sq_bb = get_sq_bitboard(sq);
@@ -48,7 +48,7 @@ constexpr void add_pce(Position& pos, Piece& pce, int sq) {
 	pos.material_midgame_val += material_midgame_vals[static_cast<int>(pce)];
 	pos.material_endgame_val += material_endgame_vals[static_cast<int>(pce)];
 	pos.psqt_midgame_val += pce_psqts_midgame[static_cast<int>(pce)][sq];
-	pos.psqt_endgame_val += pce_psqts_endgame[static_cast<int>(pce)][sq];
+	pos.psqt_endgame_val += pce_psqts_endgame[static_cast<int>(pce)][sq]; 
 
 	pos.pces[sq] = pce;
 	pos.pce_bitboards[static_cast<int>(pce)] = set_sq(pos.pce_bitboards[static_cast<int>(pce)], sq_bb);

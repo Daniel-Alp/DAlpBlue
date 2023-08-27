@@ -1,5 +1,8 @@
+#include "attacks.h"
 #include "board.h"
+#include "evaluation.h"
 #include "makemove.h"
+#include "move.h"
 #include "movegen.h"
 #include "search.h"
 #include <cstdint>
@@ -9,23 +12,28 @@ void get_best_move(Position& pos, SearchData& search_data) {
 	uint32_t best_move_root = null_move;
 	search_data.searching = true;
 	search_data.nodes = 0;
-
+	
 	for (int depth = 1; depth < 255; depth++) {
 		pos.ply = 0;
-		negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
+		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
 		if (!search_data.searching) {
 			break;
 		}
+		else {
+			std::cout << "info move " << get_move_str(best_move_root) << " score " << score << std::endl;
+		}
 	}
+
 
 	search_data.searching = false;
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
 }
 
 int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root, int32_t alpha, int32_t beta, int depth, int ply) {
-	if (time_up(search_data)) {
-		search_data.searching = false;
-	}
+	//if (time_up(search_data)) {
+	//	search_data.searching = false;
+	//	return 0;
+	//}
 
 	bool root_node = (ply == 0);
 
@@ -37,14 +45,18 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 			|| (hash_entry.hash_flag == HashFlag::BETA && hash_entry.score >= beta)
 			|| (hash_entry.hash_flag == HashFlag::ALPHA && hash_entry.score <= alpha)) {
 			return hash_entry.score;
-		}
+		}	
+	}
+
+	if (!root_node && repeated_pos(pos)) {
+		return 0;
 	}
 
 	if (depth <= 0) {
 		return evaluate(pos);
 	}
 
-	std::array<uint32_t, max_moves> moves;
+	std::array<uint32_t, max_moves> moves{};
 	int num_moves = 0;
 	int num_legal_moves = 0;
 	gen_pseudo_moves(pos, moves, num_moves, false);

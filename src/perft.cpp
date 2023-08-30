@@ -21,7 +21,6 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 	std::array<uint32_t, max_moves> moves;
 	int num_moves;
 	gen_pseudo_moves(pos, moves, num_moves, false);
-
 	for (int i = 0; i < num_moves; i++) {
 		uint32_t move = moves[i];
 		if (make_move(pos, move)) {

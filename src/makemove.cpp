@@ -12,7 +12,7 @@ bool make_move(Position& pos, uint32_t move) {
 	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
 	pos.undo_stack[pos.ply].fifty_move_rule = pos.fifty_move_rule;
 	pos.undo_stack[pos.ply].zobrist_key = pos.zobrist_key;
-	//pos.history_stack[pos.history_ply] = pos.zobrist_key;
+	pos.history_stack[pos.history_ply] = pos.zobrist_key;
 
 	uint32_t from_sq = get_move_from_sq(move);
 	uint32_t to_sq = get_move_to_sq(move);
@@ -123,7 +123,6 @@ void undo_move(Position& pos, uint32_t move) {
 		move_pce(pos, to_sq, from_sq);
 
 		Piece capture_pce = get_move_cap_pce(move);
-
 		if (capture_pce != Piece::NONE) {
 			if (move & static_cast<uint32_t>(MoveFlag::EN_PASSANT)) {
 				add_pce(pos, capture_pce, to_sq ^ 8);

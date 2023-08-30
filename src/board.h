@@ -64,6 +64,6 @@ constexpr int get_sq(int rank, int file) {
 constexpr int mirror_sq(int sq) {
 	return sq ^ 56;
 }
-constexpr Color flip_col(Color& col) {
+constexpr Color flip_col(Color col) {
 	return static_cast<Color>(static_cast<int>(col) ^ 1);
 }

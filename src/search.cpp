@@ -12,18 +12,17 @@ void get_best_move(Position& pos, SearchData& search_data) {
 	uint32_t best_move_root = null_move;
 	search_data.searching = true;
 	search_data.nodes = 0;
-	
+
 	for (int depth = 1; depth < 255; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
 		if (!search_data.searching) {
 			break;
 		}
-		else {
-			std::cout << "info move " << get_move_str(best_move_root) << " score " << score << std::endl;
-		}
 	}
 
+	//pos.ply = 0;
+	//int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, 12, 0); //BREAKS AT THIS DEPTH
 
 	search_data.searching = false;
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
@@ -77,15 +76,13 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	int32_t score;
 
 	for (int i = 0; i < num_moves; i++) {
-		get_next_move(moves, num_moves, scores, i); //DA!!!This line of code is bugged and makes the engine play illegal moves sometimes
+=		get_next_move(moves, num_moves, scores, i);
 		uint32_t move = moves[i];
-
 		if (make_move(pos, move)) {
 			num_legal_moves++;
-
 			score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
-
 			undo_move(pos, move);
+
 			if (!search_data.searching) {
 				return 0;
 			}

@@ -21,9 +21,6 @@ void get_best_move(Position& pos, SearchData& search_data) {
 		}
 	}
 
-	//pos.ply = 0;
-	//int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, 12, 0); //BREAKS AT THIS DEPTH
-
 	search_data.searching = false;
 	std::cout << "bestmove " << get_move_str(best_move_root) << std::endl;
 }

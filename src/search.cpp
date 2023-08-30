@@ -33,6 +33,10 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 
 	bool root_node = (ply == 0);
 
+	if (!root_node && repeated_pos(pos)) {
+		return 0;
+	}
+
 	HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
 	bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
 
@@ -42,10 +46,6 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 			|| (hash_entry.hash_flag == HashFlag::ALPHA && hash_entry.score <= alpha)) {
 			return hash_entry.score;
 		}	
-	}
-
-	if (!root_node && repeated_pos(pos)) {
-		return 0;
 	}
 
 	if (depth <= 0) {

@@ -42,7 +42,7 @@ void run_perft_suite() {
 
 		std::string fen = test_sections[0];
 		Position pos{};
-		load_from_fen(pos, fen);
+		pos = load_from_fen(fen);
 		clr_hash_table();
 
 		std::cout << fen << std::endl;

@@ -32,6 +32,12 @@ int main(int argc) {
 	precompute_pce_psqt(Piece::WHITE_KING, king_midgame_psqt, king_endgame_psqt);
 	precompute_pce_psqt(Piece::BLACK_KING, king_midgame_psqt, king_endgame_psqt);
 
+	//run_perft_suite();
+
+	//Position pos = load_from_fen(start_fen);
+
+
+
 	uci_loop();
 	return 0;
 }

@@ -50,7 +50,7 @@ struct Position {
 	int32_t psqt_endgame_val;
 };
 
-void load_from_fen(Position& pos, std::string& fen);
+Position load_from_fen(std::string& fen);
 void print_board(Position& pos);
 bool valid_pos(Position& pos);
 constexpr int get_rank(int sq) {

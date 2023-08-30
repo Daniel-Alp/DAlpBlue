@@ -12,22 +12,8 @@
 
 std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-void load_from_fen(Position& pos, std::string& fen_string) {
-	pos.all_bitboard = 0;
-	std::fill(pos.col_bitboards.begin(), pos.col_bitboards.end(), 0);
-	std::fill(pos.pce_bitboards.begin(), pos.pce_bitboards.end(), 0);
-	for (int sq = 0; sq < 64; sq++) {
-		pos.pces[sq] = Piece::NONE;
-	}
-	pos.history_ply = 0;
-	pos.castling_rights = 0;
-	pos.fifty_move_rule = 0;
-	
-	pos.material_midgame_val = 0;
-	pos.material_endgame_val = 0;
-	pos.phase_val = 0;
-	pos.psqt_midgame_val = 0;
-	pos.psqt_endgame_val = 0;
+Position load_from_fen(std::string& fen_string) {
+	Position pos{};
 
 	std::vector<std::string> fen_sections;
 	fen_sections = split_string(fen_string, ' ');
@@ -38,6 +24,9 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	std::string en_passant_sq_section = fen_sections[3];
 	std::string fifty_move_rule_section = fen_sections[4];
 
+	for (int sq = 0; sq < 64; sq++) {
+		pos.pces[sq] = Piece::NONE;
+	}
 	int rank = 7;
 	int file = 0;
 	for (char symbol : piece_placement_section) {
@@ -102,6 +91,8 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 	pos.fifty_move_rule = std::stoi(fifty_move_rule_section);
 
 	pos.zobrist_key = get_zobrist_key(pos);
+
+	return pos;
 }
 
 void print_board(Position& pos) {

@@ -45,7 +45,7 @@ void uci_loop() {
 			std::cout << "readyok" << std::endl;
 		}
 		else if (cmd_type == "ucinewgame") {
-			load_from_fen(pos, start_fen);
+			pos = load_from_fen(start_fen);
 			clr_hash_table();
 		}
 		else if (cmd_type == "position") {
@@ -123,7 +123,7 @@ void uci_position_command(std::vector<std::string>& cmd_sections, Position& pos)
 	int move_token = 0;
 
 	if (cmd_sections[1] == "startpos") {
-		load_from_fen(pos, start_fen);
+		pos = load_from_fen(start_fen);
 		move_token = 3;
 	}
 	else {
@@ -132,7 +132,7 @@ void uci_position_command(std::vector<std::string>& cmd_sections, Position& pos)
 			fen += cmd_sections[token];
 			fen += " ";
 		}
-		load_from_fen(pos, fen);
+		pos = load_from_fen(fen);
 		move_token = 9;
 	}
 

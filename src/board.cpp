@@ -146,18 +146,23 @@ bool valid_pos(Position& pos) {
 			}
 		}
 		else {
+			//Check that all bitboard contains square
 			if (!has_sq(pos.all_bitboard, sq)) {
 				return false;
 			}
+			//Check that bitboard of pce col contains square
 			if (!has_sq(pos.col_bitboards[static_cast<int>(get_col(pce_at_sq))], sq)) {
 				return false;
 			}
+			//Check that bitboard of not pce col does not contain square
 			if (has_sq(pos.col_bitboards[static_cast<int>(flip_col(get_col(pce_at_sq)))], sq)) {
 				return false;
 			}
+			//Check that pce bitboard contains square
 			if (!has_sq(pos.pce_bitboards[static_cast<int>(pce_at_sq)], sq)) {
 				return false;
 			}
+			//Check all other pce bitboard does not contain square
 			for (int col = static_cast<int>(Color::WHITE); col <= static_cast<int>(Color::BLACK); col++) {
 				for (int pce_type = static_cast<int>(PieceType::PAWN); pce_type <= static_cast<int>(PieceType::KING); pce_type++) {
 					int pce = build_pce(pce_type, col);

@@ -76,7 +76,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	int32_t score;
 
 	for (int i = 0; i < num_moves; i++) {
-=		get_next_move(moves, num_moves, scores, i);
+		get_next_move(moves, num_moves, scores, i);
 		uint32_t move = moves[i];
 		if (make_move(pos, move)) {
 			num_legal_moves++;

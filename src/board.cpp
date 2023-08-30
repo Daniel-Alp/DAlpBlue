@@ -20,6 +20,8 @@ void load_from_fen(Position& pos, std::string& fen_string) {
 		pos.pces[sq] = Piece::NONE;
 	}
 	pos.history_ply = 0;
+	pos.castling_rights = 0;
+	pos.fifty_move_rule = 0;
 	
 	pos.material_midgame_val = 0;
 	pos.material_endgame_val = 0;
@@ -118,4 +120,54 @@ void print_board(Position& pos) {
 		std::cout << std::endl;
 	}
 	std::cout << std::endl << "    a b c d e f g h" << std::endl << std::endl;
+}
+
+bool valid_pos(Position& pos) { 
+	for (int sq = 0; sq < 64; sq++) {
+		uint64_t bb_sq = get_sq_bitboard(sq);
+		Piece pce_at_sq = pos.pces[sq];
+
+		if (pce_at_sq == Piece::NONE) {
+			//Check that none of the bitboards contains the square
+			if (has_sq(pos.all_bitboard, sq)) { 
+				return false;
+			}
+
+			for (int col = static_cast<int>(Color::WHITE); col <= static_cast<int>(Color::BLACK); col++) {
+				for (int pce_type = static_cast<int>(PieceType::PAWN); pce_type <= static_cast<int>(PieceType::KING); pce_type++) {
+					int pce = build_pce(pce_type, col);
+					if (has_sq(pos.pce_bitboards[pce], sq)) {
+						return false;
+					}
+				}
+				if (has_sq(pos.col_bitboards[col], sq)) {
+					return false;
+				}
+			}
+		}
+		else {
+			if (!has_sq(pos.all_bitboard, sq)) {
+				return false;
+			}
+			if (!has_sq(pos.col_bitboards[static_cast<int>(get_col(pce_at_sq))], sq)) {
+				return false;
+			}
+			if (has_sq(pos.col_bitboards[static_cast<int>(flip_col(get_col(pce_at_sq)))], sq)) {
+				return false;
+			}
+			if (!has_sq(pos.pce_bitboards[static_cast<int>(pce_at_sq)], sq)) {
+				return false;
+			}
+			for (int col = static_cast<int>(Color::WHITE); col <= static_cast<int>(Color::BLACK); col++) {
+				for (int pce_type = static_cast<int>(PieceType::PAWN); pce_type <= static_cast<int>(PieceType::KING); pce_type++) {
+					int pce = build_pce(pce_type, col);
+					if (pce != static_cast<int>(pce_at_sq) && has_sq(pos.pce_bitboards[pce], sq)) {
+						return false;
+					}
+				}
+			}
+		}
+	}
+
+	return true;
 }

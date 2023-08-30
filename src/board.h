@@ -52,6 +52,7 @@ struct Position {
 
 void load_from_fen(Position& pos, std::string& fen);
 void print_board(Position& pos);
+bool valid_pos(Position& pos);
 constexpr int get_rank(int sq) {
 	return sq >> 3;
 }

@@ -32,6 +32,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	}
 
 	bool root_node = (ply == 0);
+	bool pv_node = (alpha != beta - 1);
 
 	if (!root_node && repeated_pos(pos)) {
 		return 0;
@@ -40,7 +41,7 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 	HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
 	bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
 
-	if (!root_node && matching_hash_key && hash_entry.depth >= depth) {
+	if (!root_node && !pv_node && matching_hash_key && hash_entry.depth >= depth) {
 		if (hash_entry.hash_flag == HashFlag::EXACT
 			|| (hash_entry.hash_flag == HashFlag::BETA && hash_entry.score >= beta)
 			|| (hash_entry.hash_flag == HashFlag::ALPHA && hash_entry.score <= alpha)) {
@@ -77,7 +78,17 @@ int32_t negamax(Position& pos, SearchData& search_data, uint32_t& best_move_root
 		uint32_t move = moves[i];
 		if (make_move(pos, move)) {
 			num_legal_moves++;
-			score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+
+			if (num_legal_moves > 1) {
+				score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1, ply + 1);
+				if (score > alpha && score < beta) {
+					score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+				}
+			}
+			else {
+				score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1);
+			}
+
 			undo_move(pos, move);
 
 			if (!search_data.searching) {

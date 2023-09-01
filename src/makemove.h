@@ -3,6 +3,7 @@
 #include "bitboard.h"
 #include "board.h"
 #include "evaluation.h"
+#include "move.h"
 #include "zobrist.h"
 #include <array>
 #include <cstdint>
@@ -76,5 +77,5 @@ constexpr void move_pce(Position& pos, int from_sq, int to_sq) {
 	pos.col_bitboards[static_cast<int>(col)] = move_sq(pos.col_bitboards[static_cast<int>(col)], from_sq_bb, to_sq_bb);
 	pos.all_bitboard = move_sq(pos.all_bitboard, from_sq_bb, to_sq_bb);
 }
-bool make_move(Position& pos, uint32_t move);
-void undo_move(Position& pos, uint32_t move);
+bool make_move(Position& pos, Move move);
+void undo_move(Position& pos, Move move);

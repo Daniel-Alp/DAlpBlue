@@ -20,9 +20,6 @@ void get_best_move(Position& pos, SearchData& search_data) {
 		if (!search_data.searching) {
 			break;
 		}
-		else {
-			std::cout << "info pv " << best_move_root.to_str() << " score " << score << std::endl;
-		}
 	}
 
 	search_data.searching = false;

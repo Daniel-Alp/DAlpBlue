@@ -27,43 +27,43 @@ struct Move {
 		val = (from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | (static_cast<uint32_t>(flag)));
 	}
 
-	constexpr bool operator == (Move& move) {
+	constexpr bool operator == (Move& move) const {
 		return val == move.val;
 	}
 
-	constexpr bool operator != (Move& move) {
+	constexpr bool operator != (Move& move) const {
 		return val != move.val;
 	}
 
-	constexpr uint32_t get_from_sq() {
+	constexpr uint32_t get_from_sq() const {
 		return val & 0b111111;
 	}
 
-	constexpr uint32_t get_to_sq() {
+	constexpr uint32_t get_to_sq() const {
 		return (val >> 6) & 0b111111;
 	}
 
-	constexpr Piece get_cap_pce() {
+	constexpr Piece get_cap_pce() const {
 		return static_cast<Piece>((val >> 12) & 0b1111);
 	}
 
-	constexpr Piece get_promo_pce() {
+	constexpr Piece get_promo_pce() const {
 		return static_cast<Piece>((val >> 16) & 0b1111);
 	}
 
-	constexpr bool is_pawn_start() {
+	constexpr bool is_pawn_start() const {
 		return val & static_cast<uint32_t>(MoveFlag::PAWN_START);
 	}
 
-	constexpr bool is_castle() {
+	constexpr bool is_castle() const {
 		return val & static_cast<uint32_t>(MoveFlag::CASTLE);
 	}
 
-	constexpr bool is_en_passant() {
+	constexpr bool is_en_passant() const {
 		return val & static_cast<uint32_t>(MoveFlag::EN_PASSANT);
 	}
 
-	inline std::string Move::to_str() {
+	inline std::string Move::to_str() const {
 		uint32_t from_sq = get_from_sq();
 		int from_rank = get_rank(from_sq);
 		int from_file = get_file(from_sq);

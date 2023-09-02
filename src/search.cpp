@@ -18,7 +18,6 @@ void get_best_move(Position& pos, SearchData& search_data) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
 		if (!search_data.searching) {
-			std::cout << "info score " << score << std::endl;
 			break;
 		}
 		else {
@@ -82,6 +81,9 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	for (int i = 0; i < num_moves; i++) {
 		get_next_move(moves, num_moves, scores, i);
 		Move move = moves[i];
+		if (root_node && i == 0) {
+			std::cout << move.to_str() << std::endl;
+		}
 
 		if (make_move(pos, move)) {
 			num_legal_moves++;

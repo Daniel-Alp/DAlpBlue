@@ -29,21 +29,6 @@ int main(int argc) {
 	precompute_pce_psqt(Piece::WHITE_KING, king_midgame_psqt, king_endgame_psqt);
 	precompute_pce_psqt(Piece::BLACK_KING, king_midgame_psqt, king_endgame_psqt);
 
-	
-
-	//Move move = Move();
-	//std::cout << move.to_str() << std::endl;
-
-	//Move move2 = Move(855);
-	//move = move2;
-	//std::cout << move2.to_str() << std::endl;
-	//std::cout << move.to_str() << std::endl;
-
-	//record_hash_entry(0, 0, 0, HashFlag::ALPHA, move2);
-	//std::cout << hash_table[0].best_move.to_str() << std::endl;
-
-	//run_perft_suite();
-
 	//DA!!! Refactor has broken the code
 	uci_loop();
 	return 0;

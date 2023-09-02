@@ -28,7 +28,7 @@ struct Move {
 	}
 
 	constexpr bool operator == (Move& move) {
-		return val = move.val;
+		return val == move.val;
 	}
 
 	constexpr bool operator != (Move& move) {

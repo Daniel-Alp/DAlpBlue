@@ -14,7 +14,7 @@ extern std::array<uint64_t, 16> keys_castling_rights;
 void precompute_zobrist();
 uint64_t get_zobrist_key(Position& pos);
 
-//From Stockfish
+//From StockFish
 constexpr uint64_t random_uint64_t() {
 	seed ^= seed >> 12;
 	seed ^= seed << 25;

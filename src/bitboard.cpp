@@ -156,7 +156,7 @@ void precompute_non_slider_attacks() {
 	}
 }
 
-void print_bitboard(uint64_t bitboard) {
+void print_bitboard(const uint64_t bitboard) {
 	for (int rank = 7; rank >= 0; rank--) {
 		for (int file = 0; file < 8; file++) {
 			if (file == 0) {

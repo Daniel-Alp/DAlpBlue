@@ -29,7 +29,7 @@ void precompute_zobrist() {
 uint64_t get_zobrist_key(Position& pos) {
 	uint64_t zobrist_key = 0;
 	for (int sq = 0; sq < 64; sq++) {
-		Piece pce = pos.pces[sq];
+		const Piece pce = pos.pces[sq];
 		if (pce != Piece::NONE) {
 			zobrist_key ^= keys_pce[static_cast<int>(pce)][sq];
 		}

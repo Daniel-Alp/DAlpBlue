@@ -138,6 +138,6 @@ constexpr std::array<int32_t, 64> king_endgame_psqt = {
 extern std::array<std::array<int32_t, 64>, 15> pce_psqts_midgame;
 extern std::array<std::array<int32_t, 64>, 15> pce_psqts_endgame;
 
-void precompute_pce_psqt(Piece piece, std::array<int32_t, 64> pcetype_psqt_midgame, std::array<int32_t, 64> pcetype_psqt_endgame);
+void precompute_pce_psqt(const Piece piece, std::array<int32_t, 64> pcetype_psqt_midgame, std::array<int32_t, 64> pcetype_psqt_endgame);
 
-int32_t evaluate(Position& pos);
+int32_t evaluate(const Position& pos);

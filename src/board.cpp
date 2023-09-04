@@ -12,17 +12,17 @@
 
 std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1";
 
-Position load_from_fen(std::string& fen_string) {
+Position load_from_fen(const std::string& fen_string) {
 	Position pos{};
 
 	std::vector<std::string> fen_sections;
 	fen_sections = split_string(fen_string, ' ');
 
-	std::string piece_placement_section = fen_sections[0];
-	std::string side_to_move_section = fen_sections[1];
-	std::string castling_rights_section = fen_sections[2];
-	std::string en_passant_sq_section = fen_sections[3];
-	std::string fifty_move_rule_section = fen_sections[4];
+	const std::string piece_placement_section = fen_sections[0];
+	const std::string side_to_move_section = fen_sections[1];
+	const std::string castling_rights_section = fen_sections[2];
+	const std::string en_passant_sq_section = fen_sections[3];
+	const std::string fifty_move_rule_section = fen_sections[4];
 
 	for (int sq = 0; sq < 64; sq++) {
 		pos.pces[sq] = Piece::NONE;
@@ -38,10 +38,10 @@ Position load_from_fen(std::string& fen_string) {
 			file += symbol - '0';
 		}
 		else {
-			int sq = get_sq(rank, file);
-			uint64_t sq_bb = get_sq_bitboard(sq);
-			Piece pce = symbol_to_pce(symbol);
-			Color col = get_col(pce);
+			const int sq = get_sq(rank, file);
+			const uint64_t sq_bb = get_sq_bitboard(sq);
+			const Piece pce = symbol_to_pce(symbol);
+			const Color col = get_col(pce);
 
 			pos.all_bitboard = set_sq(pos.all_bitboard, sq_bb);
 			pos.col_bitboards[static_cast<int>(col)] = set_sq(pos.col_bitboards[static_cast<int>(col)], sq_bb);
@@ -83,8 +83,8 @@ Position load_from_fen(std::string& fen_string) {
 		pos.en_passant_sq = static_cast<int>(Square::NO_SQ);
 	}
 	else {
-		uint32_t rank = en_passant_sq_section[1] - '1';
-		uint32_t file = en_passant_sq_section[0] - 'a';
+		const uint32_t rank = en_passant_sq_section[1] - '1';
+		const uint32_t file = en_passant_sq_section[0] - 'a';
 		pos.en_passant_sq = get_sq(rank, file);
 	}
 
@@ -95,7 +95,7 @@ Position load_from_fen(std::string& fen_string) {
 	return pos;
 }
 
-void print_board(Position& pos) {
+void print_board(const Position& pos) {
 	for (int rank = 7; rank >= 0; rank--) {
 		for (int file = 0; file < 8; file++) {
 			if (file == 0) {
@@ -113,7 +113,7 @@ void print_board(Position& pos) {
 	std::cout << std::endl << "    a b c d e f g h" << std::endl << std::endl;
 }
 
-bool valid_pos(Position& pos) { 
+bool valid_pos(const Position& pos) {
 	for (int sq = 0; sq < 64; sq++) {
 		uint64_t bb_sq = get_sq_bitboard(sq);
 		Piece pce_at_sq = pos.pces[sq];

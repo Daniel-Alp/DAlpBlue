@@ -6,16 +6,16 @@
 #include <cstdint>
 #include <iostream>
 
-bool sq_attacked(Position& pos, int sq, Color side_attacking) {
-	uint64_t occluded = pos.all_bitboard | 0x8000000000000001;
-	uint64_t bishop_attacks = gen_bishop_attacks(sq, occluded);
-	uint64_t rook_attacks = gen_rook_attacks(sq, occluded);
+bool sq_attacked(const Position& pos, const int sq, const Color side_attacking) {
+	const uint64_t occluded = pos.all_bitboard | 0x8000000000000001;
+	const uint64_t bishop_attacks = gen_bishop_attacks(sq, occluded);
+	const uint64_t rook_attacks = gen_rook_attacks(sq, occluded);
 	
-	Piece knight = build_pce(PieceType::KNIGHT, side_attacking);
-	Piece king = build_pce(PieceType::KING, side_attacking);
-	Piece bishop = build_pce(PieceType::BISHOP, side_attacking);
-	Piece rook = build_pce(PieceType::ROOK, side_attacking);
-	Piece queen = build_pce(PieceType::QUEEN, side_attacking);
+	const Piece knight = build_pce(PieceType::KNIGHT, side_attacking);
+	const Piece king = build_pce(PieceType::KING, side_attacking);
+	const Piece bishop = build_pce(PieceType::BISHOP, side_attacking);
+	const Piece rook = build_pce(PieceType::ROOK, side_attacking);
+	const Piece queen = build_pce(PieceType::QUEEN, side_attacking);
 
 	if (side_attacking == Color::WHITE) {
 		if (black_pawn_attacks[sq] & pos.pce_bitboards[static_cast<int>(Piece::WHITE_PAWN)]) {
@@ -42,7 +42,7 @@ bool sq_attacked(Position& pos, int sq, Color side_attacking) {
 	return false;
 }
 
-void print_attacks(Position& pos, Color side_attacking) {
+void print_attacks(const Position& pos, const Color side_attacking) {
 	for (int rank = 7; rank >= 0; rank--) {
 		for (int file = 0; file < 8; file++) {
 			if (file == 0) {

@@ -7,7 +7,7 @@
 #include <array>
 #include <cstdint>
 
-bool make_move(Position& pos, Move move) {
+bool make_move(Position& pos, const Move& move) {
 	pos.undo_stack[pos.ply].en_passant_sq = pos.en_passant_sq;
 	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
 	pos.undo_stack[pos.ply].fifty_move_rule = pos.fifty_move_rule;
@@ -15,8 +15,8 @@ bool make_move(Position& pos, Move move) {
 
 	pos.history_stack[pos.history_ply] = pos.zobrist_key;
 
-	uint32_t from_sq = move.get_from_sq();
-	uint32_t to_sq = move.get_to_sq();
+	const uint32_t from_sq = move.get_from_sq();
+	const uint32_t to_sq = move.get_to_sq();
 	
 	if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
 		pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
@@ -47,8 +47,8 @@ bool make_move(Position& pos, Move move) {
 		}
 	}
 	else {
-		Piece cap_pce = move.get_cap_pce();
-		if (static_cast<uint32_t>(cap_pce)) {
+		const Piece cap_pce = move.get_cap_pce();
+		if (cap_pce != Piece::NONE) {
 			pos.fifty_move_rule = 0;
 			if (move.is_en_passant()) {
 				clr_pce(pos, to_sq ^ 8);
@@ -61,7 +61,7 @@ bool make_move(Position& pos, Move move) {
 
 		if (get_pce_type(pos.pces[to_sq]) == PieceType::PAWN) {
 			pos.fifty_move_rule = 0;
-			Piece promo_pce = move.get_promo_pce();
+			const Piece promo_pce = move.get_promo_pce();
 			if (promo_pce != Piece::NONE) {
 				clr_pce(pos, to_sq);
 				add_pce(pos, promo_pce, to_sq);
@@ -73,7 +73,7 @@ bool make_move(Position& pos, Move move) {
 		}
 	}
 
-	Color move_col = pos.side_to_move;
+	const Color move_col = pos.side_to_move;
 	pos.side_to_move = flip_col(pos.side_to_move);
 	pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
 
@@ -88,13 +88,13 @@ bool make_move(Position& pos, Move move) {
 	return true;
 }
 
-void undo_move(Position& pos, Move move) {
+void undo_move(Position& pos, const Move& move) {
 	pos.history_ply--;
 	pos.ply--;
 	pos.side_to_move = flip_col(pos.side_to_move);
 
-	uint32_t from_sq = move.get_from_sq();
-	uint32_t to_sq = move.get_to_sq();
+	const uint32_t from_sq = move.get_from_sq();
+	const uint32_t to_sq = move.get_to_sq();
 
 	if (move.is_castle()) {
 		move_pce(pos, to_sq, from_sq);
@@ -114,16 +114,16 @@ void undo_move(Position& pos, Move move) {
 		}
 	}
 	else {
-		Piece promo_pce = move.get_promo_pce();
+		const Piece promo_pce = move.get_promo_pce();
 		if (promo_pce != Piece::NONE) {
 			clr_pce(pos, to_sq);
-			Piece undo_promo_pce = build_pce(PieceType::PAWN, pos.side_to_move);
+			const Piece undo_promo_pce = build_pce(PieceType::PAWN, pos.side_to_move);
 			add_pce(pos, undo_promo_pce, to_sq);
 		}
 
 		move_pce(pos, to_sq, from_sq);
 
-		Piece cap_pce = move.get_cap_pce();
+		const Piece cap_pce = move.get_cap_pce();
 		if (cap_pce != Piece::NONE) {
 			if (move.is_en_passant()) {
 				add_pce(pos, cap_pce, to_sq ^ 8);

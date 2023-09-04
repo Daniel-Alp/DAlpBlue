@@ -27,11 +27,11 @@ struct Move {
 		val = (from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | (static_cast<uint32_t>(flag)));
 	}
 
-	constexpr bool operator == (Move& move) const {
+	constexpr bool operator == (const Move& move) const {
 		return val == move.val;
 	}
 
-	constexpr bool operator != (Move& move) const {
+	constexpr bool operator != (const Move& move) const {
 		return val != move.val;
 	}
 

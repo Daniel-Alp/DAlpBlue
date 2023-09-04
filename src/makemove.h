@@ -20,9 +20,9 @@ constexpr std::array<int, 64> castling = {
 };
 
 constexpr void clr_pce(Position& pos, int sq) {
-	Piece pce = pos.pces[sq];
-	Color col = get_col(pce);
-	uint64_t sq_bb = get_sq_bitboard(sq);
+	const Piece pce = pos.pces[sq];
+	const Color col = get_col(pce);
+	const uint64_t sq_bb = get_sq_bitboard(sq);
 
 	pos.zobrist_key = hash_pce(pos.zobrist_key, pce, sq);
 
@@ -40,8 +40,8 @@ constexpr void clr_pce(Position& pos, int sq) {
 
 constexpr void add_pce(Position& pos, Piece pce, int sq) {
 	pos.pces[sq] = pce;
-	Color col = get_col(pce);
-	uint64_t sq_bb = get_sq_bitboard(sq);
+	const Color col = get_col(pce);
+	const uint64_t sq_bb = get_sq_bitboard(sq);
 
 	pos.zobrist_key = hash_pce(pos.zobrist_key, pce, sq);
 
@@ -58,10 +58,10 @@ constexpr void add_pce(Position& pos, Piece pce, int sq) {
 }
 
 constexpr void move_pce(Position& pos, int from_sq, int to_sq) {
-	Piece pce = pos.pces[from_sq];
-	Color col = get_col(pce);
-	uint64_t from_sq_bb = get_sq_bitboard(from_sq);
-	uint64_t to_sq_bb = get_sq_bitboard(to_sq);
+	const Piece pce = pos.pces[from_sq];
+	const Color col = get_col(pce);
+	const uint64_t from_sq_bb = get_sq_bitboard(from_sq);
+	const uint64_t to_sq_bb = get_sq_bitboard(to_sq);
 
 	pos.zobrist_key = hash_pce(pos.zobrist_key, pce, from_sq);
 	pos.zobrist_key = hash_pce(pos.zobrist_key, pce, to_sq);
@@ -77,5 +77,5 @@ constexpr void move_pce(Position& pos, int from_sq, int to_sq) {
 	pos.col_bitboards[static_cast<int>(col)] = move_sq(pos.col_bitboards[static_cast<int>(col)], from_sq_bb, to_sq_bb);
 	pos.all_bitboard = move_sq(pos.all_bitboard, from_sq_bb, to_sq_bb);
 }
-bool make_move(Position& pos, Move move);
-void undo_move(Position& pos, Move move);
+bool make_move(Position& pos, const Move& move);
+void undo_move(Position& pos, const Move& move);

@@ -40,8 +40,7 @@ void run_perft_suite() {
 		const std::vector<std::string> test_sections = split_string(test, ';');
 
 		const std::string fen = test_sections[0];
-		Position pos{};
-		pos = load_from_fen(fen);
+		Position pos = load_from_fen(fen);
 		clr_hash_table();
 
 		std::cout << fen << std::endl;

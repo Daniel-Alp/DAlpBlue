@@ -32,8 +32,8 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 
 	}
 
-	bool root_node = (ply == 0);
-	bool pv_node = (alpha != beta - 1);
+	const bool root_node = (ply == 0);
+	const bool pv_node = (alpha != beta - 1);
 
 	if (!root_node && repeated_pos(pos)) {
 		return 0;
@@ -42,7 +42,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
 	bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
 
-	if (!root_node && !pv_node && matching_hash_key && hash_entry.depth >= depth) {
+	if (!pv_node && matching_hash_key && hash_entry.depth >= depth) {
 		if (hash_entry.hash_flag == HashFlag::EXACT
 			|| (hash_entry.hash_flag == HashFlag::BETA && hash_entry.score >= beta)
 			|| (hash_entry.hash_flag == HashFlag::ALPHA && hash_entry.score <= alpha)) {
@@ -117,7 +117,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	}
 
 	if (num_legal_moves == 0) {
-		int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
+		const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
 		if (sq_attacked(pos, king_sq, flip_col(pos.side_to_move))) {
 			return -mate_score + ply;
 		}

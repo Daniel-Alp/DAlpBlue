@@ -41,21 +41,3 @@ bool sq_attacked(const Position& pos, const int sq, const Color side_attacking) 
 	}
 	return false;
 }
-
-void print_attacks(const Position& pos, const Color side_attacking) {
-	for (int rank = 7; rank >= 0; rank--) {
-		for (int file = 0; file < 8; file++) {
-			if (file == 0) {
-				std::cout << rank + 1 << "   ";
-			}
-			if (sq_attacked(pos, get_sq(rank, file), side_attacking)) {
-				std::cout << "X ";
-			}
-			else {
-				std::cout << ". ";
-			}
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl << "    a b c d e f g h" << std::endl << std::endl;
-}

@@ -15,9 +15,7 @@ std::string start_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 
 Position load_from_fen(const std::string& fen_string) {
 	Position pos{};
 
-	std::vector<std::string> fen_sections;
-	fen_sections = split_string(fen_string, ' ');
-
+	const std::vector<std::string> fen_sections = split_string(fen_string, ' ');
 	const std::string piece_placement_section = fen_sections[0];
 	const std::string side_to_move_section = fen_sections[1];
 	const std::string castling_rights_section = fen_sections[2];

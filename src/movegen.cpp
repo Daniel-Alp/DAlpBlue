@@ -35,7 +35,7 @@ void serialize_moves(const Position& pos, std::array<Move, max_moves>& moves, in
 	attacks &= ~pos.col_bitboards[static_cast<int>(pos.side_to_move)];
 	attacks &= targets;
 	while (attacks != 0) {
-		int to_sq = get_lsb(attacks);
+		const int to_sq = get_lsb(attacks);
 		moves[num_moves++] = Move(from_sq, to_sq, pos.pces[to_sq], Piece::NONE, MoveFlag::NONE);
 		attacks = clr_lsb(attacks);
 	}
@@ -123,15 +123,15 @@ void gen_pawn_moves(const Position& pos, std::array<Move, max_moves>& moves, int
 }
 
 void gen_king_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t king) {
-	int from_sq = get_lsb(king);
-	uint64_t attacks = king_attacks[from_sq];
+	const int from_sq = get_lsb(king);
+	const uint64_t attacks = king_attacks[from_sq];
 	serialize_moves(pos, moves, num_moves, targets, attacks, from_sq);
 }
 
 void gen_knight_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t knights) {
 	while (knights != 0) {
-		int from_sq = get_lsb(knights);
-		uint64_t attacks = knight_attacks[from_sq];
+		const int from_sq = get_lsb(knights);
+		const uint64_t attacks = knight_attacks[from_sq];
 		serialize_moves(pos, moves, num_moves, targets, attacks, from_sq);
 		knights = clr_lsb(knights);
 	}
@@ -139,8 +139,8 @@ void gen_knight_moves(const Position& pos, std::array<Move, max_moves>& moves, i
 
 void gen_bishop_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t bishops) {
 	while (bishops != 0) {
-		int from_sq = get_lsb(bishops);
-		uint64_t attacks = gen_bishop_attacks(from_sq, pos.all_bitboard);
+		const int from_sq = get_lsb(bishops);
+		const uint64_t attacks = gen_bishop_attacks(from_sq, pos.all_bitboard);
 		serialize_moves(pos, moves, num_moves, targets, attacks, from_sq);
 		bishops = clr_lsb(bishops);
 	}
@@ -148,8 +148,8 @@ void gen_bishop_moves(const Position& pos, std::array<Move, max_moves>& moves, i
 
 void gen_rook_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t rooks) {
 	while (rooks != 0) {
-		int from_sq = get_lsb(rooks);
-		uint64_t attacks = gen_rook_attacks(from_sq, pos.all_bitboard);
+		const int from_sq = get_lsb(rooks);
+		const uint64_t attacks = gen_rook_attacks(from_sq, pos.all_bitboard);
 		serialize_moves(pos, moves, num_moves, targets, attacks, from_sq);
 		rooks = clr_lsb(rooks);
 	}
@@ -157,8 +157,8 @@ void gen_rook_moves(const Position& pos, std::array<Move, max_moves>& moves, int
 
 void gen_queen_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t queens) {
 	while (queens != 0) {
-		int from_sq = get_lsb(queens);
-		uint64_t attacks = gen_rook_attacks(from_sq, pos.all_bitboard) ^ gen_bishop_attacks(from_sq, pos.all_bitboard);
+		const int from_sq = get_lsb(queens);
+		const uint64_t attacks = gen_rook_attacks(from_sq, pos.all_bitboard) ^ gen_bishop_attacks(from_sq, pos.all_bitboard);
 		serialize_moves(pos, moves, num_moves, targets, attacks, from_sq);
 		queens = clr_lsb(queens);
 	}
@@ -195,11 +195,4 @@ void gen_castling_moves(const Position& pos, std::array<Move, max_moves>& moves,
 			moves[num_moves++] = Move(static_cast<int>(Square::E8), static_cast<int>(Square::C8), Piece::NONE, Piece::NONE, MoveFlag::CASTLE);
 		}
 	}
-}
-
-void print_moves(std::array<Move, max_moves>& moves, int num_moves) {
-	for (int i = 0; i < num_moves; i++) {
-		std::cout << moves[i].to_str() << std::endl;
-	}
-	std::cout << "TOTAL = " << num_moves << std::endl;
 }

@@ -43,7 +43,6 @@ constexpr inline uint64_t sq_between_e8_a8 = 0x0E00000000000000;
 
 void precompute_rays();
 void precompute_non_slider_attacks();
-void print_bitboard(const uint64_t bitboard);
 
 constexpr uint64_t shift_nort(const uint64_t bitboard) {
 	return bitboard << 8;

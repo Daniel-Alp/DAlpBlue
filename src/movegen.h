@@ -19,4 +19,3 @@ void gen_bishop_moves(const Position& pos, std::array<Move, max_moves>& moves, i
 void gen_rook_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t bishops);
 void gen_queen_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves, const uint64_t targets, uint64_t bishops);
 void gen_castling_moves(const Position& pos, std::array<Move, max_moves>& moves, int& num_moves);
-void print_moves(std::array<Move, max_moves>& moves, int num_moves);

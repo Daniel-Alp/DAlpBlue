@@ -64,12 +64,12 @@ struct Move {
 	}
 
 	inline std::string Move::to_str() const {
-		uint32_t from_sq = get_from_sq();
-		int from_rank = get_rank(from_sq);
-		int from_file = get_file(from_sq);
-		uint32_t to_sq = get_to_sq();
-		int to_rank = get_rank(to_sq);
-		int to_file = get_file(to_sq);
+		const uint32_t from_sq = get_from_sq();
+		const int from_rank = get_rank(from_sq);
+		const int from_file = get_file(from_sq);
+		const uint32_t to_sq = get_to_sq();
+		const int to_rank = get_rank(to_sq);
+		const int to_file = get_file(to_sq);
 
 		std::string move_str;
 		move_str.push_back('a' + from_file);
@@ -77,9 +77,9 @@ struct Move {
 		move_str.push_back('a' + to_file);
 		move_str.push_back('1' + to_rank);
 
-		Piece promo_pce = get_promo_pce();
+		const Piece promo_pce = get_promo_pce();
 
-		if (static_cast<uint32_t>(promo_pce)) {
+		if (promo_pce != Piece::NONE) { //DA!!!
 			move_str.push_back(tolower(pce_to_symbol(promo_pce)));
 		}
 

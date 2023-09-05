@@ -69,7 +69,7 @@ void uci_loop() {
 	}
 }
 
-void uci_go_command(std::vector<std::string>& cmd_sections, std::thread& search_thread, SearchData& search_data, Position& pos) {
+void uci_go_command(const std::vector<std::string>& cmd_sections, std::thread& search_thread, SearchData& search_data, Position& pos) {
 	int32_t wtime = 0;
 	int32_t btime = 0;
 	int32_t winc = 0;
@@ -119,7 +119,7 @@ void uci_go_command(std::vector<std::string>& cmd_sections, std::thread& search_
 	search_thread = std::thread(get_best_move, std::ref(pos), std::ref(search_data));
 }
 
-void uci_position_command(std::vector<std::string>& cmd_sections, Position& pos) {
+void uci_position_command(const std::vector<std::string>& cmd_sections, Position& pos) {
 	int move_token = 0;
 
 	if (cmd_sections[1] == "startpos") {

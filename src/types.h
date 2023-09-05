@@ -46,17 +46,17 @@ enum class PiecePhaseValue : uint32_t {
     KNIGHT = 1,
 };
 
-Piece symbol_to_pce(char symbol);
-char pce_to_symbol(Piece piece);
-constexpr Color get_col(Piece piece) {
+Piece symbol_to_pce(const char symbol);
+char pce_to_symbol(const Piece piece);
+constexpr Color get_col(const Piece piece) {
 	return static_cast<Color>(static_cast<int>(piece) >> 3);
 }
-constexpr PieceType get_pce_type(Piece piece) {
+constexpr PieceType get_pce_type(const Piece piece) {
 	return static_cast<PieceType>(static_cast<int>(piece) & 7);
 }
-constexpr Piece build_pce(PieceType pce_type, Color col) {
+constexpr Piece build_pce(const PieceType pce_type, const Color col) {
 	return static_cast<Piece>(static_cast<int>(pce_type) + (static_cast<int>(col) << 3));
 }
-constexpr int build_pce(int pce_type, int col) {
+constexpr int build_pce(const int pce_type, const int col) {
 	return pce_type + (col << 3);
 }

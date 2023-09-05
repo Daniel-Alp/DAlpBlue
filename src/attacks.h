@@ -7,7 +7,6 @@
 #include <cstdint>
 
 bool sq_attacked(const Position& pos, const int sq, const Color side_attacking);
-void print_attacks(const Position& pos, const Color side_attacking);
 inline uint64_t gen_bishop_attacks(const int sq, uint64_t occluded) {
 	occluded |= 0x8000000000000001;
 	const int block_noea = get_lsb(ray_noea_stop[sq] & occluded);

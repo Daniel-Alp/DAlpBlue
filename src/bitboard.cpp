@@ -155,23 +155,3 @@ void precompute_non_slider_attacks() {
 		pawn <<= 1;
 	}
 }
-
-void print_bitboard(const uint64_t bitboard) {
-	for (int rank = 7; rank >= 0; rank--) {
-		for (int file = 0; file < 8; file++) {
-			if (file == 0) {
-				std::cout << rank + 1 << "   ";
-			}
-			if (has_sq(bitboard, get_sq_bitboard(get_sq(rank, file)))) {
-				std::cout << "X ";
-			} 
-			else {
-				std::cout << ". ";
-			}
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl << "    a b c d e f g h" << std::endl << std::endl;
-}
-
-

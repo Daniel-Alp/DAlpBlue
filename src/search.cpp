@@ -29,7 +29,6 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	if (time_up(search_data)) {
 		search_data.searching = false;
 		return 0;
-
 	}
 
 	const bool root_node = (ply == 0);
@@ -51,7 +50,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	}
 
 	if (depth <= 0) {
-		return evaluate(pos);
+		return quiescence(pos, search_data, -beta, -alpha);
 	}
 
 	MoveList move_list = gen_pseudo_moves(pos, false);
@@ -135,6 +134,56 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 		hash_flag = HashFlag::ALPHA;
 	}
 	record_hash_entry(pos.zobrist_key, depth, best_score, hash_flag, best_move);
+
+	return best_score;
+}
+
+int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta) {
+	if (time_up(search_data)) {
+		search_data.searching = false;
+		return 0;
+	}
+
+	int32_t best_score = evaluate(pos);
+	if (best_score >= beta) {
+		return best_score;
+	}
+
+	if (best_score > alpha) {
+		alpha = best_score;
+	}
+	
+	MoveList move_list = gen_pseudo_moves(pos, true);
+	std::array<int32_t, MoveList::max_moves> scores{};
+	for (int i = 0; i < move_list.size(); i++) {
+		scores[i] = score_move(move_list.get(i), Move(), pos.pces);
+	}
+
+	int32_t score;
+	for (int i = 0; i < move_list.size(); i++) {
+		get_next_move(move_list, scores, i);
+		const Move move = move_list.get(i);
+
+		if (make_move(pos, move)) {
+			score = -quiescence(pos, search_data, -beta, -alpha);
+			undo_move(pos, move);
+			if (time_up(search_data)) {
+				return 0;
+			}
+
+			if (score > best_score) {
+				best_score = score;
+
+				if (score > alpha) {
+					alpha = score;
+
+					if (score >= beta) {
+						break;
+					}
+				}
+			}
+		}
+	}
 
 	return best_score;
 }

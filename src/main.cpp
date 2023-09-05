@@ -31,10 +31,10 @@ int main(int argc) {
 	precompute_pce_psqt(Piece::BLACK_KING, king_midgame_psqt, king_endgame_psqt);
 
 	//run_perft_suite();
+		
+	//run_bench();
 
-	run_bench();
-
-	//uci_loop(); 
+	uci_loop(); 
 
 	return 0;
 }

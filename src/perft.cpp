@@ -20,6 +20,7 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 
 	uint64_t nodes = 0;
 	MoveList move_list = gen_pseudo_moves(pos, false);
+
 	for (int i = 0; i < move_list.size(); i++) {
 		Move move = move_list.get(i);
 		if (make_move(pos, move)) {

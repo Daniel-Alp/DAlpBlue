@@ -6,7 +6,7 @@
 #include "attacks.h"
 #include <array>
 
-MoveList gen_pseudo_moves(const Position& pos, bool not_quiet);
+MoveList gen_pseudo_moves(const Position& pos, bool exclude_quiet);
 void serialize_moves(const Position& pos, MoveList& move_list, const uint64_t targets, uint64_t attacks, int from_sq);
 void serialize_pawn_promo(const Position& pos, MoveList& move_list, uint64_t to_sqs, const int dir);
 void serialize_pawn_non_promo(const Position& pos, MoveList& move_list, uint64_t to_sqs, const int dir, const MoveFlag flag);

@@ -1,5 +1,6 @@
 #include "bitboard.h"
 #include "board.h"
+#include "bench.h"
 #include "evaluation.h"
 #include "perft.h"
 #include "types.h"
@@ -31,7 +32,9 @@ int main(int argc) {
 
 	//run_perft_suite();
 
-	uci_loop(); 
+	run_bench();
+
+	//uci_loop(); 
 
 	return 0;
 }

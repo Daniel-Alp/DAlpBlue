@@ -116,7 +116,7 @@ void uci_go_command(const std::vector<std::string>& cmd_sections, std::thread& s
 	}
 	search_data.start_time = get_current_time();
 	search_data.time_allotted = get_time_allotted(player_time, opp_time, player_inc, opp_inc, moves_to_go);
-	search_thread = std::thread(get_best_move, std::ref(pos), std::ref(search_data));
+	search_thread = std::thread(get_best_move, std::ref(pos), std::ref(search_data), 255);
 }
 
 void uci_position_command(const std::vector<std::string>& cmd_sections, Position& pos) {

@@ -8,12 +8,12 @@
 #include <cstdint>
 #include <iostream>
 
-void get_best_move(Position& pos, SearchData& search_data) {
+void get_best_move(Position& pos, SearchData& search_data, const int max_depth) {
 	Move best_move_root = Move();
 	search_data.searching = true;
 	search_data.nodes = 0;
 
-	for (int depth = 1; depth < 255; depth++) {
+	for (int depth = 1; depth < max_depth; depth++) {
 		pos.ply = 0;
 		const int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0);
 		if (!search_data.searching) {

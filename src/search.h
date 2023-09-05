@@ -15,7 +15,7 @@ struct SearchData {
 	uint64_t nodes;
 };
 
-void get_best_move(Position& pos, SearchData& search_data);
+void get_best_move(Position& pos, SearchData& search_data, const int max_depth);
 int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, int32_t alpha, int32_t beta, int depth, int ply);
 
 constexpr inline int32_t mvv_lva(PieceType cap_pce_type, PieceType move_pce_type) {

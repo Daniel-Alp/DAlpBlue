@@ -54,18 +54,16 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 		return evaluate(pos);
 	}
 
-	std::array<Move, max_moves> moves;
-	int num_moves = 0;
+	MoveList move_list = gen_pseudo_moves(pos, false);
 	int num_legal_moves = 0;
-	gen_pseudo_moves(pos, moves, num_moves, false);
-
-	std::array<int32_t, max_moves> scores{};
+	
+	std::array<int32_t, MoveList::max_moves> scores{};
 	Move hash_entry_best_move = Move();
 	if (matching_hash_key) {
 		hash_entry_best_move = hash_entry.best_move;
 	}
-	for (int i = 0; i < num_moves; i++) {
-		scores[i] = score_move(moves[i], hash_entry_best_move, pos.pces);
+	for (int i = 0; i < move_list.size(); i++) {
+		scores[i] = score_move(move_list.get(i), hash_entry_best_move, pos.pces);
 	}
 
 	int32_t best_score = -mate_score;
@@ -74,9 +72,9 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	const int32_t orig_alpha = alpha;
 	int32_t score;
 
-	for (int i = 0; i < num_moves; i++) {
-		get_next_move(moves, num_moves, scores, i);
-		const Move move = moves[i];
+	for (int i = 0; i < move_list.size(); i++) {
+		get_next_move(move_list, scores, i);
+		const Move move = move_list.get(i);
 
 		if (make_move(pos, move)) {
 			num_legal_moves++;

@@ -2,6 +2,7 @@
 
 #include "types.h"
 #include "board.h"
+#include <array>
 #include <cstdint>
 #include <string>
 
@@ -14,14 +15,11 @@ enum class MoveFlag : uint32_t {
 	EN_PASSANT = 0b10000000000000000000000
 };
 
-struct Move {
+class Move {
+private:
 	uint32_t val;
-
+public:
 	inline Move() : val(null_move_val) {}
-
-	inline Move(uint32_t move_val) {
-		val = move_val;
-	}
 
 	inline Move(uint32_t from_sq, uint32_t to_sq, Piece capture_pce, Piece promo_pce, MoveFlag flag) {
 		val = (from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | (static_cast<uint32_t>(flag)));
@@ -85,4 +83,27 @@ struct Move {
 
 		return move_str;
 	}
+};
+
+class MoveList {
+public:
+	static constexpr int max_moves = 218;
+	inline int size() const {
+		return m_size;
+	}
+
+	inline void push_back(const Move move) {
+		moves[m_size++] = move;
+	}
+
+	inline Move get(const int i) const {
+		return moves[i];
+	}
+
+	inline void swap(const int i1, const int i2) {
+		std::swap(moves[i1], moves[i2]);
+	}
+private:
+	int m_size = 0;
+	std::array<Move, max_moves> moves{};
 };

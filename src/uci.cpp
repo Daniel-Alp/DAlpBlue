@@ -136,12 +136,10 @@ void uci_position_command(const std::vector<std::string>& cmd_sections, Position
 		move_token = 9;
 	}
 
-	std::array<Move, max_moves> pseudo_moves;
-	int num_pseudo_moves;	
-	while (move_token < cmd_sections.size()) {
-		gen_pseudo_moves(pos, pseudo_moves, num_pseudo_moves, false);
-		for (int i = 0; i < num_pseudo_moves; i++) {
-			Move move = pseudo_moves[i];
+	while (move_token < cmd_sections.size()) { //DA!!! Instantinating the move_list object multiple times might slow down program
+		MoveList move_list = gen_pseudo_moves(pos, false);
+		for (int i = 0; i < move_list.size(); i++) {
+			Move move = move_list.get(i);
 			if (move.to_str() == cmd_sections[move_token]) {
 				make_move(pos, move);
 			}

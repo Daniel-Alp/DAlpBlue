@@ -35,14 +35,14 @@ inline int32_t score_move(const Move& move, const Move& hash_entry_best_move, st
 	return 0;
 }
 
-inline void get_next_move(std::array<Move, max_moves>& moves, const int num_moves, std::array<int32_t, max_moves>& scores, int cur_move_index) {
+inline void get_next_move(MoveList& move_list, std::array<int32_t, MoveList::max_moves>& scores, int cur_move_index) {
 	int best_move_index = cur_move_index;
-	for (int i = cur_move_index + 1; i < num_moves; i++) {
+	for (int i = cur_move_index + 1; i < move_list.size(); i++) {
 		if (scores[i] > scores[best_move_index]) {
 			best_move_index = i;
 		}
 	}
-	std::swap(moves[cur_move_index], moves[best_move_index]);
+	move_list.swap(cur_move_index, best_move_index);
 	std::swap(scores[cur_move_index], scores[best_move_index]);
 }
 

@@ -1,3 +1,4 @@
+#include "move.h"
 #include "movegen.h"
 #include "makemove.h"
 #include "parser.h"
@@ -18,11 +19,9 @@ uint64_t run_perft(Position& pos, int depth, int ply) {
 	}
 
 	uint64_t nodes = 0;
-	std::array<Move, max_moves> moves;
-	int num_moves;
-	gen_pseudo_moves(pos, moves, num_moves, false);
-	for (int i = 0; i < num_moves; i++) {
-		Move move = moves[i];
+	MoveList move_list = gen_pseudo_moves(pos, false);
+	for (int i = 0; i < move_list.size(); i++) {
+		Move move = move_list.get(i);
 		if (make_move(pos, move)) {
 			nodes += run_perft(pos, depth - 1, ply + 1);
 			undo_move(pos, move);

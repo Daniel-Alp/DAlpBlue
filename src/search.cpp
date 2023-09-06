@@ -50,7 +50,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	}
 
 	if (depth <= 0) {
-		return quiescence(pos, search_data, -beta, -alpha);
+		return quiescence(pos, search_data, alpha, beta, depth);
 	}
 
 	MoveList move_list = gen_pseudo_moves(pos, false);
@@ -138,19 +138,19 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	return best_score;
 }
 
-int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta) {
+int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta, int depth) {
 	if (time_up(search_data)) {
 		search_data.searching = false;
 		return 0;
 	}
 
 	int32_t best_score = evaluate(pos);
-	if (best_score >= beta) {
-		return best_score;
-	}
 
 	if (best_score > alpha) {
 		alpha = best_score;
+		if (best_score >= beta) {
+			return best_score;
+		}
 	}
 	
 	MoveList move_list = gen_pseudo_moves(pos, true);
@@ -165,7 +165,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 		const Move move = move_list.get(i);
 
 		if (make_move(pos, move)) {
-			score = -quiescence(pos, search_data, -beta, -alpha);
+			score = -quiescence(pos, search_data, -beta, -alpha, depth - 1);
 			undo_move(pos, move);
 			if (time_up(search_data)) {
 				return 0;

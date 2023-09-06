@@ -34,7 +34,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	const bool root_node = (ply == 0);
 	const bool pv_node = (alpha != beta - 1);
 
-	if (!root_node && repeated_pos(pos)) {
+	if (!root_node && (pos.fifty_move_rule >= 100 || repeated_pos(pos))) {
 		return 0;
 	}
 

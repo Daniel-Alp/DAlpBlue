@@ -116,7 +116,9 @@ void uci_go_command(const std::vector<std::string>& cmd_sections, std::thread& s
 	}
 	search_data.start_time = get_current_time();
 	search_data.time_allotted = get_time_allotted(player_time, opp_time, player_inc, opp_inc, moves_to_go);
-	search_thread = std::thread(get_best_move, std::ref(pos), std::ref(search_data), 255);
+	search_data.max_depth = 255;
+
+	search_thread = std::thread(best_move, std::ref(pos), std::ref(search_data));
 }
 
 void uci_position_command(const std::vector<std::string>& cmd_sections, Position& pos) {
@@ -136,7 +138,7 @@ void uci_position_command(const std::vector<std::string>& cmd_sections, Position
 		move_token = 9;
 	}
 
-	while (move_token < cmd_sections.size()) { //DA!!! Instantinating the move_list object multiple times might slow down program
+	while (move_token < cmd_sections.size()) {
 		MoveList move_list = gen_pseudo_moves(pos, false);
 		for (int i = 0; i < move_list.size(); i++) {
 			Move move = move_list.get(i);

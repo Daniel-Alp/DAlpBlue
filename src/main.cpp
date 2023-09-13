@@ -7,6 +7,8 @@
 #include "uci.h"
 #include "zobrist.h"
 
+#include "makemove.h"
+
 int main(int argc) {
 	precompute_rays();
 	precompute_non_slider_attacks();

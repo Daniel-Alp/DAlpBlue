@@ -10,14 +10,15 @@ constexpr int32_t mate_score = 30000;
 
 struct SearchData {
 	bool searching;
+	int max_depth;
 	uint64_t start_time;
 	uint64_t time_allotted;
 	uint64_t nodes;
 };
 
-void get_best_move(Position& pos, SearchData& search_data, const int max_depth);
-int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, int32_t alpha, int32_t beta, int depth, int ply);
-int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta, int depth);
+void best_move(Position& pos, SearchData& search_data);
+int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, int32_t alpha, int32_t beta, int depth, int ply, bool allow_null);
+int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta);
 
 constexpr inline int32_t mvv_lva(PieceType cap_pce_type, PieceType move_pce_type) {
 	return static_cast<int>(cap_pce_type) * 64 - static_cast<int>(move_pce_type);

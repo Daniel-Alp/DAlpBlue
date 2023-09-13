@@ -1,5 +1,6 @@
 #pragma once
 
+#include "attacks.h"
 #include "bitboard.h"
 #include "board.h"
 #include "evaluation.h"
@@ -77,5 +78,46 @@ constexpr void move_pce(Position& pos, int from_sq, int to_sq) {
 	pos.col_bitboards[static_cast<int>(col)] = move_sq(pos.col_bitboards[static_cast<int>(col)], from_sq_bb, to_sq_bb);
 	pos.all_bitboard = move_sq(pos.all_bitboard, from_sq_bb, to_sq_bb);
 }
+
+inline void undo_null_move(Position& pos) {
+	pos.history_ply--;
+	pos.ply--;
+	pos.side_to_move = flip_col(pos.side_to_move);
+
+	pos.en_passant_sq = pos.undo_stack[pos.ply].en_passant_sq;
+	pos.castling_rights = pos.undo_stack[pos.ply].castling_rights;
+	pos.fifty_move_rule = pos.undo_stack[pos.ply].fifty_move_rule;
+	pos.zobrist_key = pos.undo_stack[pos.ply].zobrist_key;
+}
+
+inline bool make_null_move(Position& pos) {
+	pos.undo_stack[pos.ply].en_passant_sq = pos.en_passant_sq;
+	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
+	pos.undo_stack[pos.ply].fifty_move_rule = pos.fifty_move_rule;
+	pos.undo_stack[pos.ply].zobrist_key = pos.zobrist_key;
+
+	pos.history_stack[pos.history_ply] = pos.zobrist_key;
+
+	if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
+		pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
+		pos.en_passant_sq = static_cast<int>(Square::NO_SQ);
+	}
+	pos.fifty_move_rule = 0;
+
+	const Color move_col = pos.side_to_move;
+	pos.side_to_move = flip_col(pos.side_to_move);
+	pos.zobrist_key = hash_side_to_move(pos.zobrist_key);
+
+	pos.history_ply++;
+	pos.ply++;
+
+	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, move_col))]), pos.side_to_move)) {
+		undo_null_move(pos);
+		return false;
+	}
+
+	return true;
+}
+
 bool make_move(Position& pos, const Move& move);
 void undo_move(Position& pos, const Move& move);

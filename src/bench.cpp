@@ -67,9 +67,10 @@ void run_bench() {
 		SearchData search_data{};
 		search_data.start_time = get_current_time();
 		search_data.time_allotted = 4294967296;
+		search_data.max_depth = 9;
 
 		clr_hash_table();
-		get_best_move(pos, search_data, 9);
+		best_move(pos, search_data);
 		std::cout << std::endl;
 
 		nodes += search_data.nodes;

@@ -17,7 +17,7 @@ void best_move(Position& pos, SearchData& search_data) {
 	for (int depth = 1; depth < search_data.max_depth; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0, false);
-		//std::cout << "info score " << score << " pv " << best_move_root.to_str() << std::endl;
+		std::cout << "info score " << score << " pv " << best_move_root.to_str() << std::endl;
 		if (!search_data.searching) {
 			break;
 		}
@@ -35,7 +35,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 		return 0;
 	}
 
-	if (pos.ply >= search_data.max_depth - 2) {
+	if (pos.ply >= search_data.max_depth) {
 		return evaluate(pos);
 	}
 
@@ -160,7 +160,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 		return 0;
 	}
 
-	if (pos.ply >= search_data.max_depth - 2) {
+	if (pos.ply >= search_data.max_depth) {
 		return evaluate(pos);
 	}
 

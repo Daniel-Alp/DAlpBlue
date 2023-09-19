@@ -17,7 +17,7 @@ void best_move(Position& pos, SearchData& search_data) {
 	for (int depth = 1; depth < search_data.max_depth; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0, false);
-		std::cout << "info score " << score << " pv " << best_move_root.to_str() << std::endl;
+		//std::cout << "info score " << score << " pv " << best_move_root.to_str() << std::endl;
 		if (!search_data.searching) {
 			break;
 		}
@@ -48,7 +48,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 
 	const HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
 	const bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
-
+	
 	if (!pv_node && matching_hash_key && hash_entry.depth >= depth) {
 		if (hash_entry.hash_flag == HashFlag::EXACT
 			|| (hash_entry.hash_flag == HashFlag::BETA && hash_entry.score >= beta)
@@ -62,7 +62,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	}
 
 	const int reduction = 2;
-	if (allow_null && !pv_node && pos.phase_val > 2 && evaluate(pos) >= beta && make_null_move(pos)) {
+	if (allow_null && !pv_node && pos.phase_val > 0 && evaluate(pos) >= beta && make_null_move(pos)) {
 		int32_t score = -negamax(pos, search_data, best_move_root, -beta, -beta + 1, depth - 1 - reduction, ply + 1, false);
 		undo_null_move(pos);
 		if (score >= beta) {

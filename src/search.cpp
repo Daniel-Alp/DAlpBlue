@@ -17,15 +17,12 @@ void best_move(Position& pos, SearchData& search_data) {
 	for (int depth = 1; depth < search_data.max_depth; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0, false);
-		//std::cout << "info score " << score << " pv " << best_move_root.to_str() << std::endl;
 		if (!search_data.searching) {
 			break;
 		}
 	}
 
 	search_data.searching = false;
-
-
 	std::cout << "bestmove " << best_move_root.to_str() << std::endl;
 }
 
@@ -56,13 +53,17 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 			return hash_entry.score;
 		}
 	}
+	Move hash_entry_best_move = Move();
+	if (matching_hash_key) {
+		hash_entry_best_move = hash_entry.best_move;
+	}
 
 	if (depth <= 0) {
 		return quiescence(pos, search_data, alpha, beta);
 	}
 
 	const int reduction = 2;
-	if (allow_null && !pv_node && pos.phase_val > 0 && evaluate(pos) >= beta && make_null_move(pos)) {
+	if (allow_null && !pv_node && pos.phase_val > 2 && evaluate(pos) >= beta && make_null_move(pos)) {
 		int32_t score = -negamax(pos, search_data, best_move_root, -beta, -beta + 1, depth - 1 - reduction, ply + 1, false);
 		undo_null_move(pos);
 		if (score >= beta) {
@@ -74,10 +75,6 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	int num_legal_moves = 0;
 
 	std::array<int32_t, MoveList::max_moves> scores{};
-	Move hash_entry_best_move = Move();
-	if (matching_hash_key) {
-		hash_entry_best_move = hash_entry.best_move;
-	}
 	for (int i = 0; i < move_list.size(); i++) {
 		scores[i] = score_move(move_list.get(i), hash_entry_best_move, pos.pces);
 	}
@@ -88,17 +85,28 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	const int32_t orig_alpha = alpha;
 	int32_t score;
 
+	const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
+	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
+
 	for (int i = 0; i < move_list.size(); i++) {
 		get_next_move(move_list, scores, i);
 		const Move move = move_list.get(i);
-
+			
 		if (make_move(pos, move)) {
 			num_legal_moves++;
 
 			if (num_legal_moves > 1) {
-				score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1, ply + 1, true);
-				if (score > alpha && score < beta) {
-					score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, true);
+				if (!pv_node && num_legal_moves >= 3 && depth >= 3 && !in_check && move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
+					score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 3, ply + 1, true);
+				}
+				else {
+					score = alpha + 1;
+				}
+				if (score > alpha) {
+					score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1, ply + 1, true);
+					if (score > alpha && score < beta) {
+						score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, true);
+					}
 				}
 			}
 			else {
@@ -130,8 +138,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	}
 
 	if (num_legal_moves == 0) {
-		const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
-		if (sq_attacked(pos, king_sq, flip_col(pos.side_to_move))) {
+		if (in_check) {
 			return -mate_score + ply;
 		}
 		else {
@@ -158,10 +165,6 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 	if (time_up(search_data)) {
 		search_data.searching = false;
 		return 0;
-	}
-
-	if (pos.ply >= search_data.max_depth) {
-		return evaluate(pos);
 	}
 
 	int32_t best_score = evaluate(pos);

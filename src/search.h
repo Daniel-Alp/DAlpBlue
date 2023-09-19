@@ -1,6 +1,7 @@
 #pragma once
 
 #include "board.h"
+#include "evaluation.h"
 #include "movegen.h"
 #include "move.h"
 #include "transposition.h"
@@ -21,20 +22,19 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta);
 
 constexpr inline int32_t mvv_lva(PieceType cap_pce_type, PieceType move_pce_type) {
-	return static_cast<int>(cap_pce_type) * 64 - static_cast<int>(move_pce_type);
+	return static_cast<int>(cap_pce_type) * 256 - static_cast<int>(move_pce_type);
 }
 
 inline int32_t score_move(const Move& move, const Move& hash_entry_best_move, std::array<Piece, 64>& pces) {
 	if (move == hash_entry_best_move) {
 		return 15000;
 	}
-	else {
-		Piece cap_pce = move.get_cap_pce();
-		if (cap_pce != Piece::NONE) {
-			return mvv_lva(get_pce_type(cap_pce), get_pce_type(pces[move.get_from_sq()]));
-		}
+	PieceType move_pce_type = get_pce_type(pces[move.get_from_sq()]);
+	Piece cap_pce = move.get_cap_pce();
+	if (cap_pce != Piece::NONE) {
+		return mvv_lva(get_pce_type(cap_pce), move_pce_type);
 	}
-	return 0;
+	return pce_psqts_midgame[static_cast<int>(move_pce_type)][move.get_to_sq()] - pce_psqts_midgame[static_cast<int>(move_pce_type)][move.get_from_sq()];
 }
 
 inline void get_next_move(MoveList& move_list, std::array<int32_t, MoveList::max_moves>& scores, int cur_move_index) {

@@ -35,5 +35,7 @@ int32_t evaluate(const Position& pos) {
 		eval *= -1;
 	}
 
-	return eval;
+	const int tempo_bonus = 20;
+
+	return eval + tempo_bonus;
 }

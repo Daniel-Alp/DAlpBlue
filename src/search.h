@@ -8,7 +8,10 @@
 #include "timemanagement.h"
 
 constexpr int32_t mate_score = 30000;
-extern std::array<std::array<uint64_t, 64>, 15> history_table;
+extern std::array<std::array<int64_t, 64>, 15> history_table;
+extern std::array<std::array<Move, 2>, 256> killer_table; //Currently unused
+
+
 
 struct SearchData {
 	bool searching;

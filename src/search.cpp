@@ -8,7 +8,8 @@
 #include <cstdint>
 #include <iostream>
 
-std::array<std::array<uint64_t, 64>, 15> history_table;
+std::array<std::array<int64_t, 64>, 15> history_table;
+std::array<std::array<Move, 2>, 256> killer_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
@@ -24,6 +25,16 @@ void best_move(Position& pos, SearchData& search_data) {
 			break;
 		}
 	}
+
+	//for (int i = 1; i < 15; i++) {
+	//	if (i == 7 || i == 8) {
+	//		continue;
+	//	}
+	//	for (int j = 0; j < 64; j++) {
+	//		std::cout << (char)(get_rank(j) + 'a') << "" << (char)(get_file(j) + '1') << " " << history_table[i][j] << std::endl;
+	//	}
+	//	std::cout << std::endl;
+	//}
 
 	search_data.searching = false;
 	std::cout << "bestmove " << best_move_root.to_str() << std::endl;
@@ -100,9 +111,21 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 		if (make_move(pos, move)) {
 			num_legal_moves++;
 
+			const Piece move_pce = pos.pces[move.get_from_sq()];
+
 			if (num_legal_moves > 1) {
-				if (num_legal_moves >= 3 + 3 * pv_node && depth >= 3 && !in_check && move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
+				if (num_legal_moves >= 3 + 3 * pv_node 
+					&& depth >= 3 
+					&& !in_check 
+					&& move.get_cap_pce() == Piece::NONE 
+					&& move.get_promo_pce() == Piece::NONE) {
+
 					int reduction = 2;
+
+					if (history_table[static_cast<int>(move_pce)][move.get_to_sq()] <= -16384) {
+						reduction = 3;
+					}
+
 					if (depth - 1 - reduction <= 0) {
 						reduction = depth - 2;
 					}
@@ -129,6 +152,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 			}
 
 			if (score > best_score) {
+
 				best_score = score;
 				best_move = move;
 				if (root_node) {
@@ -139,8 +163,15 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 					alpha = score;
 					if (score >= beta) {
 						if (move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
-							Piece move_pce = pos.pces[move.get_from_sq()];
-							history_table[static_cast<int>(move_pce)][move.get_to_sq()] += static_cast<int64_t>(depth * depth);
+							history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
+
+							for (int j = 0; j < i; j++) {
+								Move penalized_move = move_list.get(j);
+								if (penalized_move.get_cap_pce() == Piece::NONE && penalized_move.get_promo_pce() == Piece::NONE) {
+									const Piece penalized_move_pce = pos.pces[penalized_move.get_from_sq()];
+									history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
+								}
+							}
 						}
 						break;
 					}

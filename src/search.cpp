@@ -111,8 +111,6 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 		if (make_move(pos, move)) {
 			num_legal_moves++;
 
-			const Piece move_pce = pos.pces[move.get_from_sq()];
-
 			if (num_legal_moves > 1) {
 				if (num_legal_moves >= 3 + 3 * pv_node 
 					&& depth >= 3 
@@ -121,10 +119,6 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 					&& move.get_promo_pce() == Piece::NONE) {
 
 					int reduction = 2;
-
-					if (history_table[static_cast<int>(move_pce)][move.get_to_sq()] <= -16384) {
-						reduction = 3;
-					}
 
 					if (depth - 1 - reduction <= 0) {
 						reduction = depth - 2;
@@ -163,6 +157,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 					alpha = score;
 					if (score >= beta) {
 						if (move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
+							const Piece move_pce = pos.pces[move.get_from_sq()];
 							history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
 
 							for (int j = 0; j < i; j++) {

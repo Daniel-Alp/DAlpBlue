@@ -11,11 +11,11 @@
 std::array<std::array<uint64_t, 64>, 15> history_table;
 
 void best_move(Position& pos, SearchData& search_data) {
+	div_two_history_table();
 	search_data.searching = true;
 	search_data.nodes = 0;
 	
 	Move best_move_root = Move();
-
 	for (int depth = 1; depth < search_data.max_depth; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0, false);

@@ -30,6 +30,14 @@ inline void clr_history_table() {
 	}
 }
 
+inline void div_two_history_table() {
+	for (int move_pce = 0; move_pce <= static_cast<int>(Piece::BLACK_KING); move_pce++) {
+		for (int to_sq = 0; to_sq < 64; to_sq++) {
+			history_table[move_pce][to_sq] /= 2;
+		}
+	}
+}
+
 constexpr int64_t mvv_lva(PieceType cap_pce_type, PieceType move_pce_type) {
 	return static_cast<int64_t>(cap_pce_type) << 50 - static_cast<int64_t>(move_pce_type);
 }

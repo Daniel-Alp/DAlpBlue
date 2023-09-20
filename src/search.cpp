@@ -101,7 +101,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 			num_legal_moves++;
 
 			if (num_legal_moves > 1) {
-				if (!pv_node && num_legal_moves >= 3 && depth >= 3 && !in_check && move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
+				if (num_legal_moves >= 3 + 3 * pv_node && depth >= 3 && !in_check && move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
 					int reduction = 2;
 					if (depth - 1 - reduction <= 0) {
 						reduction = depth - 2;

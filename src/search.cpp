@@ -97,7 +97,11 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 
 			if (num_legal_moves > 1) {
 				if (!pv_node && num_legal_moves >= 3 && depth >= 3 && !in_check && move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
-					score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 3, ply + 1, true);
+					int reduction = 2;
+					if (depth - 1 - reduction <= 0) {
+						reduction = depth - 2;
+					}
+					score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1 - reduction, ply + 1, true);
 				}
 				else {
 					score = alpha + 1;

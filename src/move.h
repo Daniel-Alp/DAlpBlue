@@ -61,6 +61,10 @@ public:
 		return val & static_cast<uint32_t>(MoveFlag::EN_PASSANT);
 	}
 
+	constexpr bool is_quiet() const {
+		return get_cap_pce() == Piece::NONE && get_promo_pce() == Piece::NONE;
+	}
+
 	inline std::string Move::to_str() const {
 		const uint32_t from_sq = get_from_sq();
 		const int from_rank = get_rank(from_sq);

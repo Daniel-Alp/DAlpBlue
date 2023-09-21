@@ -9,7 +9,6 @@
 #include <iostream>
 
 std::array<std::array<int64_t, 64>, 15> history_table;
-std::array<std::array<Move, 2>, 256> killer_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
@@ -222,7 +221,6 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 		scores[i] = score_move(move_list.get(i), Move(), pos.pces, 0);
 	}
 
-	int32_t score;
 	for (int i = 0; i < move_list.size(); i++) {
 		const Move move = get_next_move(move_list, scores, i);
 
@@ -230,7 +228,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 			continue;
 		}
 
-		score = -quiescence(pos, search_data, -beta, -alpha);
+		int32_t score = -quiescence(pos, search_data, -beta, -alpha);
 		undo_move(pos, move);
 		if (time_up(search_data)) {
 			return 0;

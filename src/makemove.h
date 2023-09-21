@@ -90,7 +90,7 @@ inline void undo_null_move(Position& pos) {
 	pos.zobrist_key = pos.undo_stack[pos.ply].zobrist_key;
 }
 
-inline bool make_null_move(Position& pos) {
+inline void make_null_move(Position& pos) {
 	pos.undo_stack[pos.ply].en_passant_sq = pos.en_passant_sq;
 	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
 	pos.undo_stack[pos.ply].fifty_move_rule = pos.fifty_move_rule;
@@ -110,13 +110,6 @@ inline bool make_null_move(Position& pos) {
 
 	pos.history_ply++;
 	pos.ply++;
-
-	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, move_col))]), pos.side_to_move)) {
-		undo_null_move(pos);
-		return false;
-	}
-
-	return true;
 }
 
 bool make_move(Position& pos, const Move& move);

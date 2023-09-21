@@ -20,21 +20,11 @@ void best_move(Position& pos, SearchData& search_data) {
 	for (int depth = 1; depth < search_data.max_depth; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, best_move_root, -mate_score, mate_score, depth, 0, false);
-		//std::cout << "info score " << score << " pv " << best_move_root.to_str() << std::endl;
+		//std::cout << "info depth " << depth << " score cp " << score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)] << " pv " << best_move_root.to_str() << std::endl;
 		if (!search_data.searching) {
 			break;
 		}
 	}
-
-	//for (int i = 1; i < 15; i++) {
-	//	if (i == 7 || i == 8) {
-	//		continue;
-	//	}
-	//	for (int j = 0; j < 64; j++) {
-	//		std::cout << (char)(get_rank(j) + 'a') << "" << (char)(get_file(j) + '1') << " " << history_table[i][j] << std::endl;
-	//	}
-	//	std::cout << std::endl;
-	//}
 
 	search_data.searching = false;
 	std::cout << "bestmove " << best_move_root.to_str() << std::endl;
@@ -82,7 +72,7 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
 
 	if (!pv_node && !in_check) {
-		if (eval - depth * 200 >= beta && depth < 9) {
+		if (eval - depth * 75 >= beta && depth < 9) {
 			return eval;
 		}
 
@@ -96,8 +86,6 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 			}
 		}
 	}
-
-
 
 	MoveList move_list = gen_pseudo_moves(pos, false);
 	int num_legal_moves = 0;
@@ -114,13 +102,13 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	int32_t score;
 
 	for (int i = 0; i < move_list.size(); i++) {
-		get_next_move(move_list, scores, i);
-		const Move move = move_list.get(i);
+		const Move move = get_next_move(move_list, scores, i);
 			
 		if (make_move(pos, move)) {
 			num_legal_moves++;
 
 			if (num_legal_moves > 1) {
+				score = alpha + 1;
 				if (num_legal_moves >= 3 + 3 * pv_node 
 					&& depth >= 3 
 					&& !in_check 
@@ -232,8 +220,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 
 	int32_t score;
 	for (int i = 0; i < move_list.size(); i++) {
-		get_next_move(move_list, scores, i);
-		const Move move = move_list.get(i);
+		const Move move = get_next_move(move_list, scores, i);
 
 		if (make_move(pos, move)) {
 			score = -quiescence(pos, search_data, -beta, -alpha);

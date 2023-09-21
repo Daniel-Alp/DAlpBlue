@@ -111,7 +111,6 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 		num_legal_moves++;
 
 		if (num_legal_moves > 1) {
-			score = alpha + 1;
 			if (num_legal_moves >= 3 + 3 * pv_node
 				&& depth >= 3
 				&& !in_check

@@ -16,7 +16,7 @@ void best_move(Position& pos, SearchData& search_data) {
 	search_data.nodes = 0;
 	search_data.best_move_root = Move();
 	
-	for (int depth = 1; depth < search_data.max_depth; depth++) {
+	for (int depth = 1;; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, -mate_score, mate_score, depth, 0, false);
 		//std::cout << "info depth " << depth << " score cp " << score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)] << " pv " << best_move_root.to_str() << std::endl;
@@ -35,7 +35,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		return 0;
 	}
 
-	if (pos.ply >= search_data.max_depth) {
+	if (pos.ply >= search_data.max_ply) {
 		return evaluate(pos);
 	}
 
@@ -65,17 +65,17 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		return quiescence(pos, search_data, alpha, beta);
 	}
 
-	int32_t eval = evaluate(pos);
+	int32_t static_eval = evaluate(pos);
 
 	const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
 	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
 
 	if (!pv_node && !in_check) {
-		if (eval - depth * 75 >= beta && depth < 9) {
-			return eval;
+		if (static_eval - depth * 200 >= beta && depth < 9) {
+			return static_eval;
 		}
 
-		if (allow_null && pos.phase_val > 2 && eval >= beta) {
+		if (allow_null && pos.phase_val > 2 && static_eval >= beta) {
 			make_null_move(pos);
 			const int reduction = 2;
 			int32_t score = -negamax(pos, search_data, -beta, -beta + 1, depth - 1 - reduction, ply + 1, false);

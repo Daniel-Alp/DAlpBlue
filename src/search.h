@@ -12,7 +12,7 @@ extern std::array<std::array<int64_t, 64>, 15> history_table;
 
 struct SearchData {
 	bool searching;
-	int max_depth;
+	int max_ply;
 	uint64_t start_time;
 	uint64_t time_allotted;
 	uint64_t nodes;

@@ -19,10 +19,11 @@ struct SearchData {
 	uint64_t start_time;
 	uint64_t time_allotted;
 	uint64_t nodes;
+	Move best_move_root;
 };
 
 void best_move(Position& pos, SearchData& search_data);
-int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, int32_t alpha, int32_t beta, int depth, int ply, bool allow_null);
+int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta, int depth, int ply, bool allow_null);
 int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta);
 
 inline void clr_history_table() {

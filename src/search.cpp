@@ -156,18 +156,22 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 			if (score > alpha) {
 				alpha = score;
 				if (score >= beta) {
-					if (move.is_quiet()) {
-						const Piece move_pce = pos.pces[move.get_from_sq()];
-						history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
-
-						for (int j = 0; j < i; j++) {
-							Move penalized_move = move_list.get(j);
-							if (penalized_move.is_quiet()) {
-								const Piece penalized_move_pce = pos.pces[penalized_move.get_from_sq()];
-								history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
-							}
-						}
+					if (!move.is_quiet()) {
+						break;
 					}
+
+					const Piece move_pce = pos.pces[move.get_from_sq()];
+					history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
+
+					for (int j = 0; j < i; j++) {
+						Move penalized_move = move_list.get(j);
+						if (!penalized_move.is_quiet()) {
+							continue;
+						}
+						const Piece penalized_move_pce = pos.pces[penalized_move.get_from_sq()];
+						history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
+					}
+
 					break;
 				}
 			}

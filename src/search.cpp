@@ -219,29 +219,31 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 	MoveList move_list = gen_pseudo_moves(pos, true);
 	std::array<int64_t, MoveList::max_moves> scores{};
 	for (int i = 0; i < move_list.size(); i++) {
-		scores[i] = score_move(move_list.get(i), Move(), pos.pces, 0); //Killer moves not used in qsearch
+		scores[i] = score_move(move_list.get(i), Move(), pos.pces, 0);
 	}
 
 	int32_t score;
 	for (int i = 0; i < move_list.size(); i++) {
 		const Move move = get_next_move(move_list, scores, i);
 
-		if (make_move(pos, move)) {
-			score = -quiescence(pos, search_data, -beta, -alpha);
-			undo_move(pos, move);
-			if (time_up(search_data)) {
-				return 0;
-			}
+		if (!make_move(pos, move)) {
+			continue;
+		}
 
-			if (score > best_score) {
-				best_score = score;
+		score = -quiescence(pos, search_data, -beta, -alpha);
+		undo_move(pos, move);
+		if (time_up(search_data)) {
+			return 0;
+		}
 
-				if (score > alpha) {
-					alpha = score;
+		if (score > best_score) {
+			best_score = score;
 
-					if (score >= beta) {
-						break;
-					}
+			if (score > alpha) {
+				alpha = score;
+
+				if (score >= beta) {
+					break;
 				}
 			}
 		}

@@ -104,70 +104,72 @@ int32_t negamax(Position& pos, SearchData& search_data, Move& best_move_root, in
 	for (int i = 0; i < move_list.size(); i++) {
 		const Move move = get_next_move(move_list, scores, i);
 			
-		if (make_move(pos, move)) {
-			num_legal_moves++;
+		if (!make_move(pos, move)) {
+			continue;
+		}
 
-			if (num_legal_moves > 1) {
-				score = alpha + 1;
-				if (num_legal_moves >= 3 + 3 * pv_node 
-					&& depth >= 3 
-					&& !in_check 
-					&& move.get_cap_pce() == Piece::NONE 
-					&& move.get_promo_pce() == Piece::NONE) {
+		num_legal_moves++;
 
-					int reduction = 2;
+		if (num_legal_moves > 1) {
+			score = alpha + 1;
+			if (num_legal_moves >= 3 + 3 * pv_node
+				&& depth >= 3
+				&& !in_check
+				&& move.get_cap_pce() == Piece::NONE
+				&& move.get_promo_pce() == Piece::NONE) {
 
-					if (depth - 1 - reduction <= 0) {
-						reduction = depth - 2;
-					}
+				int reduction = 2;
 
-					score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1 - reduction, ply + 1, true);
+				if (depth - 1 - reduction <= 0) {
+					reduction = depth - 2;
 				}
-				else {
-					score = alpha + 1;
-				}
-				if (score > alpha) {
-					score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1, ply + 1, true);
-					if (score > alpha && score < beta) {
-						score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, true);
-					}
-				}
+
+				score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1 - reduction, ply + 1, true);
 			}
 			else {
-				score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, true);
+				score = alpha + 1;
 			}
-
-			undo_move(pos, move);
-
-			if (!search_data.searching) {
-				return 0;
-			}
-
-			if (score > best_score) {
-
-				best_score = score;
-				best_move = move;
-				if (root_node) {
-					best_move_root = move;
+			if (score > alpha) {
+				score = -negamax(pos, search_data, best_move_root, -alpha - 1, -alpha, depth - 1, ply + 1, true);
+				if (score > alpha && score < beta) {
+					score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, true);
 				}
+			}
+		}
+		else {
+			score = -negamax(pos, search_data, best_move_root, -beta, -alpha, depth - 1, ply + 1, true);
+		}
 
-				if (score > alpha) {
-					alpha = score;
-					if (score >= beta) {
-						if (move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
-							const Piece move_pce = pos.pces[move.get_from_sq()];
-							history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
+		undo_move(pos, move);
 
-							for (int j = 0; j < i; j++) {
-								Move penalized_move = move_list.get(j);
-								if (penalized_move.get_cap_pce() == Piece::NONE && penalized_move.get_promo_pce() == Piece::NONE) {
-									const Piece penalized_move_pce = pos.pces[penalized_move.get_from_sq()];
-									history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
-								}
+		if (!search_data.searching) {
+			return 0;
+		}
+
+		if (score > best_score) {
+
+			best_score = score;
+			best_move = move;
+			if (root_node) {
+				best_move_root = move;
+			}
+
+			if (score > alpha) {
+				alpha = score;
+				if (score >= beta) {
+					if (move.get_cap_pce() == Piece::NONE && move.get_promo_pce() == Piece::NONE) {
+						const Piece move_pce = pos.pces[move.get_from_sq()];
+						history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
+
+						for (int j = 0; j < i; j++) {
+							Move penalized_move = move_list.get(j);
+							if (penalized_move.get_cap_pce() == Piece::NONE && penalized_move.get_promo_pce() == Piece::NONE) {
+								const Piece penalized_move_pce = pos.pces[penalized_move.get_from_sq()];
+								history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
 							}
 						}
-						break;
 					}
+					break;
 				}
 			}
 		}

@@ -16,19 +16,66 @@ void best_move(Position& pos, SearchData& search_data) {
 	search_data.best_move_root = Move();
 	search_data.searching = true;
 
-	for (int depth = 1; depth < 256; depth++) {
+	const int min_depth_aspiration = 6;
+
+	Move best_move_root_prev = Move();
+	int32_t score_prev;
+
+	for (int depth = 1; depth < 255; depth++) {
 		pos.ply = 0;
-		int32_t score = negamax(pos, search_data, -mate_score, mate_score, depth, 0, false);
-		std::cout << "score " << score << std::endl;
-		//std::cout << "info depth " << depth << " score cp " << 100 * score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)] << " pv " << search_data.best_move_root.to_str() << std::endl;
-		if (!search_data.searching) {
-			break;
+		int32_t score;
+
+		if (depth <= min_depth_aspiration) {
+			score = negamax(pos, search_data, -mate_score, mate_score, depth, 0, false);
+			score_prev = score;
+			best_move_root_prev = search_data.best_move_root;
+
+			if (!search_data.searching) {
+				break;
+			}
+		}
+		else {
+			int delta = 30;
+			int alpha = std::max(score_prev - delta, -mate_score);
+			int beta = std::min(score_prev + delta, mate_score);
+
+			while (true) {
+				score = negamax(pos, search_data, alpha, beta, depth, 0, false);
+
+				if (!search_data.searching) {
+					break;
+				}
+
+				if (score <= alpha) {
+					alpha = std::max(alpha - delta, -mate_score);
+					if (alpha < -800) {
+						alpha = -mate_score;
+					}
+				}
+				else if (score >= beta) {
+					beta = std::min(beta + delta, mate_score);
+					if (beta > 800) {
+						beta = mate_score;
+					}
+				}
+				else {
+					break;
+				}
+
+				delta *= 2;
+			}
+			score_prev = score;
+			best_move_root_prev = search_data.best_move_root;
+
+			if (!search_data.searching) {
+				break;
+			}
 		}
 	}
-
 	search_data.searching = false;
-	std::cout << "bestmove " << search_data.best_move_root.to_str() << std::endl;
+	std::cout << "bestmove " << best_move_root_prev.to_str() << std::endl;
 }
+
 
 int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta, int depth, int ply, bool allow_null) {
 	if (time_up(search_data)) {
@@ -52,12 +99,12 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 	if (!pv_node && matching_hash_key && hash_entry.depth >= depth) {
 		int32_t retrieved_score = hash_entry.score;
-		//if (retrieved_score >= mate_score - search_data.max_ply) {
-		//	retrieved_score -= ply;
-		//}
-		//else if (retrieved_score <= -mate_score + search_data.max_ply) {
-		//	retrieved_score += ply;
-		//}
+		if (retrieved_score >= mate_score - search_data.max_ply) {
+			retrieved_score -= ply;
+		}
+		else if (retrieved_score <= -mate_score + search_data.max_ply) {
+			retrieved_score += ply;
+		}
 
 		if (hash_entry.hash_flag == HashFlag::EXACT
 			|| (hash_entry.hash_flag == HashFlag::BETA && (retrieved_score >= beta))
@@ -156,11 +203,12 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		if (score > best_score) {
 			best_score = score;
 			best_move = move;
-			if (root_node) {
-				search_data.best_move_root = move;
-			}
 
 			if (score > alpha) {
+				if (root_node) {
+					search_data.best_move_root = move;
+				}
+
 				alpha = score;
 				if (score >= beta) {
 					if (!move.is_quiet()) {

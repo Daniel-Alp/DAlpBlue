@@ -86,3 +86,20 @@ inline bool repeated_pos(const Position& pos) {
 	}
 	return false;
 }
+
+inline std::string get_info_str(SearchData& search_data, int depth, int32_t score) {
+	std::string info_str = "info depth " + std::to_string(depth);
+
+	if (score >= mate_score - search_data.max_ply) {
+		info_str += " score mate " + std::to_string((mate_score - score + 1) / 2);
+	}
+	else if (score <= -mate_score + search_data.max_ply) {
+		info_str += " score mate " + std::to_string((-mate_score - score - 1) / 2);
+	}
+	else {
+		info_str += " score cp " + std::to_string(100 * score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)]);
+	}
+	info_str += " pv " + search_data.best_move_root.to_str();
+
+	return info_str;
+}

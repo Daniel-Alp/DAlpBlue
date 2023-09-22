@@ -9,10 +9,11 @@
 #include <iostream>
 
 std::array<std::array<int64_t, 64>, 15> history_table;
-std::array<std::array<Move, 2>, 256> killer_table;
+std::array<std::array<Move, 2>, 257> killer_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
+	clr_killer_table();
 	search_data.nodes = 0;
 	search_data.best_move_root = Move();
 	search_data.searching = true;
@@ -158,6 +159,9 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 	const int32_t orig_alpha = alpha;
 	int32_t score;
+
+	killer_table[ply + 1][0] = Move();
+	killer_table[ply + 1][1] = Move();
 
 	for (int i = 0; i < move_list.size(); i++) {
 		const Move move = get_next_move(move_list, scores, i);

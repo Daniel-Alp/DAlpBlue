@@ -9,7 +9,7 @@
 
 constexpr int32_t mate_score = 30000;
 extern std::array<std::array<int64_t, 64>, 15> history_table;
-extern std::array<std::array<Move, 2>, 256> killer_table;
+extern std::array<std::array<Move, 2>, 257> killer_table;
 
 struct SearchData {
 	bool searching;
@@ -63,13 +63,13 @@ inline int64_t score_move(const Move& move, const Move& hash_entry_best_move, st
 		return mvv_lva(get_pce_type(cap_pce), move_pce_type);
 	}
 
-	//if (move == killer_table[ply][1]) {
-	//	return INT64_C(1) << 41;
-	//}
+	if (move == killer_table[ply][1]) {
+		return INT64_C(1) << 41;
+	}
 
-	//if (move == killer_table[ply][0]) {
-	//	return INT64_C(1) << 40;
-	//}
+	if (move == killer_table[ply][0]) {
+		return INT64_C(1) << 40;
+	}
 
 	const int from_sq = move.get_from_sq();
 	const int to_sq = move.get_to_sq();

@@ -9,6 +9,7 @@
 #include <iostream>
 
 std::array<std::array<int64_t, 64>, 15> history_table;
+std::array<std::array<Move, 2>, 256> killer_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
@@ -72,6 +73,7 @@ void best_move(Position& pos, SearchData& search_data) {
 			}
 		}
 	}
+
 	search_data.searching = false;
 	std::cout << "bestmove " << best_move_root_prev.to_str() << std::endl;
 }
@@ -227,6 +229,11 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 						history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
 					}
 
+					if (killer_table[ply][1] != move) {
+						killer_table[ply][0] = killer_table[ply][1];
+						killer_table[ply][1] = move;
+					}
+
 					break;
 				}
 			}
@@ -284,7 +291,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 	MoveList move_list = gen_pseudo_moves(pos, true);
 	std::array<int64_t, MoveList::max_moves> scores{};
 	for (int i = 0; i < move_list.size(); i++) {
-		scores[i] = score_move(move_list.get(i), Move(), pos.pces, 0);
+		scores[i] = score_move(move_list.get(i), Move(), pos.pces, 255);
 	}
 
 	for (int i = 0; i < move_list.size(); i++) {

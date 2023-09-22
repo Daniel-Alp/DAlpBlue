@@ -48,6 +48,7 @@ void uci_loop() {
 			pos = load_from_fen(start_fen);
 			clr_hash_table();
 			clr_history_table();
+			clr_killer_table();
 		}
 		else if (cmd_type == "position") {
 			uci_position_command(cmd_sections, pos);

@@ -12,14 +12,15 @@ std::array<std::array<int64_t, 64>, 15> history_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
-	search_data.searching = true;
 	search_data.nodes = 0;
 	search_data.best_move_root = Move();
-	
-	for (int depth = 1;; depth++) {
+	search_data.searching = true;
+
+	for (int depth = 1; depth < 256; depth++) {
 		pos.ply = 0;
 		int32_t score = negamax(pos, search_data, -mate_score, mate_score, depth, 0, false);
-		//std::cout << "info depth " << depth << " score cp " << score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)] << " pv " << best_move_root.to_str() << std::endl;
+		std::cout << "score " << score << std::endl;
+		//std::cout << "info depth " << depth << " score cp " << 100 * score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)] << " pv " << search_data.best_move_root.to_str() << std::endl;
 		if (!search_data.searching) {
 			break;
 		}
@@ -48,14 +49,23 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 	const HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
 	const bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
-	
+
 	if (!pv_node && matching_hash_key && hash_entry.depth >= depth) {
+		int32_t retrieved_score = hash_entry.score;
+		//if (retrieved_score >= mate_score - search_data.max_ply) {
+		//	retrieved_score -= ply;
+		//}
+		//else if (retrieved_score <= -mate_score + search_data.max_ply) {
+		//	retrieved_score += ply;
+		//}
+
 		if (hash_entry.hash_flag == HashFlag::EXACT
-			|| (hash_entry.hash_flag == HashFlag::BETA && hash_entry.score >= beta)
-			|| (hash_entry.hash_flag == HashFlag::ALPHA && hash_entry.score <= alpha)) {
-			return hash_entry.score;
+			|| (hash_entry.hash_flag == HashFlag::BETA && (retrieved_score >= beta))
+			|| (hash_entry.hash_flag == HashFlag::ALPHA && (retrieved_score <= alpha))) {
+			return retrieved_score;
 		}
 	}
+
 	Move hash_entry_best_move = Move();
 	if (matching_hash_key) {
 		hash_entry_best_move = hash_entry.best_move;
@@ -144,7 +154,6 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		}
 
 		if (score > best_score) {
-
 			best_score = score;
 			best_move = move;
 			if (root_node) {
@@ -157,7 +166,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 					if (!move.is_quiet()) {
 						break;
 					}
-
+					
 					const Piece move_pce = pos.pces[move.get_from_sq()];
 					history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
 
@@ -185,6 +194,14 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		}
 	}
 
+	int32_t recorded_score = best_score;
+	if (recorded_score >= mate_score - search_data.max_ply) {
+		recorded_score += ply;
+	}
+	else if (recorded_score <= -mate_score + search_data.max_ply) {
+		recorded_score -= ply;
+	}
+
 	HashFlag hash_flag;
 	if (best_score >= beta) {
 		hash_flag = HashFlag::BETA;
@@ -195,7 +212,8 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 	else {
 		hash_flag = HashFlag::ALPHA;
 	}
-	record_hash_entry(pos.zobrist_key, depth, best_score, hash_flag, best_move);
+
+	record_hash_entry(pos.zobrist_key, depth, recorded_score, hash_flag, best_move);
 
 	return best_score;
 }
@@ -230,7 +248,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 
 		int32_t score = -quiescence(pos, search_data, -beta, -alpha);
 		undo_move(pos, move);
-		if (time_up(search_data)) {
+		if (!search_data.searching) {
 			return 0;
 		}
 

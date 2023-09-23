@@ -131,7 +131,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
 
 	if (!pv_node && !in_check) {
-		if (static_eval - depth * 200 >= beta && depth < 9) {
+		if (static_eval - depth * 100 >= beta && depth < 9) {
 			return static_eval;
 		}
 

@@ -178,7 +178,10 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 			int reduction = 2;
 			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
-			reduction = std::clamp(reduction, 0, 4);
+
+			if (reduction < 0) {
+				reduction = 0;
+			}
 
 			if (num_legal_moves >= 3 + 3 * pv_node
 				&& depth >= 3

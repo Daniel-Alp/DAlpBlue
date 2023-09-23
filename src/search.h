@@ -73,7 +73,9 @@ inline int64_t score_move(const Move& move, const Move& hash_entry_best_move, st
 
 	const int from_sq = move.get_from_sq();
 	const int to_sq = move.get_to_sq();
-	return history_table[static_cast<int>(move_pce)][to_sq] + pce_psqts_midgame[static_cast<int>(move_pce_type)][to_sq] - pce_psqts_midgame[static_cast<int>(move_pce_type)][from_sq];
+	return history_table[static_cast<int>(move_pce)][to_sq] 
+		+ pce_psqts_midgame[static_cast<int>(move_pce_type)][to_sq] 
+		- pce_psqts_midgame[static_cast<int>(move_pce_type)][from_sq];
 }
 
 inline Move get_next_move(MoveList& move_list, std::array<int64_t, MoveList::max_moves>& scores, int cur_move_index) {

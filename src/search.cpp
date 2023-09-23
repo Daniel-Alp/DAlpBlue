@@ -5,6 +5,7 @@
 #include "move.h"
 #include "movegen.h"
 #include "search.h"
+#include <algorithm>
 #include <cstdint>
 #include <iostream>
 
@@ -73,8 +74,8 @@ void best_move(Position& pos, SearchData& search_data) {
 				break;
 			}
 		}
+		//std::cout << get_info_str(search_data, depth, score_prev) << std::endl;
 	}
-
 	search_data.searching = false;
 	std::cout << "bestmove " << best_move_root_prev.to_str() << std::endl;
 }
@@ -165,6 +166,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 	for (int i = 0; i < move_list.size(); i++) {
 		const Move move = get_next_move(move_list, scores, i);
+		const Piece move_pce = pos.pces[move.get_from_sq()];
 			
 		if (!make_move(pos, move)) {
 			continue;
@@ -173,12 +175,16 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		num_legal_moves++;
 
 		if (num_legal_moves > 1) {
+
+			int reduction = 2;
+			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
+			reduction = std::clamp(reduction, 0, 4);
+
 			if (num_legal_moves >= 3 + 3 * pv_node
 				&& depth >= 3
 				&& !in_check
-				&& move.is_quiet()) {
-
-				int reduction = 2;
+				&& move.is_quiet()
+				&& reduction > 0) {
 
 				if (depth - 1 - reduction <= 0) {
 					reduction = depth - 2;
@@ -189,6 +195,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 			else {
 				score = alpha + 1;
 			}
+
 			if (score > alpha) {
 				score = -negamax(pos, search_data, -alpha - 1, -alpha, depth - 1, ply + 1, true);
 				if (score > alpha && score < beta) {
@@ -221,9 +228,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 						break;
 					}
 					
-					const Piece move_pce = pos.pces[move.get_from_sq()];
 					history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
-
 					for (int j = 0; j < i; j++) {
 						Move penalized_move = move_list.get(j);
 						if (!penalized_move.is_quiet()) {

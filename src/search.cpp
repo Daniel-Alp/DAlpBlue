@@ -136,9 +136,9 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 			return static_eval;
 		}
 
-		if (allow_null && pos.phase_val > 2 && static_eval >= beta) {
+		if (allow_null && depth >= 3 && pos.phase_val > 2 && static_eval >= beta) {
 			make_null_move(pos);
-			const int reduction = 2;
+			const int reduction = 2;//3 + depth / 3;
 			int32_t score = -negamax(pos, search_data, -beta, -beta + 1, depth - 1 - reduction, ply + 1, false);
 			undo_null_move(pos);
 			if (score >= beta) {
@@ -178,10 +178,6 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 			int reduction = 2;
 			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
-
-			if (reduction < 0) {
-				reduction = 0;
-			}
 
 			if (num_legal_moves >= 3 + 3 * pv_node
 				&& depth >= 3

@@ -55,27 +55,25 @@ inline int64_t score_move(const Move& move, const Move& hash_entry_best_move, st
 	if (move == hash_entry_best_move) {
 		return INT64_C(1) << 60;
 	}
-
-	const Piece move_pce = pces[move.get_from_sq()];
-	const PieceType move_pce_type = get_pce_type(pces[static_cast<int>(move_pce)]);
-	const Piece cap_pce = move.get_cap_pce();
-	if (cap_pce != Piece::NONE) {
-		return mvv_lva(get_pce_type(cap_pce), move_pce_type);
-	}
-
 	if (move == killer_table[ply][1]) {
 		return INT64_C(1) << 41;
 	}
-
 	if (move == killer_table[ply][0]) {
 		return INT64_C(1) << 40;
 	}
 
+	const Piece move_pce = pces[move.get_from_sq()];
+	const PieceType move_pce_type = get_pce_type(pces[static_cast<int>(move_pce)]);
+	const PieceType cap_pce_type = get_pce_type(move.get_cap_pce());
+	
+	if (cap_pce_type != PieceType::NONE) {
+		return mvv_lva(cap_pce_type, move_pce_type);
+	}
+
 	const int from_sq = move.get_from_sq();
 	const int to_sq = move.get_to_sq();
-	return history_table[static_cast<int>(move_pce)][to_sq] 
-		   + pce_psqts_midgame[static_cast<int>(move_pce_type)][to_sq] 
-		   - pce_psqts_midgame[static_cast<int>(move_pce_type)][from_sq];
+
+	return history_table[static_cast<int>(move_pce)][to_sq] + pce_psqts_midgame[static_cast<int>(move_pce_type)][to_sq] - pce_psqts_midgame[static_cast<int>(move_pce_type)][from_sq];
 }
 
 inline Move get_next_move(MoveList& move_list, std::array<int64_t, MoveList::max_moves>& scores, int cur_move_index) {

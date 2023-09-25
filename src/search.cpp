@@ -178,15 +178,14 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		if (num_legal_moves > 1) {
 			int reduction = reduction_table[depth][num_legal_moves];
 			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
-			//if (in_check) {
-			//	reduction--;
-			//}
+			if (in_check) {
+				reduction--;
+			}
 
 			if (num_legal_moves >= 3 + 2 * pv_node
 				&& depth >= 3
 				&& move.is_quiet()
-				&& reduction > 0
-				&& !in_check) {
+				&& reduction > 0) {
 
 				if (depth - 1 - reduction <= 0) {
 					reduction = depth - 2;

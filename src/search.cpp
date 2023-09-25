@@ -11,6 +11,7 @@
 
 std::array<std::array<int64_t, 64>, 15> history_table;
 std::array<std::array<Move, 2>, 257> killer_table;
+std::array<std::array<int, 218>, 256> reduction_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
@@ -122,16 +123,15 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		hash_entry_best_move = hash_entry.best_move;
 	}
 
-	if (depth <= 0) {
-		return quiescence(pos, search_data, alpha, beta);
-	}
-
-	int32_t static_eval = evaluate(pos);
-
 	const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
 	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
 
+	if (depth <= 0 && !in_check) {
+		return quiescence(pos, search_data, alpha, beta);
+	}
+
 	if (!pv_node && !in_check) {
+		const int32_t static_eval = evaluate(pos);
 		if (static_eval - depth * 100 >= beta && depth < 9) {
 			return static_eval;
 		}
@@ -175,9 +175,9 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		num_legal_moves++;
 
 		if (num_legal_moves > 1) {
-
-			int reduction = 2;
+			int reduction = reduction_table[depth][num_legal_moves];
 			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
+			
 
 			if (num_legal_moves >= 3 + 2 * pv_node
 				&& depth >= 3

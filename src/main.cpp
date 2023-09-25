@@ -32,6 +32,8 @@ int main(int argc) {
 	precompute_pce_psqt(Piece::WHITE_KING, king_midgame_psqt, king_endgame_psqt);
 	precompute_pce_psqt(Piece::BLACK_KING, king_midgame_psqt, king_endgame_psqt);
 
+	precompute_reduction_table();
+
 	//run_perft_suite();
 		
 	//run_bench();

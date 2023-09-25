@@ -6,10 +6,12 @@
 #include "move.h"
 #include "transposition.h"
 #include "timemanagement.h"
+#include <algorithm>
 
 constexpr int32_t mate_score = 30000;
 extern std::array<std::array<int64_t, 64>, 15> history_table;
 extern std::array<std::array<Move, 2>, 257> killer_table;
+extern std::array<std::array<int, 218>, 256> reduction_table;
 
 struct SearchData {
 	bool searching;
@@ -23,6 +25,14 @@ struct SearchData {
 void best_move(Position& pos, SearchData& search_data);
 int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta, int depth, int ply, bool allow_null);
 int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_t beta);
+
+inline void precompute_reduction_table() {
+	for (int depth = 1; depth < 256; depth++) {
+		for (int num_moves = 1; num_moves < 218; num_moves++) {
+			reduction_table[depth][num_moves] = std::max((log(depth) * log(num_moves)) / 2 + 1, static_cast<double>(2));
+		}
+	}
+}
 
 inline void clr_history_table() {
 	for (int move_pce = 0; move_pce <= static_cast<int>(Piece::BLACK_KING); move_pce++) {

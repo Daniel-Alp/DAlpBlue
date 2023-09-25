@@ -118,11 +118,6 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		}
 	}
 
-	Move hash_entry_best_move = Move();
-	if (matching_hash_key) {
-		hash_entry_best_move = hash_entry.best_move;
-	}
-
 	const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
 	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
 
@@ -147,9 +142,15 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		}
 	}
 
+
+	
 	MoveList move_list = gen_pseudo_moves(pos, false);
 	int num_legal_moves = 0;
 
+	Move hash_entry_best_move = Move();
+	if (matching_hash_key) {
+		hash_entry_best_move = hash_entry.best_move;
+	}
 	std::array<int64_t, MoveList::max_moves> scores{};
 	for (int i = 0; i < move_list.size(); i++) {
 		scores[i] = score_move(move_list.get(i), hash_entry_best_move, pos.pces, ply);
@@ -177,13 +178,15 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		if (num_legal_moves > 1) {
 			int reduction = reduction_table[depth][num_legal_moves];
 			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
-			
+			//if (in_check) {
+			//	reduction--;
+			//}
 
 			if (num_legal_moves >= 3 + 2 * pv_node
 				&& depth >= 3
 				&& move.is_quiet()
-				&& !in_check
-				&& reduction > 0) {
+				&& reduction > 0
+				&& !in_check) {
 
 				if (depth - 1 - reduction <= 0) {
 					reduction = depth - 2;

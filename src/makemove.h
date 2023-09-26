@@ -79,28 +79,32 @@ constexpr void move_pce(Position& pos, int from_sq, int to_sq) {
 	pos.all_bitboard = move_sq(pos.all_bitboard, from_sq_bb, to_sq_bb);
 }
 
+constexpr void move_pce(Position& pos, Square from_sq, Square to_sq) {
+	move_pce(pos, static_cast<int>(from_sq), static_cast<int>(to_sq));
+}
+
 inline void undo_null_move(Position& pos) {
 	pos.history_ply--;
 	pos.ply--;
 	pos.side_to_move = flip_col(pos.side_to_move);
 
-	pos.en_passant_sq = pos.undo_stack[pos.ply].en_passant_sq;
+	pos.en_passant_sq	= pos.undo_stack[pos.ply].en_passant_sq;
 	pos.castling_rights = pos.undo_stack[pos.ply].castling_rights;
 	pos.fifty_move_rule = pos.undo_stack[pos.ply].fifty_move_rule;
-	pos.zobrist_key = pos.undo_stack[pos.ply].zobrist_key;
+	pos.zobrist_key		= pos.undo_stack[pos.ply].zobrist_key;
 }
 
 inline void make_null_move(Position& pos) {
-	pos.undo_stack[pos.ply].en_passant_sq = pos.en_passant_sq;
+	pos.undo_stack[pos.ply].en_passant_sq	= pos.en_passant_sq;
 	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
 	pos.undo_stack[pos.ply].fifty_move_rule = pos.fifty_move_rule;
-	pos.undo_stack[pos.ply].zobrist_key = pos.zobrist_key;
+	pos.undo_stack[pos.ply].zobrist_key		= pos.zobrist_key;
 
 	pos.history_stack[pos.history_ply] = pos.zobrist_key;
 
-	if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
+	if (pos.en_passant_sq != Square::NO_SQ) {
 		pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
-		pos.en_passant_sq = static_cast<int>(Square::NO_SQ);
+		pos.en_passant_sq = Square::NO_SQ;
 	}
 	pos.fifty_move_rule = 0;
 

@@ -87,11 +87,11 @@ void gen_pawn_moves(const Position& pos, MoveList& move_list, const uint64_t tar
 		serialize_pawn_promo(pos, move_list, capture_nowe & rank_8, 7);
 		serialize_pawn_non_promo(pos, move_list, capture_nowe & (~rank_8), 7, MoveFlag::NONE);
 
-		if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
-			uint64_t capture_en_passant = black_pawn_attacks[pos.en_passant_sq] & pawns;
+		if (pos.en_passant_sq != Square::NO_SQ) {
+			uint64_t capture_en_passant = black_pawn_attacks[static_cast<int>(pos.en_passant_sq)] & pawns;
 			while (capture_en_passant != 0) {
 				const int from_sq = get_lsb(capture_en_passant);
-				move_list.push_back(Move(from_sq, pos.en_passant_sq, Piece::BLACK_PAWN, Piece::NONE, MoveFlag::EN_PASSANT));
+				move_list.push_back(Move(from_sq, static_cast<int>(pos.en_passant_sq), Piece::BLACK_PAWN, Piece::NONE, MoveFlag::EN_PASSANT));
 				capture_en_passant = clr_lsb(capture_en_passant);
 			}
 		}
@@ -115,11 +115,11 @@ void gen_pawn_moves(const Position& pos, MoveList& move_list, const uint64_t tar
 		serialize_pawn_promo(pos, move_list, capture_soea & rank_1, -7);
 		serialize_pawn_non_promo(pos, move_list, capture_soea & (~rank_1), -7, MoveFlag::NONE);
 
-		if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
-			uint64_t capture_en_passant = white_pawn_attacks[pos.en_passant_sq] & pawns;
+		if (pos.en_passant_sq != Square::NO_SQ) {
+			uint64_t capture_en_passant = white_pawn_attacks[static_cast<int>(pos.en_passant_sq)] & pawns;
 			while (capture_en_passant != 0) {
 				const int from_sq = get_lsb(capture_en_passant);
-				move_list.push_back(Move(from_sq, pos.en_passant_sq, Piece::WHITE_PAWN, Piece::NONE, MoveFlag::EN_PASSANT));
+				move_list.push_back(Move(from_sq, static_cast<int>(pos.en_passant_sq), Piece::WHITE_PAWN, Piece::NONE, MoveFlag::EN_PASSANT));
 				capture_en_passant = clr_lsb(capture_en_passant);
 			}
 		}

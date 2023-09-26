@@ -8,19 +8,19 @@
 #include <cstdint>
 
 bool make_move(Position& pos, const Move& move) {
-	pos.undo_stack[pos.ply].en_passant_sq = pos.en_passant_sq;
+	pos.undo_stack[pos.ply].en_passant_sq	= pos.en_passant_sq;
 	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
 	pos.undo_stack[pos.ply].fifty_move_rule = pos.fifty_move_rule;
-	pos.undo_stack[pos.ply].zobrist_key = pos.zobrist_key;
+	pos.undo_stack[pos.ply].zobrist_key		= pos.zobrist_key;
 
 	pos.history_stack[pos.history_ply] = pos.zobrist_key;
 
 	const uint32_t from_sq = move.get_from_sq();
 	const uint32_t to_sq = move.get_to_sq();
 	
-	if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
+	if (pos.en_passant_sq != Square::NO_SQ) {
 		pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
-		pos.en_passant_sq = static_cast<int>(Square::NO_SQ);
+		pos.en_passant_sq = Square::NO_SQ;
 	}
  	pos.zobrist_key = hash_castling_rights(pos.zobrist_key, pos.castling_rights);
 	pos.castling_rights &= castling[from_sq];
@@ -31,18 +31,18 @@ bool make_move(Position& pos, const Move& move) {
 
 	if (move.is_castle()) {
 		move_pce(pos, from_sq, to_sq);
-		switch (to_sq) {
-		case static_cast<int>(Square::G1):
-			move_pce(pos, static_cast<int>(Square::H1), static_cast<int>(Square::F1));
+		switch (static_cast<Square>(to_sq)) {
+		case Square::G1:
+			move_pce(pos, Square::H1, Square::F1);
 			break;
-		case static_cast<int>(Square::C1):
-			move_pce(pos, static_cast<int>(Square::A1), static_cast<int>(Square::D1));
+		case Square::C1:
+			move_pce(pos, Square::A1, Square::D1);
 			break;
-		case static_cast<int>(Square::G8):
-			move_pce(pos, static_cast<int>(Square::H8), static_cast<int>(Square::F8));
+		case Square::G8:
+			move_pce(pos, Square::H8, Square::F8);
 			break;
-		case static_cast<int>(Square::C8):
-			move_pce(pos, static_cast<int>(Square::A8), static_cast<int>(Square::D8));
+		case Square::C8:
+			move_pce(pos, Square::A8, Square::D8);
 			break;
 		}
 	}
@@ -67,7 +67,7 @@ bool make_move(Position& pos, const Move& move) {
 				add_pce(pos, promo_pce, to_sq);
 			}
 			else if (move.is_pawn_start()) {
-				pos.en_passant_sq = to_sq ^ 8;
+				pos.en_passant_sq = static_cast<Square>(to_sq ^ 8);
 				pos.zobrist_key = hash_en_passant_sq(pos.zobrist_key, pos.en_passant_sq);
 			}
 		}
@@ -98,18 +98,18 @@ void undo_move(Position& pos, const Move& move) {
 
 	if (move.is_castle()) {
 		move_pce(pos, to_sq, from_sq);
-		switch (to_sq) {
-		case static_cast<int>(Square::G1):
-			move_pce(pos, static_cast<int>(Square::F1), static_cast<int>(Square::H1));
+		switch (static_cast<Square>(to_sq)) {
+		case Square::G1:
+			move_pce(pos, Square::F1, Square::H1);
 			break;
-		case static_cast<int>(Square::C1):
-			move_pce(pos, static_cast<int>(Square::D1), static_cast<int>(Square::A1));
+		case Square::C1:
+			move_pce(pos, Square::D1, Square::A1);
 			break;
-		case static_cast<int>(Square::G8):
-			move_pce(pos, static_cast<int>(Square::F8), static_cast<int>(Square::H8));
+		case Square::G8:
+			move_pce(pos, Square::F8, Square::H8);
 			break;
-		case static_cast<int>(Square::C8):
-			move_pce(pos, static_cast<int>(Square::D8), static_cast<int>(Square::A8));
+		case Square::C8:
+			move_pce(pos, Square::D8, Square::A8);
 			break;
 		}
 	}
@@ -134,8 +134,8 @@ void undo_move(Position& pos, const Move& move) {
 		}
 	}
 
-	pos.en_passant_sq = pos.undo_stack[pos.ply].en_passant_sq;
+	pos.en_passant_sq	= pos.undo_stack[pos.ply].en_passant_sq;
 	pos.castling_rights = pos.undo_stack[pos.ply].castling_rights;
 	pos.fifty_move_rule = pos.undo_stack[pos.ply].fifty_move_rule;
-	pos.zobrist_key = pos.undo_stack[pos.ply].zobrist_key;
+	pos.zobrist_key		= pos.undo_stack[pos.ply].zobrist_key;
 }

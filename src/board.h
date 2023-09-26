@@ -19,7 +19,7 @@ enum class Square : uint32_t {
 };
 
 struct Undo {
-	uint32_t en_passant_sq;
+	Square en_passant_sq;
 	uint32_t castling_rights;
 	uint32_t fifty_move_rule;
 	uint64_t zobrist_key;
@@ -34,7 +34,7 @@ struct Position {
 	uint64_t all_bitboard;
 
 	uint32_t castling_rights;
-	uint32_t en_passant_sq;
+	Square en_passant_sq;
 	int32_t fifty_move_rule;
 	uint64_t zobrist_key;
 

@@ -35,8 +35,8 @@ uint64_t get_zobrist_key(Position& pos) {
 		}
 	}
 
-	if (pos.en_passant_sq != static_cast<int>(Square::NO_SQ)) {
-		zobrist_key ^= keys_pce[static_cast<int>(Piece::NONE)][pos.en_passant_sq];
+	if (pos.en_passant_sq != Square::NO_SQ) {
+		zobrist_key ^= keys_pce[static_cast<int>(Piece::NONE)][static_cast<int>(pos.en_passant_sq)];
 	}
 		
 	zobrist_key ^= keys_castling_rights[pos.castling_rights];

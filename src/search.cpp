@@ -25,7 +25,7 @@ void best_move(Position& pos, SearchData& search_data) {
 	Move best_move_root_prev = Move();
 	int32_t score_prev;
 
-	for (int depth = 1; depth < 255; depth++) {
+	for (int depth = 1; depth < search_data.max_ply; depth++) {
 		pos.ply = 0;
 		int32_t score;
 

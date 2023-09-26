@@ -78,12 +78,12 @@ Position load_from_fen(const std::string& fen_string) {
 	}
 
 	if (en_passant_sq_section == "-") {
-		pos.en_passant_sq = static_cast<int>(Square::NO_SQ);
+		pos.en_passant_sq = Square::NO_SQ;
 	}
 	else {
 		const uint32_t rank = en_passant_sq_section[1] - '1';
 		const uint32_t file = en_passant_sq_section[0] - 'a';
-		pos.en_passant_sq = get_sq(rank, file);
+		pos.en_passant_sq = static_cast<Square>(get_sq(rank, file));
 	}
 
 	pos.fifty_move_rule = std::stoi(fifty_move_rule_section);

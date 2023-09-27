@@ -12,14 +12,14 @@ void precompute_pce_psqt(const Piece piece, std::array<int32_t, 64> pcetype_psqt
 	const Color col = get_col(piece);
 	if (col == Color::WHITE) {
 		for (int sq = 0; sq < 64; sq++) {
-			pce_psqts_midgame[static_cast<int>(piece)][sq] = pcetype_psqt_midgame[sq];
-			pce_psqts_endgame[static_cast<int>(piece)][sq] = pcetype_psqt_endgame[sq];
+			pce_psqts_midgame[piece][sq] = pcetype_psqt_midgame[sq];
+			pce_psqts_endgame[piece][sq] = pcetype_psqt_endgame[sq];
 		}
 	}
 	else {
 		for (int sq = 0; sq < 64; sq++) {
-			pce_psqts_midgame[static_cast<int>(piece)][sq] = pcetype_psqt_midgame[sq ^ 56] * -1;
-			pce_psqts_endgame[static_cast<int>(piece)][sq] = pcetype_psqt_endgame[sq ^ 56] * -1;
+			pce_psqts_midgame[piece][sq] = pcetype_psqt_midgame[sq ^ 56] * -1;
+			pce_psqts_endgame[piece][sq] = pcetype_psqt_endgame[sq ^ 56] * -1;
 		}
 	}
 }

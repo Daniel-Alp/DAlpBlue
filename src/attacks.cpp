@@ -18,25 +18,25 @@ bool sq_attacked(const Position& pos, const int sq, const Color side_attacking) 
 	const Piece queen = build_pce(PieceType::QUEEN, side_attacking);
 
 	if (side_attacking == Color::WHITE) {
-		if (black_pawn_attacks[sq] & pos.pce_bitboards[static_cast<int>(Piece::WHITE_PAWN)]) {
+		if (black_pawn_attacks[sq] & pos.pce_bitboards[Piece::WHITE_PAWN]) {
 			return true;
 		}
 	}
 	else {
-		if (white_pawn_attacks[sq] & pos.pce_bitboards[static_cast<int>(Piece::BLACK_PAWN)]) {
+		if (white_pawn_attacks[sq] & pos.pce_bitboards[Piece::BLACK_PAWN]) {
 			return true;
 		}
 	}
-	if (knight_attacks[sq] & pos.pce_bitboards[static_cast<int>(knight)]) {
+	if (knight_attacks[sq] & pos.pce_bitboards[knight]) {
 		return true;
 	}
-	if (king_attacks[sq] & pos.pce_bitboards[static_cast<int>(king)]) {
+	if (king_attacks[sq] & pos.pce_bitboards[king]) {
 		return true;
 	}
-	if (bishop_attacks & (pos.pce_bitboards[static_cast<int>(bishop)] | pos.pce_bitboards[static_cast<int>(queen)])) {
+	if (bishop_attacks & (pos.pce_bitboards[bishop] | pos.pce_bitboards[queen])) {
 		return true;
 	}
-	if (rook_attacks & (pos.pce_bitboards[static_cast<int>(rook)] | pos.pce_bitboards[static_cast<int>(queen)])) {
+	if (rook_attacks & (pos.pce_bitboards[rook] | pos.pce_bitboards[queen])) {
 		return true;
 	}
 	return false;

@@ -52,10 +52,10 @@ void run_perft_suite() {
 		const auto time_2 = std::chrono::high_resolution_clock::now();
 		const auto elapsed_time_ms = std::chrono::duration_cast<std::chrono::milliseconds>(time_2 - time_1);
 
-		std::cout << "D" << std::setw(5) << std::left << depth
-			<< "EXP: " << std::setw(15) << std::left << expect
-			<< "RES: " << std::setw(15) << std::left << result
-			<< "MS:  " << std::setw(15) << std::left << elapsed_time_ms.count()
-			<< (expect == result ? "PASS" : "FAIL") << std::endl << std::endl;
+		std::cout << "D"     << std::setw(5)  << std::left << depth
+				  << "EXP: " << std::setw(15) << std::left << expect
+			      << "RES: " << std::setw(15) << std::left << result
+			      << "MS:  " << std::setw(15) << std::left << elapsed_time_ms.count()
+			      << (expect == result ? "PASS" : "FAIL") << std::endl << std::endl;
 	}
 }

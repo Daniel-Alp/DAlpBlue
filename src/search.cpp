@@ -118,7 +118,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		}
 	}
 
-	const int king_sq = get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, pos.side_to_move))]);
+	const int king_sq = get_lsb(pos.pce_bitboards[build_pce(PieceType::KING, pos.side_to_move)]);
 	const bool in_check = sq_attacked(pos, king_sq, flip_col(pos.side_to_move));
 
 	if (depth <= 0 && !in_check) {
@@ -141,8 +141,6 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 			}
 		}
 	}
-
-
 	
 	MoveList move_list = gen_pseudo_moves(pos, false);
 	int num_legal_moves = 0;
@@ -177,7 +175,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 		if (num_legal_moves > 1) {
 			int reduction = reduction_table[depth][num_legal_moves];
-			reduction -= history_table[static_cast<int>(move_pce)][move.get_to_sq()] / 16384;
+			reduction -= history_table[move_pce][move.get_to_sq()] / 16384;
 			if (in_check) {
 				reduction--;
 			}
@@ -229,14 +227,14 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 						break;
 					}
 					
-					history_table[static_cast<int>(move_pce)][move.get_to_sq()] += depth * depth;
+					history_table[move_pce][move.get_to_sq()] += depth * depth;
 					for (int j = 0; j < i; j++) {
 						const Move penalized_move = move_list.get(j);
 						if (!penalized_move.is_quiet()) {
 							continue;
 						}
 						const Piece penalized_move_pce = pos.pces[penalized_move.get_from_sq()];
-						history_table[static_cast<int>(penalized_move_pce)][penalized_move.get_to_sq()] -= depth * depth;
+						history_table[penalized_move_pce][penalized_move.get_to_sq()] -= depth * depth;
 					}
 
 					if (killer_table[ply][1] != move) {

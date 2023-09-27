@@ -31,7 +31,7 @@ bool make_move(Position& pos, const Move& move) {
 
 	if (move.is_castle()) {
 		move_pce(pos, from_sq, to_sq);
-		switch (static_cast<Square>(to_sq)) {
+		switch (to_sq) {
 		case Square::G1:
 			move_pce(pos, Square::H1, Square::F1);
 			break;
@@ -80,7 +80,7 @@ bool make_move(Position& pos, const Move& move) {
 	pos.history_ply++;
 	pos.ply++;
 
-	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[static_cast<int>(build_pce(PieceType::KING, move_col))]), pos.side_to_move)) {
+	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[build_pce(PieceType::KING, move_col)]), pos.side_to_move)) {
 		undo_move(pos, move);
 		return false;
 	}
@@ -98,7 +98,7 @@ void undo_move(Position& pos, const Move& move) {
 
 	if (move.is_castle()) {
 		move_pce(pos, to_sq, from_sq);
-		switch (static_cast<Square>(to_sq)) {
+		switch (to_sq) {
 		case Square::G1:
 			move_pce(pos, Square::F1, Square::H1);
 			break;

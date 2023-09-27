@@ -8,8 +8,8 @@
 
 constexpr uint32_t null_move_val = 0;
 
-enum class MoveFlag : uint32_t {
-	NONE	   = 0b00000000000000000000000,
+enum MoveFlag : uint32_t {
+	NO_FLAG	   = 0b00000000000000000000000,
 	PAWN_START = 0b00100000000000000000000,
 	CASTLE	   = 0b01000000000000000000000,
 	EN_PASSANT = 0b10000000000000000000000
@@ -22,7 +22,7 @@ public:
 	inline Move() : val(null_move_val) {}
 
 	inline Move(uint32_t from_sq, uint32_t to_sq, Piece capture_pce, Piece promo_pce, MoveFlag flag) {
-		val = (from_sq | (to_sq << 6) | (static_cast<uint32_t>(capture_pce) << 12) | (static_cast<uint32_t>(promo_pce) << 16) | (static_cast<uint32_t>(flag)));
+		val = (from_sq | (to_sq << 6) | (capture_pce << 12) | (promo_pce << 16) | flag);
 	}
 
 	constexpr bool operator == (const Move& move) const {

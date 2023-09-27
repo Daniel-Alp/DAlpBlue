@@ -35,7 +35,7 @@ inline void precompute_reduction_table() {
 }
 
 inline void clr_history_table() {
-	for (int move_pce = 0; move_pce <= static_cast<int>(Piece::BLACK_KING); move_pce++) {
+	for (int move_pce = Piece::NONE; move_pce <= Piece::BLACK_KING; move_pce++) {
 		for (int to_sq = 0; to_sq < 64; to_sq++) {
 			history_table[move_pce][to_sq] = 0;
 		}
@@ -43,7 +43,7 @@ inline void clr_history_table() {
 }
 
 inline void div_two_history_table() {
-	for (int move_pce = 0; move_pce <= static_cast<int>(Piece::BLACK_KING); move_pce++) {
+	for (int move_pce = 0; move_pce <= Piece::BLACK_KING; move_pce++) {
 		for (int to_sq = 0; to_sq < 64; to_sq++) {
 			history_table[move_pce][to_sq] /= 2;
 		}
@@ -73,17 +73,17 @@ inline int64_t score_move(const Move& move, const Move& hash_entry_best_move, st
 	}
 
 	const Piece move_pce = pces[move.get_from_sq()];
-	const PieceType move_pce_type = get_pce_type(pces[static_cast<int>(move_pce)]);
-	const PieceType cap_pce_type = get_pce_type(move.get_cap_pce());
+	const Piece cap_pce = move.get_cap_pce();
+	const PieceType move_pce_type = get_pce_type(pces[move_pce]);
 	
-	if (cap_pce_type != PieceType::NONE) {
-		return mvv_lva(cap_pce_type, move_pce_type);
+	if (cap_pce != Piece::NONE) {
+		return mvv_lva(get_pce_type(cap_pce), move_pce_type);
 	}
 
 	const int from_sq = move.get_from_sq();
 	const int to_sq = move.get_to_sq();
 
-	return history_table[static_cast<int>(move_pce)][to_sq] + pce_psqts_midgame[static_cast<int>(move_pce_type)][to_sq] - pce_psqts_midgame[static_cast<int>(move_pce_type)][from_sq];
+	return history_table[move_pce][to_sq] + pce_psqts_midgame[move_pce_type][to_sq] - pce_psqts_midgame[move_pce_type][from_sq];
 }
 
 inline Move get_next_move(MoveList& move_list, std::array<int64_t, MoveList::max_moves>& scores, int cur_move_index) {
@@ -123,7 +123,7 @@ inline std::string get_info_str(SearchData& search_data, int depth, int32_t scor
 		info_str += " score mate " + std::to_string((-mate_score - score - 1) / 2);
 	}
 	else {
-		info_str += " score cp " + std::to_string(100 * score / material_midgame_vals[static_cast<int>(Piece::WHITE_PAWN)]);
+		info_str += " score cp " + std::to_string(100 * score / material_midgame_vals[Piece::WHITE_PAWN]);
 	}
 	info_str += " pv " + search_data.best_move_root.to_str();
 

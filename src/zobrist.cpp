@@ -7,16 +7,16 @@ std::array<std::array<uint64_t, 64>, 15> keys_pce{};
 std::array<uint64_t, 16> keys_castling_rights{};
 
 void precompute_zobrist() {
-	for (int pce_type = static_cast<int>(PieceType::PAWN); pce_type <= static_cast<int>(PieceType::KING); pce_type++) {
-		for (int col = static_cast<int>(Color::WHITE); col <= static_cast<int>(Color::BLACK); col++) {
+	for (int pce_type = PieceType::PAWN; pce_type <= PieceType::KING; pce_type++) {
+		for (int col = Color::WHITE; col <= Color::BLACK; col++) {
 			for (int sq = 0; sq < 64; sq++) {
-				keys_pce[build_pce(pce_type, col)][sq] = random_uint64_t();
+				keys_pce[build_pce(static_cast<PieceType>(pce_type), static_cast<Color>(col))][sq] = random_uint64_t();
 			}
 		}
 	}
 	
 	for (int sq = 0; sq < 64; sq++) {
-		keys_pce[static_cast<int>(Piece::NONE)][sq] = random_uint64_t();
+		keys_pce[Piece::NONE][sq] = random_uint64_t();
 	}
 
 	for (int castling_rights = 0; castling_rights < 16; castling_rights++) {

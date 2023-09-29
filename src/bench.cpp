@@ -67,7 +67,7 @@ void run_bench() {
 		SearchData search_data{};
 		search_data.start_time = get_current_time();
 		search_data.time_allotted = 4294967296;
-		search_data.max_ply = 15;
+		search_data.max_depth = 15;
 
 		clr_hash_table();
 		best_move(pos, search_data);

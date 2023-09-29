@@ -3,8 +3,7 @@
 #include <array>
 #include <cstdint>
 
-enum class HashFlag
-{
+enum class HashFlag {
 	EXACT, 
 	ALPHA,
 	BETA

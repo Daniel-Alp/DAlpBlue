@@ -1,5 +1,6 @@
 #include "attacks.h"
 #include "board.h"
+#include "constants.h"
 #include "evaluation.h"
 #include "makemove.h"
 #include "move.h"
@@ -25,7 +26,7 @@ void best_move(Position& pos, SearchData& search_data) {
 	Move best_move_root_prev = Move();
 	int32_t score_prev;
 
-	for (int depth = 1; depth < search_data.max_ply; depth++) {
+	for (int depth = 1; depth < search_data.max_depth; depth++) {
 		pos.ply = 0;
 		int32_t score;
 
@@ -88,7 +89,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		return 0;
 	}
 
-	if (pos.ply >= search_data.max_ply) {
+	if (pos.ply >= search_data.max_depth) {
 		return evaluate(pos);
 	}
 
@@ -104,10 +105,10 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 
 	if (!pv_node && matching_hash_key && hash_entry.depth >= depth) {
 		int32_t retrieved_score = hash_entry.score;
-		if (retrieved_score >= mate_score - search_data.max_ply) {
+		if (retrieved_score >= mate_score - max_search_ply) {
 			retrieved_score -= ply;
 		}
-		else if (retrieved_score <= -mate_score + search_data.max_ply) {
+		else if (retrieved_score <= -mate_score + max_search_ply) {
 			retrieved_score += ply;
 		}
 
@@ -258,10 +259,10 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 	}
 
 	int32_t recorded_score = best_score;
-	if (recorded_score >= mate_score - search_data.max_ply) {
+	if (recorded_score >= mate_score - max_search_ply) {
 		recorded_score += ply;
 	}
-	else if (recorded_score <= -mate_score + search_data.max_ply) {
+	else if (recorded_score <= -mate_score + max_search_ply) {
 		recorded_score -= ply;
 	}
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "board.h"
+#include "constants.h"
 #include "evaluation.h"
 #include "movegen.h"
 #include "move.h"
@@ -8,14 +9,13 @@
 #include "timemanagement.h"
 #include <algorithm>
 
-constexpr int32_t mate_score = 30000;
 extern std::array<std::array<int64_t, 64>, 15> history_table;
 extern std::array<std::array<Move, 2>, 257> killer_table;
 extern std::array<std::array<int, 218>, 256> reduction_table;
 
 struct SearchData {
 	bool searching;
-	int max_ply;
+	int max_depth;
 	uint64_t start_time;
 	uint64_t time_allotted;
 	uint64_t nodes;
@@ -116,10 +116,10 @@ inline bool repeated_pos(const Position& pos) {
 inline std::string get_info_str(SearchData& search_data, int depth, int32_t score) {
 	std::string info_str = "info depth " + std::to_string(depth);
 
-	if (score >= mate_score - search_data.max_ply) {
+	if (score >= mate_score - search_data.max_depth) {
 		info_str += " score mate " + std::to_string((mate_score - score + 1) / 2);
 	}
-	else if (score <= -mate_score + search_data.max_ply) {
+	else if (score <= -mate_score + search_data.max_depth) {
 		info_str += " score mate " + std::to_string((-mate_score - score - 1) / 2);
 	}
 	else {

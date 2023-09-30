@@ -16,7 +16,7 @@ std::array<std::array<int, 218>, 256> reduction_table;
 
 void best_move(Position& pos, SearchData& search_data) {
 	div_two_history_table();
-	clr_killer_table();
+	clear_killer_table();
 	search_data.nodes = 0;
 	search_data.best_move_root = Move();
 	search_data.searching = true;
@@ -99,11 +99,11 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		return 0;
 	}
 
-	const HashEntry hash_entry = hash_table[pos.zobrist_key % num_hash_entries];
-	const bool matching_hash_key = (hash_entry.zobrist_key == pos.zobrist_key);
+	const HashEntry hash_entry = hash_table.get(pos.zobrist_key);
+	const bool matching_key = (hash_entry.zobrist_key == pos.zobrist_key);
 
-	if (!pv_node && matching_hash_key && hash_entry.depth >= depth) {
-		int32_t retrieved_score = hash_table_to_score(hash_entry.score, ply);
+	if (!pv_node && matching_key && hash_entry.depth >= depth) {
+		int32_t retrieved_score = hash_table.hash_table_to_score(hash_entry.score, ply);
 
 		if (hash_entry.hash_flag == HashFlag::EXACT
 			|| (hash_entry.hash_flag == HashFlag::BETA && (retrieved_score >= beta))
@@ -140,7 +140,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 	int num_legal_moves = 0;
 
 	Move hash_entry_best_move = Move();
-	if (matching_hash_key) {
+	if (matching_key) {
 		hash_entry_best_move = hash_entry.best_move;
 	}
 	std::array<int64_t, MoveList::max_moves> scores{};
@@ -251,7 +251,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 		}
 	}
 
-	int32_t recorded_score = score_to_hash_table(best_score, ply);
+	int32_t recorded_score = hash_table.score_to_hash_table(best_score, ply);
 
 	HashFlag hash_flag;
 	if (best_score >= beta) {
@@ -263,8 +263,7 @@ int32_t negamax(Position& pos, SearchData& search_data, int32_t alpha, int32_t b
 	else {
 		hash_flag = HashFlag::ALPHA;
 	}
-
-	record_hash_entry(pos.zobrist_key, depth, recorded_score, hash_flag, best_move);
+	hash_table.record(pos.zobrist_key, depth, recorded_score, hash_flag, best_move);
 
 	return best_score;
 }

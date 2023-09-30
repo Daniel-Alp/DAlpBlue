@@ -69,7 +69,7 @@ void run_bench() {
 		search_data.time_allotted = 4294967296;
 		search_data.max_depth = 15;
 
-		clr_hash_table();
+		hash_table.clear();
 		best_move(pos, search_data);
 		std::cout << std::endl;
 

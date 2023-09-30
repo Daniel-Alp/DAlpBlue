@@ -41,7 +41,7 @@ void run_perft_suite() {
 
 		const std::string fen = test_sections[0];
 		Position pos = load_from_fen(fen);
-		clr_hash_table();
+		hash_table.clear();
 
 		std::cout << fen << std::endl;
 		const int depth = test_sections.size() - 1;

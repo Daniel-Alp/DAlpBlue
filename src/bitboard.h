@@ -77,7 +77,7 @@ constexpr bool has_sq(const uint64_t bitboard, const uint64_t sq) {
 constexpr uint64_t set_sq(const uint64_t bitboard, const uint64_t sq) {
 	return bitboard | sq;
 }
-constexpr uint64_t clr_sq(const uint64_t bitboard, const uint64_t sq) {
+constexpr uint64_t clear_sq(const uint64_t bitboard, const uint64_t sq) {
 	return bitboard ^ sq;
 }
 constexpr uint64_t move_sq(const uint64_t bitboard, const uint64_t from_sq, const uint64_t to_sq) {
@@ -93,6 +93,6 @@ inline int get_msb(const uint64_t bitboard) {
 	_BitScanReverse64(&i, bitboard);
 	return i;
 }
-constexpr uint64_t clr_lsb(const uint64_t bitboard) {
+constexpr uint64_t clear_lsb(const uint64_t bitboard) {
 	return bitboard & (bitboard - 1);
 }

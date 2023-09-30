@@ -20,7 +20,7 @@ constexpr std::array<int, 64> castling = {
 	7,  15, 15, 15,  3, 15, 15, 11
 };
 
-constexpr void clr_pce(Position& pos, int sq) {
+constexpr void clear_pce(Position& pos, int sq) {
 	const Piece pce = pos.pces[sq];
 	const Color col = get_col(pce);
 	const uint64_t sq_bb = get_sq_bitboard(sq);
@@ -34,9 +34,9 @@ constexpr void clr_pce(Position& pos, int sq) {
 	pos.psqt_endgame_val -= pce_psqts_endgame[pce][sq];
 
 	pos.pces[sq] = Piece::NONE;
-	pos.pce_bitboards[pce] = clr_sq(pos.pce_bitboards[pce], sq_bb);
-	pos.col_bitboards[col] = clr_sq(pos.col_bitboards[col], sq_bb);
-	pos.all_bitboard = clr_sq(pos.all_bitboard, sq_bb);
+	pos.pce_bitboards[pce] = clear_sq(pos.pce_bitboards[pce], sq_bb);
+	pos.col_bitboards[col] = clear_sq(pos.col_bitboards[col], sq_bb);
+	pos.all_bitboard = clear_sq(pos.all_bitboard, sq_bb);
 }
 
 constexpr void add_pce(Position& pos, Piece pce, int sq) {

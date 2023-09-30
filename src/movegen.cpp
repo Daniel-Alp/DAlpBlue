@@ -40,7 +40,7 @@ void serialize_moves(const Position& pos, MoveList& move_list, const uint64_t ta
 	while (attacks != 0) {
 		const int to_sq = get_lsb(attacks);
 		move_list.push_back(Move(from_sq, to_sq, pos.pces[to_sq], Piece::NONE, MoveFlag::NO_FLAG));
-		attacks = clr_lsb(attacks);
+		attacks = clear_lsb(attacks);
 	}
 }
 
@@ -53,7 +53,7 @@ void serialize_pawn_promo(const Position& pos, MoveList& move_list, uint64_t to_
 		move_list.push_back(Move(from_sq, to_sq, capture_pce, build_pce(PieceType::ROOK, pos.side_to_move), MoveFlag::NO_FLAG));
 		move_list.push_back(Move(from_sq, to_sq, capture_pce, build_pce(PieceType::BISHOP, pos.side_to_move), MoveFlag::NO_FLAG));
 		move_list.push_back(Move(from_sq, to_sq, capture_pce, build_pce(PieceType::KNIGHT, pos.side_to_move), MoveFlag::NO_FLAG));
-		to_sqs = clr_lsb(to_sqs);
+		to_sqs = clear_lsb(to_sqs);
 	}
 }
 
@@ -61,7 +61,7 @@ void serialize_pawn_non_promo(const Position& pos, MoveList& move_list, uint64_t
 	while (to_sqs != 0) {
 		const int to_sq = get_lsb(to_sqs);
 		move_list.push_back(Move(to_sq - dir, to_sq, pos.pces[to_sq], Piece::NONE, flag));
-		to_sqs = clr_lsb(to_sqs);
+		to_sqs = clear_lsb(to_sqs);
 	}
 }
 
@@ -91,7 +91,7 @@ void gen_pawn_moves(const Position& pos, MoveList& move_list, const uint64_t tar
 			while (capture_en_passant != 0) {
 				const int from_sq = get_lsb(capture_en_passant);
 				move_list.push_back(Move(from_sq, pos.en_passant_sq, Piece::BLACK_PAWN, Piece::NONE, MoveFlag::EN_PASSANT));
-				capture_en_passant = clr_lsb(capture_en_passant);
+				capture_en_passant = clear_lsb(capture_en_passant);
 			}
 		}
 	}
@@ -119,7 +119,7 @@ void gen_pawn_moves(const Position& pos, MoveList& move_list, const uint64_t tar
 			while (capture_en_passant != 0) {
 				const int from_sq = get_lsb(capture_en_passant);
 				move_list.push_back(Move(from_sq, pos.en_passant_sq, Piece::WHITE_PAWN, Piece::NONE, MoveFlag::EN_PASSANT));
-				capture_en_passant = clr_lsb(capture_en_passant);
+				capture_en_passant = clear_lsb(capture_en_passant);
 			}
 		}
 	}
@@ -136,7 +136,7 @@ void gen_knight_moves(const Position& pos, MoveList& move_list, const uint64_t t
 		const int from_sq = get_lsb(knights);
 		const uint64_t attacks = knight_attacks[from_sq];
 		serialize_moves(pos, move_list, targets, attacks, from_sq);
-		knights = clr_lsb(knights);
+		knights = clear_lsb(knights);
 	}
 }
 
@@ -145,7 +145,7 @@ void gen_bishop_moves(const Position& pos, MoveList& move_list, const uint64_t t
 		const int from_sq = get_lsb(bishops);
 		const uint64_t attacks = gen_bishop_attacks(from_sq, pos.all_bitboard);
 		serialize_moves(pos, move_list, targets, attacks, from_sq);
-		bishops = clr_lsb(bishops);
+		bishops = clear_lsb(bishops);
 	}
 };
 
@@ -154,7 +154,7 @@ void gen_rook_moves(const Position& pos, MoveList& move_list, const uint64_t tar
 		const int from_sq = get_lsb(rooks);
 		const uint64_t attacks = gen_rook_attacks(from_sq, pos.all_bitboard);
 		serialize_moves(pos, move_list, targets, attacks, from_sq);
-		rooks = clr_lsb(rooks);
+		rooks = clear_lsb(rooks);
 	}
 };
 
@@ -163,7 +163,7 @@ void gen_queen_moves(const Position& pos, MoveList& move_list, const uint64_t ta
 		const int from_sq = get_lsb(queens);
 		const uint64_t attacks = gen_rook_attacks(from_sq, pos.all_bitboard) ^ gen_bishop_attacks(from_sq, pos.all_bitboard);
 		serialize_moves(pos, move_list, targets, attacks, from_sq);
-		queens = clr_lsb(queens);
+		queens = clear_lsb(queens);
 	}
 };
 

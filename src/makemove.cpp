@@ -51,10 +51,10 @@ bool make_move(Position& pos, const Move& move) {
 		if (cap_pce != Piece::NONE) {
 			pos.fifty_move_rule = 0;
 			if (move.is_en_passant()) {
-				clr_pce(pos, to_sq ^ 8);
+				clear_pce(pos, to_sq ^ 8);
 			}
 			else {
-				clr_pce(pos, to_sq);
+				clear_pce(pos, to_sq);
 			}
 		}
 		move_pce(pos, from_sq, to_sq);
@@ -63,7 +63,7 @@ bool make_move(Position& pos, const Move& move) {
 			pos.fifty_move_rule = 0;
 			const Piece promo_pce = move.get_promo_pce();
 			if (promo_pce != Piece::NONE) {
-				clr_pce(pos, to_sq);
+				clear_pce(pos, to_sq);
 				add_pce(pos, promo_pce, to_sq);
 			}
 			else if (move.is_pawn_start()) {
@@ -116,7 +116,7 @@ void undo_move(Position& pos, const Move& move) {
 	else {
 		const Piece promo_pce = move.get_promo_pce();
 		if (promo_pce != Piece::NONE) {
-			clr_pce(pos, to_sq);
+			clear_pce(pos, to_sq);
 			const Piece undo_promo_pce = build_pce(PieceType::PAWN, pos.side_to_move);
 			add_pce(pos, undo_promo_pce, to_sq);
 		}

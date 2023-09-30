@@ -20,35 +20,49 @@ struct HashEntry {
 
 constexpr uint64_t num_hash_entries = 2097152;
 
-extern std::array<HashEntry, num_hash_entries> hash_table;
-
-void clr_hash_table();
-
-inline void record_hash_entry(uint64_t zobrist_key, int depth, int32_t score, HashFlag hash_flag, Move best_move) {
-	int entry_index = zobrist_key % num_hash_entries;
-	hash_table[entry_index].zobrist_key = zobrist_key;
-	hash_table[entry_index].depth = depth;
-	hash_table[entry_index].score = score;
-	hash_table[entry_index].hash_flag = hash_flag;
-	hash_table[entry_index].best_move = best_move;
-}
-
-inline int32_t score_to_hash_table(int32_t score, int ply) {
-	if (score >= mate_score - max_search_ply) {
-		return score + ply;
+class HashTable {
+public:
+	inline void clear() {
+		for (int i = 0; i < num_hash_entries; i++) {
+			hash_table[i].zobrist_key = 0;
+		}
 	}
-	if (score <= -mate_score + max_search_ply) {
-		return score - ply;
-	}
-	return score;
-}
 
-inline int32_t hash_table_to_score(int32_t score, int ply) {
-	if (score >= mate_score - max_search_ply) {
-		return score - ply;
+	inline void record(uint64_t zobrist_key, int depth, int32_t score, HashFlag hash_flag, Move best_move) {
+		int i = zobrist_key % num_hash_entries;
+		hash_table[i].zobrist_key = zobrist_key;
+		hash_table[i].depth = depth;
+		hash_table[i].score = score;
+		hash_table[i].hash_flag = hash_flag;
+		hash_table[i].best_move = best_move;
 	}
-	if (score <= -mate_score + max_search_ply) {
-		return score + ply;
+
+	inline HashEntry get(uint64_t zobrist_key) {
+		return hash_table[zobrist_key % num_hash_entries];
 	}
-	return score;
-}
+
+	inline int32_t score_to_hash_table(int32_t score, int ply) {
+		if (score >= mate_score - max_search_ply) {
+			return score + ply;
+		}
+		if (score <= -mate_score + max_search_ply) {
+			return score - ply;
+		}
+		return score;
+	} 
+
+	inline int32_t hash_table_to_score(int32_t score, int ply) {
+		if (score >= mate_score - max_search_ply) {
+			return score - ply;
+		}
+		if (score <= -mate_score + max_search_ply) {
+			return score + ply;
+		}
+		return score;
+	}
+
+private:
+	std::array<HashEntry, num_hash_entries> hash_table;
+};
+
+inline HashTable hash_table;

@@ -34,7 +34,7 @@ inline void precompute_reduction_table() {
 	}
 }
 
-inline void clr_history_table() {
+inline void clear_history_table() {
 	for (int move_pce = Piece::NONE; move_pce <= Piece::BLACK_KING; move_pce++) {
 		for (int to_sq = 0; to_sq < 64; to_sq++) {
 			history_table[move_pce][to_sq] = 0;
@@ -50,7 +50,7 @@ inline void div_two_history_table() {
 	}
 }
 
-inline void clr_killer_table() {
+inline void clear_killer_table() {
 	for (int ply = 0; ply < 256; ply++) {
 		killer_table[ply][0] = Move();
 		killer_table[ply][1] = Move();
@@ -104,7 +104,7 @@ inline bool time_up(SearchData& search_data) {
 }
 
 inline bool repeated_pos(const Position& pos) {
-	int min_ply = std::max(pos.history_ply - pos.fifty_move_rule, INT32_C(0));
+	const int min_ply = std::max(pos.history_ply - pos.fifty_move_rule, INT32_C(0));
 	for (int ply = pos.history_ply - 2; ply >= min_ply; ply -= 2) {
 		if (pos.zobrist_key == pos.history_stack[ply]) {
 			return true;

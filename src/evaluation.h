@@ -1,8 +1,8 @@
 #pragma once
 
-#include"board.h"
-#include<cstdint>
-#include<array>
+#include "board.h"
+#include <cstdint>
+#include <array>
 
 constexpr std::array<int32_t, 15> material_midgame_vals = { 
 	0, 82, 337, 365, 477, 1025, 0, 0, 0, -82, -337, -365, -477, -1025, 0

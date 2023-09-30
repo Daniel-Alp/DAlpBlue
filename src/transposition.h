@@ -1,4 +1,5 @@
 #pragma once
+
 #include "move.h"
 #include "constants.h"
 #include <array>
@@ -29,7 +30,7 @@ public:
 	}
 
 	inline void record(uint64_t zobrist_key, int depth, int32_t score, HashFlag hash_flag, Move best_move) {
-		int i = zobrist_key % num_hash_entries;
+		const int i = zobrist_key % num_hash_entries;
 		hash_table[i].zobrist_key = zobrist_key;
 		hash_table[i].depth = depth;
 		hash_table[i].score = score;
@@ -37,11 +38,11 @@ public:
 		hash_table[i].best_move = best_move;
 	}
 
-	inline HashEntry get(uint64_t zobrist_key) {
+	inline HashEntry get(uint64_t zobrist_key) const {
 		return hash_table[zobrist_key % num_hash_entries];
 	}
 
-	inline int32_t score_to_hash_table(int32_t score, int ply) {
+	inline int32_t score_to_hash_table(int32_t score, int ply) const {
 		if (score >= mate_score - max_search_ply) {
 			return score + ply;
 		}
@@ -51,7 +52,7 @@ public:
 		return score;
 	} 
 
-	inline int32_t hash_table_to_score(int32_t score, int ply) {
+	inline int32_t hash_table_to_score(int32_t score, int ply) const {
 		if (score >= mate_score - max_search_ply) {
 			return score - ply;
 		}

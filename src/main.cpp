@@ -36,7 +36,7 @@ int main(int argc) {
 
 	//run_perft_suite();
 		
-	run_bench();
+	//run_bench();
 
 	uci_loop(); 
 

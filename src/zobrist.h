@@ -3,7 +3,6 @@
 #include "board.h"
 #include <array>
 #include <cstdint>
-#include <iostream>
 
 inline uint64_t seed = UINT64_C(1070372);
 

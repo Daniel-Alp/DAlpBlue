@@ -18,6 +18,6 @@ Search
 
 Move ordering
 * Move from the transposition table
-* Captures and then Promotions (MVV-LVA)
+* Captures and then promotions (MVV-LVA)
 * Killer moves
 * History heuristic 

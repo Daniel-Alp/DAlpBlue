@@ -1,1 +1,23 @@
 # DAlpBlue
+Engine that supports the Universal Chess Interface. I've tried to order features for each category chronologically.
+
+# Features
+Evaluation
+* Piece-square Table
+* Tapered evaluation
+
+Search
+* Negamax with alpha-beta pruning
+* Transposition table
+* Iterative deepening
+* Principal variation search
+* Quiescence search
+* Null move pruning
+* Static null move pruning
+* Late move reduction
+
+Move ordering
+* Move from the transposition table
+* Captures and then Promotions (MVV-LVA)
+* Killer moves
+* History heuristic 

@@ -3,7 +3,7 @@ Engine that supports the Universal Chess Interface. I've tried to order features
 
 # Features
 Evaluation
-* Piece-square Table
+* Piece-square table
 * Tapered evaluation
 
 Search

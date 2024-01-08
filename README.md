@@ -14,6 +14,7 @@ Search
 * Quiescence search
 * Null move pruning
 * Static null move pruning
+* Aspiration windows
 * Late move reduction
 
 Move ordering

@@ -1,3 +1,0 @@
-/home/alp/Projects/DAlpBlue/build/CMakeFiles/DAlpBlue.dir
-/home/alp/Projects/DAlpBlue/build/CMakeFiles/edit_cache.dir
-/home/alp/Projects/DAlpBlue/build/CMakeFiles/rebuild_cache.dir

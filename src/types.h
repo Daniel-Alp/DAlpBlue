@@ -43,11 +43,11 @@ enum CastlingRights : uint32_t {
 Piece symbol_to_pce(const char symbol);
 char pce_to_symbol(const Piece piece);
 
-constexpr Color get_col(const Piece piece) {
+inline Color get_col(const Piece piece) {
 	return static_cast<Color>(piece >> 3);
 }
 
-constexpr PieceType get_pce_type(const Piece piece) {
+inline PieceType get_pce_type(const Piece piece) {
 	return static_cast<PieceType>(piece & 7);
 }
 

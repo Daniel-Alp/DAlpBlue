@@ -7,6 +7,8 @@
 #include <array>
 #include <cstdint>
 
+#include <iostream>
+
 bool make_move(Position& pos, const Move& move) {
 	pos.undo_stack[pos.ply].en_passant_sq	= pos.en_passant_sq;
 	pos.undo_stack[pos.ply].castling_rights = pos.castling_rights;
@@ -80,7 +82,7 @@ bool make_move(Position& pos, const Move& move) {
 	pos.history_ply++;
 	pos.ply++;
 
-	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[build_pce(PieceType::KING, move_col)]), pos.side_to_move)) {
+	if (sq_attacked(pos, get_lsb(pos.pce_bitboards[build_pce(PieceType::KING, move_col)]), pos.side_to_move)) {		
 		undo_move(pos, move);
 		return false;
 	}

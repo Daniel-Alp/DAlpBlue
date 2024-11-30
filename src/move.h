@@ -25,47 +25,47 @@ public:
 		val = (from_sq | (to_sq << 6) | (capture_pce << 12) | (promo_pce << 16) | flag);
 	}
 
-	constexpr bool operator == (const Move& move) const {
+	inline bool operator == (const Move& move) const {
 		return val == move.val;
 	}
 
-	constexpr bool operator != (const Move& move) const {
+	inline bool operator != (const Move& move) const {
 		return val != move.val;
 	}
 
-	constexpr uint32_t get_from_sq() const {
+	inline uint32_t get_from_sq() const {
 		return val & 0b111111;
 	}
 
-	constexpr uint32_t get_to_sq() const {
+	inline uint32_t get_to_sq() const {
 		return (val >> 6) & 0b111111;
 	}
 
-	constexpr Piece get_cap_pce() const {
+	inline Piece get_cap_pce() const {
 		return static_cast<Piece>((val >> 12) & 0b1111);
 	}
 
-	constexpr Piece get_promo_pce() const {
+	inline Piece get_promo_pce() const {
 		return static_cast<Piece>((val >> 16) & 0b1111);
 	}
 
-	constexpr bool is_pawn_start() const {
+	inline bool is_pawn_start() const {
 		return val & static_cast<uint32_t>(MoveFlag::PAWN_START);
 	}
 
-	constexpr bool is_castle() const {
+	inline bool is_castle() const {
 		return val & static_cast<uint32_t>(MoveFlag::CASTLE);
 	}
 
-	constexpr bool is_en_passant() const {
+	inline bool is_en_passant() const {
 		return val & static_cast<uint32_t>(MoveFlag::EN_PASSANT);
 	}
 
-	constexpr bool is_quiet() const {
+	inline bool is_quiet() const {
 		return get_cap_pce() == Piece::NONE && get_promo_pce() == Piece::NONE;
 	}
 
-	inline std::string Move::to_str() const {
+	inline std::string to_str() const {
 		const uint32_t from_sq = get_from_sq();
 		const int from_rank = get_rank(from_sq);
 		const int from_file = get_file(from_sq);

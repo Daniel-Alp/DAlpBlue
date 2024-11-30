@@ -8,6 +8,7 @@
 #include "transposition.h"
 #include "timemanagement.h"
 #include <algorithm>
+#include <cmath>
 
 extern std::array<std::array<int64_t, 64>, 15> history_table;
 extern std::array<std::array<Move, 2>, 257> killer_table;
@@ -29,7 +30,7 @@ int32_t quiescence(Position& pos, SearchData& search_data, int32_t alpha, int32_
 inline void precompute_reduction_table() {
 	for (int depth = 1; depth < 256; depth++) {
 		for (int num_moves = 1; num_moves < 218; num_moves++) {
-			reduction_table[depth][num_moves] = std::max((log(depth) * log(num_moves)) / 2 + 1, static_cast<double>(2));
+			reduction_table[depth][num_moves] = std::max((std::log(depth) * std::log(num_moves)) / 2 + 1, static_cast<double>(2));
 		}
 	}
 }
@@ -57,7 +58,7 @@ inline void clear_killer_table() {
 	}
 }
 
-constexpr int64_t mvv_lva(PieceType cap_pce_type, PieceType move_pce_type) {
+inline int64_t mvv_lva(PieceType cap_pce_type, PieceType move_pce_type) {
 	return (static_cast<int64_t>(cap_pce_type) << 50) - static_cast<int64_t>(move_pce_type);
 }
 

@@ -8,8 +8,10 @@
 #include "uci.h"
 #include "zobrist.h"
 
+#include <iostream>
+#include "makemove.h"
 
-int main(int argc) {
+int main() {
 	precompute_rays();
 	precompute_non_slider_attacks();
 	precompute_zobrist();
@@ -38,7 +40,5 @@ int main(int argc) {
 		
 	//run_bench();
 
-	uci_loop(); 
-
-	return 0;
+	uci_loop();
 }

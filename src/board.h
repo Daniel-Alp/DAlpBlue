@@ -51,20 +51,18 @@ struct Position {
 };
 
 Position load_from_fen(const std::string& fen);
-void print_board(const Position& pos);
-bool valid_pos(const Position& pos);
-constexpr int get_rank(const int sq) {
+inline int get_rank(const int sq) {
 	return sq >> 3;
 }
-constexpr int get_file(const int sq) {
+inline int get_file(const int sq) {
 	return sq & 7;
 }
-constexpr int get_sq(const int rank, const int file) {
+inline int get_sq(const int rank, const int file) {
 	return (rank << 3) + file;
 }
-constexpr int mirror_sq(const int sq) {
+inline int mirror_sq(const int sq) {
 	return sq ^ 56;
 }
-constexpr Color flip_col(const Color col) {
+inline Color flip_col(const Color col) {
 	return static_cast<Color>(col ^ 1);
 }

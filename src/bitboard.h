@@ -2,7 +2,7 @@
 
 #include <array>
 #include <cstdint>
-#include <intrin.h>
+#include <x86intrin.h>
 
 extern std::array<uint64_t, 64> ray_nort;
 extern std::array<uint64_t, 64> ray_noea;
@@ -44,55 +44,52 @@ constexpr inline uint64_t sq_between_e8_a8 = 0x0E00000000000000;
 void precompute_rays();
 void precompute_non_slider_attacks();
 
-constexpr uint64_t shift_nort(const uint64_t bitboard) {
+inline uint64_t shift_nort(const uint64_t bitboard) {
 	return bitboard << 8;
 }
-constexpr uint64_t shift_noea(const uint64_t bitboard) {
+inline uint64_t shift_noea(const uint64_t bitboard) {
 	return (bitboard << 9) & 0xfefefefefefefefe;
 }
-constexpr uint64_t shift_east(const uint64_t bitboard) {
+inline uint64_t shift_east(const uint64_t bitboard) {
 	return (bitboard << 1) & 0xfefefefefefefefe;
 }
-constexpr uint64_t shift_soea(const uint64_t bitboard) {
+inline uint64_t shift_soea(const uint64_t bitboard) {
 	return (bitboard >> 7) & 0xfefefefefefefefe;
 }
-constexpr uint64_t shift_sout(const uint64_t bitboard) {
+inline uint64_t shift_sout(const uint64_t bitboard) {
 	return bitboard >> 8;
 }
-constexpr uint64_t shift_sowe(const uint64_t bitboard) {
+inline uint64_t shift_sowe(const uint64_t bitboard) {
 	return (bitboard >> 9) & 0x7f7f7f7f7f7f7f7f;
 }
-constexpr uint64_t shift_west(const uint64_t bitboard) {
+inline uint64_t shift_west(const uint64_t bitboard) {
 	return (bitboard >> 1) & 0x7f7f7f7f7f7f7f7f;
 }
-constexpr uint64_t shift_nowe(const uint64_t bitboard) {
+inline uint64_t shift_nowe(const uint64_t bitboard) {
 	return (bitboard << 7) & 0x7f7f7f7f7f7f7f7f;
 }
-constexpr uint64_t get_sq_bitboard(const uint32_t sq) {
+inline uint64_t get_sq_bitboard(const uint32_t sq) {
 	return UINT64_C(1) << sq;
 }
-constexpr bool has_sq(const uint64_t bitboard, const uint64_t sq) {
+inline bool has_sq(const uint64_t bitboard, const uint64_t sq) {
 	return bitboard & sq;
 }
-constexpr uint64_t set_sq(const uint64_t bitboard, const uint64_t sq) {
+inline uint64_t set_sq(const uint64_t bitboard, const uint64_t sq) {
 	return bitboard | sq;
 }
-constexpr uint64_t clear_sq(const uint64_t bitboard, const uint64_t sq) {
+inline uint64_t clear_sq(const uint64_t bitboard, const uint64_t sq) {
 	return bitboard ^ sq;
 }
-constexpr uint64_t move_sq(const uint64_t bitboard, const uint64_t from_sq, const uint64_t to_sq) {
+inline uint64_t move_sq(const uint64_t bitboard, const uint64_t from_sq, const uint64_t to_sq) {
 	return bitboard ^ from_sq ^ to_sq;
 }
 inline int get_lsb(const uint64_t bitboard) {
-	unsigned long i = 0;
-	_BitScanForward64(&i, bitboard);
-	return i;
+	return __builtin_ctzl(bitboard);
 }
 inline int get_msb(const uint64_t bitboard) {
-	unsigned long i = 0;
-	_BitScanReverse64(&i, bitboard);
-	return i;
+	return __builtin_clzl(bitboard) ^ 63;
 }
-constexpr uint64_t clear_lsb(const uint64_t bitboard) {
+inline uint64_t clear_lsb(const uint64_t bitboard) {
 	return bitboard & (bitboard - 1);
 }
+void print_bitboard(uint64_t bitboard);

@@ -7,7 +7,7 @@ project (DAlpBlue)
 set(CMAKE_CXX_STANDARD 17)
 #
 if(NOT CMAKE_BUILD_TYPE)
-        set(CMAKE_BUILD_TYPE RelWithDebugInfo)
+        set(CMAKE_BUILD_TYPE RelWithDebInfo)
 endif()
 
 # Add source to this project's executable.
